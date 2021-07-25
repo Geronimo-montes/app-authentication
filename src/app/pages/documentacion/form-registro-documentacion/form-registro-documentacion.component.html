@@ -1,0 +1,174 @@
+<nb-card class="col-md-10 m-auto" [nbSpinner]=" loadingData"
+  [nbSpinnerSize]="'giant'" [nbSpinnerMessage]="'Cargando información'"
+  [nbSpinnerStatus]="'primary'">
+
+  <nb-card-header>
+    <h5 class="text-white">Formulario de registro para paquetes de documentación
+    </h5>
+  </nb-card-header>
+
+  <nb-card-body>
+    <form [formGroup]="form" (submit)="formSubmit();" [hidden]="loadingData">
+
+      <div class="row">
+        <!-- Información del pack de documentos -->
+        <div class="col-md-4">
+          <!-- IMAGEN -->
+          <div class="col-md-8 m-auto">
+            <app-file-upload formControlName="perfil" [text]="'Foto de perfil'"
+              [name]="'perfil'" [status]="validatorInput('perfil', form)"
+              [templateRef]="templateRef" [popoverError]="nbPopoverError"
+              (change)="nbPopoverError = getError('perfil', form);">
+            </app-file-upload>
+          </div>
+          <!--NOMBRE-->
+          <div class="form-group col-md-12 mt-0">
+            <label class="label">Nombre del paquete de documentación</label>
+            <input placeholder="Nombre del paquete de documentación" type="text"
+              nbInput fullWidth formControlName="nombre" shape="rectangle"
+              [nbPopover]="templateRef" [nbPopoverTrigger]="nbPopoverTrigger"
+              [shape]="nbComponentShape"
+              [nbPopoverContext]="{ text: nbPopoverError }"
+              (keyup)="nbPopoverError = getError('nombre', form);"
+              (focus)="nbPopoverError = getError('nombre', form);"
+              [status]="validatorInput('nombre', form)">
+          </div>
+          <!--DESCRIPCION-->
+          <div class="form-group col-md-12 mt-0">
+            <label class="label">Descripción</label>
+            <textarea placeholder="Descripción" type="text" nbInput fullWidth
+              formControlName="descripcion" shape="rectangle"
+              [nbPopover]="templateRef" [nbPopoverTrigger]="nbPopoverTrigger"
+              [shape]="nbComponentShape"
+              [nbPopoverContext]="{ text: nbPopoverError }"
+              (keyup)="nbPopoverError = getError('descripcion', form);"
+              (focus)="nbPopoverError = getError('descripcion', form);"
+              [status]="validatorInput('descripcion', form)"></textarea>
+            <label class="label d-flex justify-content-end">
+              {{ this.form.get('descripcion').value.length }}/300
+            </label>
+          </div>
+        </div>
+
+        <!-- Informacion individual de los documentos -->
+        <div formArrayName="documentos" class="col-md-8">
+          <!-- Button add -->
+          <div class="row col-md-12 justify-content-end">
+            <button nbButton (click)="addDocumento();" status="success"
+              [size]="'small'" type="button">
+              +
+            </button>
+          </div>
+          <!-- Controles dinamicos -->
+          <div class="content-dinamic col-md-12">
+            <div [formGroupName]="name"
+              class="row justify-content-start dinamic-controls"
+              *ngFor="let documento of FormControlsdocumentos.controls; let name=index">
+
+              <div class="col-md-3">
+                <!-- FOTO DE EJEMPLO -->
+                <strong>Documento #{{name + 1}}</strong>
+                <app-file-upload class="picture" formControlName="foto_ejemplo"
+                  [text]="'Ejemplo de documento'" [name]="name.toString()"
+                  [status]="validatorInput('documentos.' + name + '.foto_ejemplo', form)"
+                  [templateRef]="templateRef" [popoverError]="nbPopoverError"
+                  (change)="nbPopoverError = getError('documentos.' + name + '.foto_ejemplo', form);">
+                </app-file-upload>
+              </div>
+
+              <div class="col-md-8">
+                <!--NOMBRE-->
+                <div class="form-group mt-0">
+                  <label class="label">Nombre del documento</label>
+                  <input placeholder="Nombre del documento" type="text" nbInput
+                    fullWidth formControlName="nombre" shape="rectangle"
+                    [nbPopover]="templateRef"
+                    [nbPopoverTrigger]="nbPopoverTrigger"
+                    [shape]="nbComponentShape"
+                    [nbPopoverContext]="{ text: nbPopoverError }"
+                    (keyup)="nbPopoverError = getError('documentos.' + name + '.nombre', form);"
+                    (focus)="nbPopoverError = getError('documentos.' + name + '.nombre', form);"
+                    [status]="validatorInput('documentos.' + name + '.nombre', form)">
+                </div>
+
+                <div class="row">
+                  <!-- FORMATO -->
+                  <div class="form-group col-md-5 mt-0">
+                    <label class="label">Formato del documento</label>
+                    <nb-select formControlName="formato" fullWidth
+                      shape="rectangle" [nbPopover]="templateRef"
+                      [nbPopoverTrigger]="nbPopoverTrigger"
+                      [shape]="nbComponentShape"
+                      [nbPopoverContext]="{ text: nbPopoverError }"
+                      (keyup)="nbPopoverError = getError('documentos.' + name + '.formato', form);"
+                      (focus)="nbPopoverError = getError('documentos.' + name + '.formato', form);"
+                      [status]="validatorInput('documentos.' + name + '.formato', form)">
+
+                      <nb-option [value]="''">Seleccione el formato
+                      </nb-option>
+
+                      <nb-option *ngFor="let g of formato" [value]="g.value">
+                        {{ g.text }}
+                      </nb-option>
+                    </nb-select>
+                  </div>
+                  <!-- PESO MAXIMO EN MB -->
+                  <div class="form-group col-md-5 mt-0">
+                    <label class="label">Peso maximo (en Mb)</label>
+                    <input placeholder="Peso maximo (en Mb)" type="text" nbInput
+                      fullWidth formControlName="peso_max" shape="rectangle"
+                      [nbPopover]="templateRef"
+                      [nbPopoverTrigger]="nbPopoverTrigger"
+                      [shape]="nbComponentShape"
+                      [nbPopoverContext]="{ text: nbPopoverError }"
+                      (keyup)="nbPopoverError = getError('documentos.' + name + '.peso_max', form);"
+                      (focus)="nbPopoverError = getError('documentos.' + name + '.peso_max', form);"
+                      [status]="validatorInput('documentos.' + name + '.peso_max', form)">
+                  </div>
+                  <!-- obligatorio -->
+                  <div class="form-group col-md-1 mt-0">
+                    <label class="label">Obligatorio</label>
+
+                    <nb-checkbox [nbPopover]="templateRef"
+                      [nbPopoverTrigger]="nbPopoverTrigger"
+                      [nbPopoverContext]="{ text: nbPopoverError }"
+                      (checkedChange)="nbPopoverError = getError('documentos.' + name + '.requerido', form);"
+                      (focus)="nbPopoverError = getError('documentos.' + name + '.requerido', form);">
+                    </nb-checkbox>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="FormControlsdocumentos.length > 1">
+                <button class="btn-remove" nbButton
+                  (click)="removeDocumento(name);" status="danger" size="tiny"
+                  type="button">
+                  x
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="row col-md-12 justify-content-end">
+        <button nbButton [disabled]="form.invalid" [status]="valid"
+          [size]="'medium'" type="submit">
+          Registar pack de documentación
+        </button>
+      </div>
+
+    </form>
+  </nb-card-body>
+</nb-card>
+
+<!-- Template para los popovers -->
+<ng-template #templateRef let-data>
+  <div *ngIf="nbPopoverError !== ''" class="bg-danger rounded p-2"
+    style="max-width: 18rem; min-width: 10rem;">
+    <strong class="text-white text-justify">
+      {{ data.text }}
+    </strong>
+  </div>
+</ng-template>

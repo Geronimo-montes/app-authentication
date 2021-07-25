@@ -1,0 +1,22 @@
+<div class="header-container">
+  <div class="logo-container ">
+    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle text-white">
+      <nb-icon icon="grid-outline"></nb-icon>
+    </a>
+
+    <a class="logo" href="#" (click)="navigateHome()">
+      <img class="mr-2" src="./assets/favicon.png" alt="" height="40">
+      <strong class="h1 text-white">CTRL</strong><span
+        class="text-white h6 mt-3 ">DOC</span>
+    </a>
+  </div>
+</div>
+
+<div class="header-container">
+  <nb-actions size="small">
+  </nb-actions>
+
+  <nb-user class="user-action" [onlyPicture]="true" size="large"
+    [name]="usuario?.email" [title]="usuario.rol" [picture]="usuario.perfil">
+  </nb-user>
+</div>

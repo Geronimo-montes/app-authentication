@@ -1,0 +1,19 @@
+<nb-card status="primary">
+  <nb-card-header>{{titulo}}</nb-card-header>
+
+  <nb-card-body class="container text-center">
+    <img [src]="icon" height="100" alt="">
+    <p>
+      {{cuerpo}}
+    </p>
+    <strong>¿Desea continuar?</strong>
+  </nb-card-body>
+
+  <nb-card-footer class="row justify-content-between">
+    <button class="cancel ml-2" nbButton [size]="'medium'" status="danger"
+      (click)="cancel()">Cancel</button>
+
+    <button nbButton [size]="'medium'" status="success" class="mr-2"
+      (click)="confirmar()">Confirmar</button>
+  </nb-card-footer>
+</nb-card>

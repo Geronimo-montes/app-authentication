@@ -1,0 +1,55 @@
+<!-- INFORMACION GENERAL -->
+<div>
+  <div class="row justify-content-start alings-items-center">
+    <div class="col-md-1">
+      <!-- BOTTON DE RETORNO -->
+      <button *ngIf="view_datalle" class="m-auto" nbButton shape="semi-round"
+        status="warning" (click)="view_datalle = !view_datalle;">
+        <nb-icon nbSuffix icon="arrow-back-outline" pack="eva"></nb-icon>
+      </button>
+    </div>
+    <!-- TITULO DEL CONTENIDO -->
+    <h5 class="text-white"> {{ (view_datalle) ? selected_pack.nombre :
+      'Paquetes de documentacion' }} </h5>
+  </div>
+
+  <div class="row"
+    *counter="let elemnts from data AsCountElem 4; let ctrl = controller">
+    <!-- BUTTON PREV -->
+    <div class="col-md-1 d-flex flex-column">
+      <button class="m-auto" nbButton shape="semi-round" size="giant"
+        status="success" (click)="ctrl.prev();">
+        <nb-icon nbSuffix icon="arrow-ios-back" pack="eva"></nb-icon>
+      </button>
+    </div>
+
+    <!-- ITEMS -->
+    <div class="row justify-content-start container-docs col-md-10 m-auto">
+      <!-- PACKS DOCUMENTACIONES -->
+      <ng-template [ngIf]="!view_datalle">
+        <nb-card class="col-md-3 pt-2 border-0" *ngFor="let p of elemnts"
+          (click)="detalle_paks_documentos(p)">
+          <img class="picture m-auto" [src]="p.ruta_imagen" alt="foto">
+          <p class="mt-2 text-center text-truncate">{{ p.nombre }} </p>
+        </nb-card>
+      </ng-template>
+
+      <!-- DETALLE DOCUMENTOS -->
+      <ng-template [ngIf]="view_datalle">
+        <div class="col-md-3 pt-2" *ngFor=" let d of elemnts">
+          <app-item-doc [documento]="d"
+            [badge]="validarDocumento(d.iddocumento)">
+          </app-item-doc>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- BUTTON NEXT -->
+    <div class="col-md-1 d-flex flex-column">
+      <button class="m-auto" nbButton shape="semi-round" size="giant"
+        status="success" (click)="ctrl.next();">
+        <nb-icon nbSuffix icon="arrow-ios-forward" pack="eva"></nb-icon>
+      </button>
+    </div>
+  </div>
+</div>

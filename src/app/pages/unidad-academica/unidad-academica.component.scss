@@ -1,0 +1,16 @@
+@import '../../@theme/styles/themes';
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+
+@include nb-install-component() {
+  img{
+    width: 6rem;
+    height: 6rem;
+  }
+
+  @include media-breakpoint-down(sm) {
+    .img {
+      display: none;
+    }
+  }
+}

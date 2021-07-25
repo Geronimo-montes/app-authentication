@@ -1,0 +1,45 @@
+@import "../../../@theme/styles/themes";
+@import "~bootstrap/scss/mixins/breakpoints";
+@import "~@nebular/theme/styles/global/breakpoints";
+
+@include nb-install-component() {
+  .box {
+    position: relative;
+    width: inherit;
+    cursor: pointer;
+  }
+
+  .box:before {
+    content: "";
+    display: block;
+    padding-top: 100%; /* ratio of 1:1*/
+  }
+
+  nb-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    border-radius: 1rem;
+    box-shadow: 3px 4px 8px nb-theme(color-basic-600);
+
+    img {
+      margin: 15%;
+    }
+
+    .label {
+      margin: 10%;
+      font-size: 90%;
+    }
+  }
+
+  .primary {
+    border: 0.2rem dashed blue;
+  }
+
+  .danger {
+    border: 0.2rem dashed red;
+  }
+}

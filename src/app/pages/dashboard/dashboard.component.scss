@@ -1,0 +1,65 @@
+@import "../../@theme/styles/themes";
+@import "~bootstrap/scss/mixins/breakpoints";
+@import "~@nebular/theme/styles/global/breakpoints";
+
+@include nb-install-component() {
+  h1 {
+    margin: 0.8rem;
+    margin-bottom: 1.8rem;
+    font-size: 3rem;
+    color: nb-theme(color-primary-900);
+  }
+
+  nb-card {
+    border: 0;
+    cursor: pointer;
+    border-radius: 1rem;
+    width: 16rem;
+    height: 18rem;
+    box-shadow: 3px 4px 8px nb-theme(color-basic-600);
+    margin: 0.6rem;
+    margin-left: 2rem;
+    padding: 0.8rem;
+    text-align: center;
+    transition: 0.3s ease;
+    -moz-transition: 0.3s ease; /* Firefox */
+    -webkit-transition: 0.3s ease; /* Chrome - Safari */
+    -o-transition: 0.3s ease; /* Opera */
+
+    img {
+      width: 12rem;
+      height: 12rem;
+    }
+  }
+
+  nb-card:hover {
+    transform: scale(1.06);
+    -moz-transform: scale(1.06); /* Firefox */
+    -webkit-transform: scale(1.06); /* Chrome - Safari */
+    -o-transform: scale(1.06); /* Opera */
+    -ms-transform: scale(1.06); /* IE9 */
+  }
+
+  .status-primary {
+    background-color: nb-theme(color-primary-300);
+  }
+  .status-info {
+    background-color: nb-theme(color-info-400);
+  }
+  .status-success {
+    background-color: nb-theme(color-success-400);
+  }
+  .status-warning {
+    background-color: nb-theme(color-warning-400);
+  }
+  .status-danger {
+    background-color: nb-theme(color-danger-400);
+  }
+
+  div {
+    flex: content;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+  }
+}

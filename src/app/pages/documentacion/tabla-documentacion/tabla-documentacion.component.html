@@ -1,0 +1,4 @@
+<app-tabla [settings]="settings" [loadingData]="loading | async"
+  [data]="data | async" (rowSelected)="documentacionSeleccionado($event)"
+  [filter]="filter">
+</app-tabla>

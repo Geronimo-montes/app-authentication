@@ -1,0 +1,36 @@
+@import "../../../@theme/styles/themes";
+@import "~bootstrap/scss/mixins/breakpoints";
+@import "~@nebular/theme/styles/global/breakpoints";
+
+@include nb-install-component() {
+  nb-card {
+    border: 0;
+    border-radius: 1rem;
+    box-shadow: 3px 4px 8px nb-theme(color-basic-600);
+    background-color: nb-theme(color-basic-400);
+    padding: 0;
+    margin: 0;
+
+    nb-card-header {
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+      background-color: nb-theme(color-info-800);
+
+      nb-form-field {
+        border: 5px #000;
+      }
+    }
+
+    .prueba {
+      background-color: darkblue;
+      color: red;
+      border-radius: 10px;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .button-refresh {
+      display: none;
+    }
+  }
+}

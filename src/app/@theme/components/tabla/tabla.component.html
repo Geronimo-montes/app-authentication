@@ -1,0 +1,26 @@
+<nb-card [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
+  [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
+  <nb-card-header class="row col-md-12 justify-content-end m-auto">
+    <nb-form-field>
+      <input #search_input type="text" shape="round" nbInput
+        nbPopover="Filtrar tabla" nbPopoverTrigger="hover"
+        (keyup)="search(search_input.value)">
+      <nb-icon nbSuffix icon="search-outline" pack="eva"></nb-icon>
+    </nb-form-field>
+
+    <button class="button-refresh ml-2" nbButton shape="round" [size]="'medium'"
+      [status]="'info'" (click)="updateLista('data_update')"
+      nbPopover="Actualizar datos de la tabla" [nbPopoverTrigger]="'hover'">
+      <nb-icon nbSuffix icon="refresh-outline" pack="eva"></nb-icon>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- (edit)="editarProdcuto($event)" (delete)="borrarProducto($event)" -->
+    <ng2-smart-table [settings]="settings" [source]="source"
+      (userRowSelect)="rowSelectedEmit($event, 'view')"
+      (editConfirm)="editConfirmacion($event);"
+      (deleteConfirm)="deleteConfirmacion($event);">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>
