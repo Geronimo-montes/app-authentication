@@ -1,32 +1,46 @@
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { throwIfAlreadyLoaded } from './module-import-guard';
-import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
 import { environment } from '../../environments/environment';
 import { LayoutService } from './utils';
+import { NbRoleProvider, NbSecurityModule } from '@nebular/security';
+import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
 
 import { MockDataModule } from './mock/mock-data.module';
 
 import { UserModel } from './data/userModel';
-import { UnidadAcademicaModel } from './data/unidadAcademicaModel';
-import { DocumentoModel } from './data/documentoModel';
-
 import { UserProvierService } from './mock/UserProvider.service';
+
+import { UnidadAcademicaModel } from './data/unidadAcademicaModel';
 import { UnidadProvierService } from './mock/UnidadProvider.service';
+
+import { DocumentoModel } from './data/documentoModel';
 import { DocumentoProvierService } from './mock/DocumentoProvider.service';
+
 import { AlumnoModel } from './data/alumnoModel';
 import { AlumnoProvierService } from './mock/AlumnoProvider.service';
+
 import { EmpleadoModel } from './data/empleadoModel';
 import { EmpleadoProvierService } from './mock/EmpleadoProvider.service';
 
-const GUARDS = [];
+import { RoleProviderService } from './mock/rolProvider.service';
+
+import { AuthGuard, RolGuard, AuthenticatedGuard } from './guards';
+import { FileModel } from './data/fileModel';
+import { FileProvierService } from './mock/FileProvider.service';
+
+const GUARDS = [
+  AuthGuard,
+  RolGuard,
+  AuthenticatedGuard,
+];
 
 const DATA_SERVICES = [
-  // {provide: ClassData, useClass: ClassService},
   { provide: UserModel, useClass: UserProvierService },
   { provide: UnidadAcademicaModel, useClass: UnidadProvierService },
   { provide: DocumentoModel, useClass: DocumentoProvierService },
   { provide: AlumnoModel, useClass: AlumnoProvierService },
   { provide: EmpleadoModel, useClass: EmpleadoProvierService },
+  { provide: FileModel, useClass: FileProvierService },
 ];
 
 const formSetting: any = {
@@ -80,11 +94,51 @@ export const NB_CORE_PROVIDERS = [
       logout: { redirecDelay: 0 },
     }
   }).providers,
+  NbSecurityModule.forRoot({
+    /** c         deribados
+     * perfil
+     * unidad   unidad-asignada
+     * documento  detalle_documento
+     * empleado
+     * reporte
+     * 
+     */
+    accessControl: {
+      director: {
+        control: ['perfil', 'unidad', 'documento', 'empleado', 'reporte'],
+        view: ['*'],
+        create: ['*'],
+        edit: ['*'],
+        add: ['*'],
+        delete: ['*'],
+        update_data_list: ['*'],
+      },
+      jefatura: {
+        control: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
+        view: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
+        create: [],
+        edit: [],
+        add: ['detalle_documento'],
+        delete: ['detalle_documento'],
+        update_data_list: ['alumno', 'documento'],
+      },
+      auxiliar: {
+        control: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
+        view: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
+        create: [],
+        edit: [],
+        add: ['detalle_documento'],
+        delete: ['detalle_documento'],
+        update_data_list: ['alumno', 'documento'],
+      }
+    }
+  }).providers,
+  { provide: NbRoleProvider, useClass: RoleProviderService },
 ];
 
 @NgModule({
   imports: [],
-  exports: [],
+  exports: [NbAuthModule],
   declarations: [],
 })
 export class CoreModule {
@@ -95,7 +149,7 @@ export class CoreModule {
   static forRoot(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
-      providers: [...NB_CORE_PROVIDERS],
+      providers: [...NB_CORE_PROVIDERS, ...GUARDS],
     }
   }
 }

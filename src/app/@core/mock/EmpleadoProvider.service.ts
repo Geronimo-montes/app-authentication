@@ -1,9 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { EmpleadoModel } from "../data/empleadoModel";
-import { Iauxiliar, Ijefatura } from "../data/userModel";
-import { DATA } from "./DataEmpleado";
+import { ResponseData } from "../data/headerOptions";
+import { Iusuario } from "../data/userModel";
 
 @Injectable()
 export class EmpleadoProvierService extends EmpleadoModel {
@@ -14,14 +15,33 @@ export class EmpleadoProvierService extends EmpleadoModel {
     super(httpClient);
   }
 
-  private get empleados(): Ijefatura[] | Iauxiliar[] {
-    return <Ijefatura[] | Iauxiliar[]>DATA;
-  };
+  public getEmpleados$(): Observable<Iusuario[]> {
+    return this.httpClient.get<ResponseData>(
+      `${this.baseURL}empleado/all`,
+      this.getOptions()
+    ).pipe(map((response) => <Iusuario[]>response.data));
+  }
 
-  public getEmpleados$(): Observable<Ijefatura[] | Iauxiliar[]> {
-    return new Observable(obs =>
-      obs.next(
-        this.empleados
-      ));
+  getEmpleadoById$(idempleado: number): Observable<Iusuario> {
+    return this.httpClient.get<ResponseData>(
+      `${this.baseURL}empleado/:idempleado`,
+      this.getOptions()
+    ).pipe(map((response) => <Iusuario>response.data));
+  }
+
+  updateEmpleado$(data: Iusuario): Observable<ResponseData> {
+    return this.httpClient.put<ResponseData>(
+      `${this.baseURL}empleado/update`,
+      { data },
+      this.getOptions()
+    ).pipe(map((response) => response));
+  }
+
+  newEmpleado$(data: Iusuario): Observable<ResponseData> {
+    return this.httpClient.post<ResponseData>(
+      `${this.baseURL}empleado/new`,
+      { data },
+      this.getOptions()
+    ).pipe(map((response) => response));
   }
 }

@@ -1,16 +1,31 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { NbAccessChecker } from '@nebular/security';
 import { NbDialogService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { ConfirmacionComponent, typeicon } from '../confirmacion/confirmacion.component';
+import { Observable, Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
+import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
+import {
+  EDIT_CONTROL,
+  DELETE_CONTROL,
+  VIEW_CONTROL,
+} from './tabla-general-settings';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 
 export enum Eaccion {
-  ADD = 'add',
-  DELETE = 'delete',
-  EDIT = 'edit',
   VIEW = 'view',
-  DATA_UPDATE = 'data_update',
+  CREATE = 'create',
+  EDIT = 'edit',
+  DELETE = 'delete',
+  UPDATE_DATA_LIST = 'update_data_list',
   DEFAULT = 'default',// sin accion establcida
 };
 
@@ -24,10 +39,11 @@ export interface Iacciondata {
   templateUrl: './tabla.component.html',
   styleUrls: ['./tabla.component.scss']
 })
-export class TablaComponent implements OnInit, OnDestroy {
+export class TablaComponent implements OnInit, OnChanges, OnDestroy {
 
-  private destroy$: Subject<void> = new Subject<void>(); // Unsuscribe suscripciones
+  private destroy$: Subject<void> = new Subject<void>();
 
+  @Input() object: string;
   @Input() settings;
   @Input() loadingData: boolean = false;
   @Input() data: any[] = [];
@@ -38,22 +54,27 @@ export class TablaComponent implements OnInit, OnDestroy {
 
   constructor(
     private dialogService: NbDialogService,
+    private accessChecker: NbAccessChecker,
   ) { }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.source = new LocalDataSource();
     this.source.load(this.data);
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.complete();
+  ngOnInit(): void {
+    this.addControlsViewEditDelete();
+  }
+
+  ngOnDestroy() {
     this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
-   * @description Establece una funcion para el filtrado de los datos
-   * @param query 
-   */
+  * @description Establece una funcion para el filtrado de los datos
+  * @param query 
+  */
   search(query: string = '') {
     if (query !== '') {
       this.filter.forEach(d => d.search = query);
@@ -68,15 +89,8 @@ export class TablaComponent implements OnInit, OnDestroy {
    * @param $event 
    * @param accion 
    */
-  public rowSelectedEmit($event, accion) {
-    this.rowSelected.emit(<Iacciondata>{ accion: accion, data: $event.data });
-  }
-
-
-  public updateLista(accion) {
-    this.rowSelectedEmit({ data: null }, Eaccion.DATA_UPDATE);
-    this.data = [];
-    this.source.load(this.data);
+  public rowSelectedEmit(data, accion) {
+    this.rowSelected.emit(<Iacciondata>{ accion: accion, data: data });
   }
 
   /**
@@ -84,16 +98,15 @@ export class TablaComponent implements OnInit, OnDestroy {
    * @param $event 
    */
   public editConfirmacion($event) {
-    const msj = {
-      title: 'Mensaje de confirmacion',
-      body: `Se han realizado cambios en el elemento seleccionado.`,
-      type: typeicon.QUESTION
-    };
+    const
+      title = 'Mensaje de confirmacion',
+      body = `Se han realizado cambios en el elemento seleccionado.`;
 
-    this.dialogeConfirmacion(msj.title, msj.body)
+    this.dialogeConfirmacion(title, body)
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
         if (res) {
-          this.rowSelectedEmit($event, Eaccion.EDIT);
+          this.rowSelectedEmit($event.newData, Eaccion.EDIT);
           $event.confirm.resolve($event.newData);
         } else {
           $event.confirm.reject();
@@ -102,21 +115,22 @@ export class TablaComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description Mensaje de confirmacion para eliminar elemetno
+   * @description Mensaje de confirmacion para dar de baje el elemnto seleccionado.
    * @param $event
    */
   public deleteConfirmacion($event) {
-    const msj = {
-      title: 'Mensaje de confirmacion',
-      body: `El elemento seleccionado se dara de baja.`,
-      type: typeicon.DELETE
-    };
+    const
+      title = 'Mensaje de confirmacion',
+      body = ($event.data.estatus === 'a') ?
+        `El elemento seleccionado se dara de baja en el sistema.` :
+        `El elemento seleccionado se dara de alta en el sistema.`;
 
-    this.dialogeConfirmacion(msj.title, msj.body)
+    this.dialogeConfirmacion(title, body)
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
         if (res) {
-          $event.confirm.resolve($event.newData);
-          this.rowSelectedEmit($event, Eaccion.DELETE);
+          $event.data.estatus = ($event.data.estatus === 'a') ? 'b' : 'a';
+          this.rowSelectedEmit($event.data, Eaccion.DELETE);
         } else {
           $event.confirm.reject();
         }
@@ -124,17 +138,36 @@ export class TablaComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @description Llamada al compononte para mostrar un mensaje de confirmación
+   * Contiene la estructura para llamar el mensaje de confirmacion. Retorna un observable que contiene la respueta emitida despues de la selección del usuario. Evita repetir codigo.
    * @param title 
    * @param body 
    * @returns 
    */
-  private dialogeConfirmacion(title: string, body: string) {
+  private dialogeConfirmacion(title: string, body: string): Observable<boolean> {
     return this.dialogService
       .open(ConfirmacionComponent, {
         context: { titulo: title, cuerpo: body, },
         closeOnEsc: false,
         closeOnBackdropClick: false,
-      }).onClose.pipe(takeUntil(this.destroy$));
+      }).onClose;
+  }
+
+  /**
+   * Verifica los permisos del usuario para editar o eliminar un objeto de la tabla. Y establece la visibilidad de estos deacuerdo a los permisos del usuario.
+   * @param accion 
+   * @param object 
+   */
+  private addControlsViewEditDelete(): void {
+    this.accessChecker.isGranted(Eaccion.EDIT, this.object)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(access => this.settings.edit = (access) ? EDIT_CONTROL : null);
+
+    this.accessChecker.isGranted(Eaccion.DELETE, this.object)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(access => this.settings.delete = (access) ? DELETE_CONTROL : null);
+
+    this.accessChecker.isGranted(Eaccion.VIEW, this.object)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(access => this.settings.actions.custom = (access) ? VIEW_CONTROL : null);
   }
 }

@@ -1,6 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { Subject } from 'rxjs';
 import { Idocumento, Ipackdocumentacion } from '../../../@core/data/documentoModel';
 
 @Component({
@@ -8,9 +7,8 @@ import { Idocumento, Ipackdocumentacion } from '../../../@core/data/documentoMod
   templateUrl: './view-pack.component.html',
   styleUrls: ['./view-pack.component.scss']
 })
-export class ViewPackComponent implements OnInit, OnDestroy {
+export class ViewPackComponent implements OnInit {
 
-  private destroy$: Subject<void> = new Subject<void>(); // Unsuscribe suscripciones
   @Input() data: Ipackdocumentacion;
   public loadingData: boolean = false;
 
@@ -24,11 +22,6 @@ export class ViewPackComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.complete();
-    this.destroy$.next();
   }
 
   close() {

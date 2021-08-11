@@ -6,13 +6,13 @@ import { Component, OnInit } from '@angular/core';
   <div class="row col-md-12">
     <img  src="assets/documentos.png" alt="Documentación">
 
-    <div class="pointer ml-4">
+    <div class="pointer ml-4" *nbIsGranted="['view', 'documento']">
       <app-card-item-menu [title]="'Paquetes de documentos'" [type]="'primary'"
         [icon]="'assets/tabla-document.png'" [routerLink]="router.tabla">
       </app-card-item-menu>
     </div>
 
-    <div class="pointer ml-4">
+    <div class="pointer ml-4" *nbIsGranted="['create', 'doumento']">
       <app-card-item-menu [title]="'Registrar documentación'" [type]="'success'"
         [icon]="'assets/add-document.png'" [routerLink]="router.registro">
       </app-card-item-menu>

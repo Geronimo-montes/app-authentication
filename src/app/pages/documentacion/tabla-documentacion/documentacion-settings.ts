@@ -1,41 +1,13 @@
 import { DatePipe } from "@angular/common";
-import { Eestatus } from "../../../@core/data/comonModel";
-import { Ipackdocumentacion } from "../../../@core/data/documentoModel";
-import { ESTATUS_SETTINGS } from "../../../@theme/components/tabla/tabla-settings-columns";
+import { ESTATUS_SETTINGS, GENERAL_CONFIG, PERFIL_SETTINGS } from "../../../@theme/components/tabla/tabla-general-settings";
 
 export const SETTINGS = {
   // mode: 'external',
-  hideSubHeader: false,
-  noDataMessage: 'No existen productos registrados...',
-  actions: {
-    columnTitle: 'Acciones',
-    position: 'right',
-    add: false,
-  },
-  edit: {
-    editButtonContent: '<img src="assets/edit.png" height="30" alt="">',
-    saveButtonContent: '<img src="assets/save.png" height="30" alt="">',
-    cancelButtonContent: '<img src="assets/cancel.png" height="30" alt="">',
-    confirmSave: true,
-  },
-  delete: {
-    deleteButtonContent: '<img src="assets/delete.png" height="30" alt="">',
-    saveButtonContent: '<img src="assets/save.png" height="30" alt="">',
-    cancelButtonContent: '<img src="assets/cancel.png" height="30" alt="">',
-    confirmDelete: true,
-  },
-  pager: {
-    perPage: 8,
-  },
+  ...GENERAL_CONFIG,
   columns: {
-    ruta_imagen: {
-      title: '', type: 'html', filter: false, editable: false,
-      valuePrepareFunction: ($valor: string): string => {
-        return `<img src="${$valor}" height="30" alt="">`;
-      }
-    },
+    ruta_imagen: PERFIL_SETTINGS,
     idpaquete: { title: 'No.', type: 'text', filter: false, editable: false, },
-    nombre: { title: 'Nombre del paquete', type: 'text', filter: false, },
+    nombre: { title: 'Nombre', type: 'text', filter: false, },
     descripcion: {
       title: 'Descripcion', type: 'text', filter: false,
       valuePrepareFunction: ($valor: string): string => {
@@ -46,13 +18,13 @@ export const SETTINGS = {
     fecha_creacion: {
       title: 'Fecha de creación', type: 'text', filter: false, editable: false,
       valuePrepareFunction: ($valor: string): string => {
-        return new DatePipe('en').transform($valor, 'medium');
+        return new DatePipe('en').transform($valor, 'short');
       }
     },
     fecha_modificacion: {
       title: 'Fecha de modificación', type: 'text', filter: false, editable: false,
       valuePrepareFunction: ($valor: string): string => {
-        return new DatePipe('en').transform($valor, 'medium');
+        return new DatePipe('en').transform($valor, 'short');
       }
     },
     estatus: ESTATUS_SETTINGS,

@@ -1,10 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AlumnoModel, Ialumno, IdocumentoEntregado } from "../data/alumnoModel";
-import { Idocumento } from "../data/documentoModel";
+import { map } from "rxjs/operators";
 import { ResponseData } from "../data/headerOptions";
-import { DATA, DATA_DOCS_ENTREGAODS } from "./DataAlumno";
+import {
+  AlumnoModel,
+  Ialumno,
+  IdocumentoEntregado
+} from "../data/alumnoModel";
 
 @Injectable()
 export class AlumnoProvierService extends AlumnoModel {
@@ -15,44 +18,41 @@ export class AlumnoProvierService extends AlumnoModel {
     super(httpClient);
   }
 
-  private get alumnos(): Ialumno[] {
-    return <Ialumno[]>DATA;
-  };
-
-  private get docsentregados(): IdocumentoEntregado[] {
-    return <IdocumentoEntregado[]>DATA_DOCS_ENTREGAODS;
-  };
-
-  /*******************************************************/
-
-  public getAlumnosByUniidad$(id_unidad: number): Observable<Ialumno[]> {
-    return new Observable(obs =>
-      obs.next(this.alumnos.filter(a => a.idunidad === id_unidad)));
+  public getAlumnosByUnidad$(idunidad: number): Observable<Ialumno[]> {
+    return this.httpClient.get<ResponseData>(
+      `${this.baseURL}alumno/all/${idunidad}`,
+      this.getOptions()
+    ).pipe(map((response) => <Ialumno[]>response.data));
   }
 
-  public getDocumentacionEntregadaByAlumnoPack$(
-    matricula: string,
-    idpack: number
-  ): Observable<IdocumentoEntregado[]> {
-    return new Observable(obs => obs.next(
-      this.docsentregados
-        .filter(d => d.matricula === matricula)
-        .filter(d => d.idpaquete === idpack)
-    ))
+  public getAlumnoByMatricula$(matricula: string): Observable<Ialumno> {
+    return this.httpClient.get<ResponseData>(
+      `${this.baseURL}alumno/${matricula}`,
+      this.getOptions()
+    ).pipe(map((response) => <Ialumno>response.data));
   }
 
-  public registrarAlumno$($data: Ialumno): Observable<ResponseData> {
-    return new Observable(obs => obs.next(
-      {
-        data: null,
-        message: 'Registro de alumno exitoso',
-        response: true
-      }
-    ))
+  public updateAlumno$(alumno_data: Ialumno): Observable<ResponseData> {
+    return this.httpClient.put<ResponseData>(
+      `${this.baseURL}alumno/update`,
+      { data: alumno_data },
+      this.getOptions()
+    ).pipe(map((response) => response));
   }
 
-  public actualizarAlumno$($data: Ialumno): Observable<ResponseData> {
-    throw new Error("Method not implemented.");
+  public newAlumno$(alumno_data: Ialumno): Observable<ResponseData> {
+    return this.httpClient.post<ResponseData>(
+      `${this.baseURL}alumno/new`,
+      { data: alumno_data },
+      this.getOptions()
+    ).pipe(map((response) => response));
   }
 
+
+  public getDocsEntregadosByMatriculaPack(matricula: string, idpack: number): Observable<IdocumentoEntregado[]> {
+    return this.httpClient.get<ResponseData>(
+      `${this.baseURL}alumno/${matricula}/${idpack}`,
+      this.getOptions()
+    ).pipe(map((response) => <IdocumentoEntregado[]>response.data));
+  }
 }

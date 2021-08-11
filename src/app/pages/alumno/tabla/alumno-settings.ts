@@ -1,50 +1,31 @@
-import { Egenero, Ialumno } from "../../../@core/data/alumnoModel";
-import { Eestatus } from "../../../@core/data/comonModel";
-import { ESTATUS_SETTINGS, GENERO_SETTINGS } from "../../../@theme/components/tabla/tabla-settings-columns";
+import { ESTATUS_SETTINGS, GENERAL_CONFIG, GENERO_SETTINGS, PERFIL_SETTINGS } from "../../../@theme/components/tabla/tabla-general-settings";
 
 export const SETTINGS = {
   // mode: 'external',
-  hideSubHeader: false,
-  noDataMessage: 'No existen productos registrados...',
-  actions: {
-    columnTitle: 'Acciones',
-    position: 'right',
-    add: false,
-  },
-  edit: {
-    editButtonContent: '<img src="assets/edit.png" height="30" alt="">',
-    saveButtonContent: '<img src="assets/save.png" height="30" alt="">',
-    cancelButtonContent: '<img src="assets/cancel.png" height="30" alt="">',
-    confirmSave: true,
-  },
-  delete: {
-    deleteButtonContent: '<img src="assets/delete.png" height="30" alt="">',
-    saveButtonContent: '<img src="assets/save.png" height="30" alt="">',
-    cancelButtonContent: '<img src="assets/cancel.png" height="30" alt="">',
-    confirmDelete: true,
-  },
-  pager: {
-    perPage: 8,
-  },
+  ...GENERAL_CONFIG,
   columns: {
-    perfil: {
-      title: '',
-      type: 'html',
-      filter: false,
-      editable: false,
-      valuePrepareFunction: ($valor: string): string => {
-        return `<img src="${$valor}" height="30" alt="">`;
-      }
-    },
-    matricula: { class: 'col-md-1', title: 'Matricula', type: 'text', filter: false, editable: false, },
+    perfil: PERFIL_SETTINGS,
+    matricula: { width: '10%', title: 'Matricula', type: 'text', filter: false, editable: false, },
     nombre: {
-      title: 'Nombre Completo', type: 'text', filter: false,
+      width: '13%', title: 'Nombre', type: 'text', filter: false,
+      valuePrepareFunction: ($valor: string): string => {
+        return $valor;
+      },
+    },
+    ape_1: {
+      title: 'Primer Apellido', type: 'text', filter: false,
+      valuePrepareFunction: ($valor: string): string => {
+        return $valor;
+      },
+    },
+    ape_2: {
+      title: 'Segundo Apellido', type: 'text', filter: false,
       valuePrepareFunction: ($valor: string): string => {
         return $valor;
       },
     },
     genero: GENERO_SETTINGS,
-    telefono: { title: 'Telefono', type: 'text', filter: false, },
+    // telefono: { title: 'Telefono', type: 'text', filter: false, },
     email: { title: 'Email', type: 'text', filter: false, },
     estatus: ESTATUS_SETTINGS,
   },

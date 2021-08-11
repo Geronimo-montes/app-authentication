@@ -24,6 +24,7 @@
     "@angular/router": "~10.2.0",
     "@nebular/auth": "^8.0.0",
     "@nebular/eva-icons": "6.2.2",
+    "@nebular/security": "^8.0.0",
     "@nebular/theme": "^6.2.2",
     "bootstrap": "^4.3.1",
     "eva-icons": "^1.1.2",

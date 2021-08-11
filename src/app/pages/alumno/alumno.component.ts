@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-alumno',
@@ -8,13 +9,13 @@ import { Component, OnInit } from '@angular/core';
 
     <div class="pointer ml-4">
       <app-card-item-menu [title]="'Lista alumnos'" [type]="'primary'"
-        [icon]="'assets/tabla-unidades.png'" [routerLink]="router.tabla">
+        [icon]="'assets/tabla-unidades.png'" [routerLink]="links.tabla">
       </app-card-item-menu>
     </div>
 
-    <div class="pointer ml-4">
+    <div class="pointer ml-4" *nbIsGranted="['create', 'alumno']">
       <app-card-item-menu [title]="'Registrar alumno'" [type]="'success'"
-        [icon]="'assets/add-alumno.png'" [routerLink]="router.registro">
+        [icon]="'assets/add-alumno.png'" [routerLink]="links.registro">
       </app-card-item-menu>
     </div>
   </div>
@@ -25,14 +26,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AlumnoComponent implements OnInit {
 
-  public router: any = {
+  public links: { tabla: string, registro: string } = {
     tabla: '/pages/alumno/tabla-alumnos',
     registro: '/pages/alumno/registro-alumno',
   };
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
-
+    this.links.tabla = this.router.url;
   }
 }

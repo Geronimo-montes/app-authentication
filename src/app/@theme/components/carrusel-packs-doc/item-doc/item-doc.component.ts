@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NbPopoverDirective } from '@nebular/theme';
+import { Observable } from 'rxjs';
 import { Idocumento } from '../../../../@core/data/documentoModel';
 
 @Component({
@@ -9,6 +10,7 @@ import { Idocumento } from '../../../../@core/data/documentoModel';
 })
 export class ItemDocComponent implements OnInit {
 
+  @Input('loadingData') loadingData: boolean;
   @Input('documento') d: Idocumento;
   @Input('badge') badge: any;
   /**

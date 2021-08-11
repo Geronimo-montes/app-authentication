@@ -8,6 +8,7 @@ import { ThemeModule } from '../../@theme/theme.module';
 import { NbButtonModule, NbCardModule, NbCheckboxModule, NbIconModule, NbInputModule, NbPopoverModule, NbSelectModule, NbSpinnerModule } from '@nebular/theme';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ViewPackComponent } from './view-pack/view-pack.component';
+import { NbSecurityModule } from '@nebular/security';
 
 
 
@@ -25,6 +26,7 @@ import { ViewPackComponent } from './view-pack/view-pack.component';
     NbSelectModule,
     NbCheckboxModule,
     NbIconModule,
+    NbSecurityModule,
   ],
   declarations: [
     DocumentacionComponent,

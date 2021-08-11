@@ -11,6 +11,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'cube',
     link: '/pages/unidad-academica/tabla-unidad-academica',
   }, {
+    title: 'Empleados',
+    icon: 'people',
+    link: '/pages/empleado/tabla-empleados',
+  }, {
     title: 'Alumnos',
     icon: 'book',
     link: '/pages/alumno/tabla-alumnos',
@@ -19,8 +23,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'clipboard',
     link: '/pages/documentacion/tabla-documentacion',
   }, {
-    title: 'Empleados',
-    icon: 'people',
-    link: '/pages/empleado/tabla-empleados',
+    title: 'Reportes',
+    icon: 'bar-chart',
+    link: '/pages/reportes',
   },
 ];

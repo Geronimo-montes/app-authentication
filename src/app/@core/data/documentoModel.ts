@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { Eestatus } from "./comonModel";
-import { HeaderOption } from "./headerOptions";
+import { HeaderOption, ResponseData } from "./headerOptions";
 
 export interface Ipackdocumentacion {
   idpaquete: number;
@@ -16,6 +16,7 @@ export interface Ipackdocumentacion {
 
 export interface Idocumento {
   iddocumento: number;
+  idpaquete: number;
   nombre: string;
   formato: Eformato;
   peso_max: number;
@@ -29,7 +30,6 @@ export enum Eformato {
   PNG = 'png',
   JPG = 'jpg',
   DOCX = 'docx'
-
 }
 
 export enum Erequerido {
@@ -39,6 +39,28 @@ export enum Erequerido {
 }
 
 export abstract class DocumentoModel extends HeaderOption {
-  abstract getPacksDocumentos$(): Observable<Ipackdocumentacion[]>;
 
+  /**
+   * lista todos los paquetes de documentos registrados en la bd.
+   * @returns {Observable<IpackDocumentacion[]>} 
+   */
+  abstract getPaqueteDocumentos$(): Observable<Ipackdocumentacion[]>;
+
+  /**
+   * Lsita los datos generales de un paquete de documentos mediante el id.
+   * @param {number} idpaquetedocumentos 
+   * @returns {Observable<Ipackdocumentacion>}
+   */
+  abstract getPaqueteDocumentosById$(idpaquetedocumentos: number): Observable<Ipackdocumentacion>;
+
+  /**
+   * Obtiene los documentos que conforman el paquete de documento. Solo lista los detalles tecnicos de cada documento.
+   * @param {number} idpaquete 
+   * @returns {Observable<Idocumento[]>} Lista de documentos con su informacion
+   */
+  abstract getDetallePackDocumento$(idpaquete: number): Observable<Idocumento[]>;
+
+  abstract updatePaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData>;
+
+  abstract newPaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData>;
 }

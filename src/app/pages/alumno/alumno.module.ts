@@ -8,6 +8,7 @@ import { FormRegistroAlumnoComponent } from './form-registro-alumno/form-registr
 import { NbButtonModule, NbCardModule, NbIconModule, NbInputModule, NbPopoverModule, NbSelectModule, NbSpinnerModule } from '@nebular/theme';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ViewAlumnoComponent } from './view-alumno/view-alumno.component';
+import { NbSecurityModule } from '@nebular/security';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { ViewAlumnoComponent } from './view-alumno/view-alumno.component';
     NbButtonModule,
     NbSelectModule,
     NbIconModule,
+    NbSecurityModule,
   ],
   declarations: [
     AlumnoComponent,

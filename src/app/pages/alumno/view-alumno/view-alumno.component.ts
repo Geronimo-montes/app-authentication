@@ -1,7 +1,6 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Ialumno } from '../../../@core/data/alumnoModel';
 import { DocumentoModel, Ipackdocumentacion } from '../../../@core/data/documentoModel';
 
@@ -10,31 +9,26 @@ import { DocumentoModel, Ipackdocumentacion } from '../../../@core/data/document
   templateUrl: './view-alumno.component.html',
   styleUrls: ['./view-alumno.component.scss']
 })
-export class ViewAlumnoComponent implements OnInit, OnDestroy {
+export class ViewAlumnoComponent implements OnInit {
 
-  private destroy$: Subject<void> = new Subject<void>(); // Unsuscribe suscripciones
-  @Input() data: Ialumno;
+  @Input() data: Ialumno; // alumno seleccionado desde la tabla de alumnos
   public loadingData: boolean = false;
-  public packs_documentos: Ipackdocumentacion[] = [];
+  public packs_documentos: Ipackdocumentacion[] = []; // paquetes de documentos registrados
 
   constructor(
     protected ref: NbDialogRef<ViewAlumnoComponent>,
     private documentoService: DocumentoModel,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.loadingData = true;
-    this.documentoService.getPacksDocumentos$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        this.packs_documentos = data;
-        this.loadingData = false;
-      });
-  }
 
-  ngOnDestroy(): void {
-    this.destroy$.complete();
-    this.destroy$.next();
+    this.packs_documentos =
+      await this.documentoService.getPaqueteDocumentos$().toPromise();
+
+    console.log({ packs: this.packs_documentos });
+
+    this.loadingData = false;
   }
 
   public close() {

@@ -20,17 +20,13 @@
   }
 
   nb-user {
+    cursor: pointer;
   }
 
   .header-container {
     display: flex;
     align-items: center;
     width: auto;
-
-    nb-user {
-      padding: 3rem;
-      cursor: pointer;
-    }
 
     .sidebar-toggle {
       @include nb-ltr(padding-right, 1.25rem);

@@ -57,6 +57,7 @@ const NB_MODULES = [
   NbInputModule,
   NbBadgeModule,
   NbListModule,
+  NbActionsModule,
 ];
 
 const COMPONENTS = [

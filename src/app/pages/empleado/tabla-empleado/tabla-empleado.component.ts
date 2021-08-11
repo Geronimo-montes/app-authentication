@@ -1,130 +1,147 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { Eestatus } from '../../../@core/data/comonModel';
+import { take, takeUntil } from 'rxjs/operators';
 import { EmpleadoModel } from '../../../@core/data/empleadoModel';
-import { Erol, Iauxiliar, Ijefatura } from '../../../@core/data/userModel';
-import { ToastService } from '../../../@core/mock/Toast.service';
 import { Eaccion } from '../../../@theme/components';
-import { FILTER } from '../../alumno/tabla/alumno-settings';
-import { SETTINGS } from './empleado-settings';
+import { Observable, Subject } from 'rxjs';
+import { Iusuario } from '../../../@core/data/userModel';
+import { NbDialogService } from '@nebular/theme';
+import { NbAccessChecker } from '@nebular/security';
+import { Router } from '@angular/router';
+import { ResponseData } from '../../../@core/data/headerOptions';
+import {
+  EtypeMessage,
+  ToastService
+} from '../../../@core/mock/root-provider/Toast.service';
+import {
+  SETTINGS,
+  FILTER
+} from './empleado-settings';
+import {
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 
 @Component({
   selector: 'app-tabla-empleado',
-  templateUrl: './tabla-empleado.component.html',
+  template: ` <app-tabla [object]="object" [settings]="settings" [loadingData]="loading | async"
+    [data]="data  | async" (rowSelected)="empleadoSeleccionado($event)"
+    [filter]="filter">
+  </app-tabla>`,
   styleUrls: ['./tabla-empleado.component.scss']
 })
 export class TablaEmpleadoComponent implements OnInit, OnDestroy {
 
-  private destroy$: Subject<void> = new Subject<void>(); // Unsuscribe suscripciones
+  private destroy$: Subject<void> = new Subject<void>();
+
+  public object: string = 'empleado';  // nombre de la tabla
   public settings = SETTINGS;
   public filter = FILTER;
-  public dataSource: Ijefatura[] | Iauxiliar[] = [];
+  public dataSource: Iusuario[] = [];
   public loadingData: boolean = false;
 
 
   constructor(
-    private toastService: ToastService,
     private empleadoService: EmpleadoModel,
+    private toastService: ToastService,
+    private dialogService: NbDialogService,
+    private accessChecker: NbAccessChecker,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
-    this.loadingData = true;
-    this.empleadoService.getEmpleados$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(data => {
-        this.dataSource = data;
-        this.loadingData = false;
-      })
+    this.loadData();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.complete();
+  ngOnDestroy() {
     this.destroy$.next();
+    this.destroy$.complete();
   }
 
-
+  /**
+   * Indica el estado de carga de los datos, de tal manera que inavilita los controles
+   */
   get loading(): Observable<boolean> {
     return new Observable((obs) => obs.next(this.loadingData));
   }
 
-  get data(): Observable<Ijefatura[] | Iauxiliar[]> {
+
+  /**
+   * Data para mostrar en la tabla. Listado de empleados
+   */
+  get data(): Observable<Iusuario[]> {
     return new Observable((obs) => obs.next(this.dataSource));
   }
 
   /**
-   * Recibe el row selecccionado de la tabla junto a la accion a realizar
+   * Realiza la petición para listar los datos de los empleados regustrados. Se utiliza para inicializar la tabla y recargar la data.
+   */
+  private loadData() {
+    this.loadingData = true;
+    this.empleadoService.getEmpleados$()
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.dataSource = data;
+        this.loadingData = false;
+      });
+  }
+  /**
+   * Recibe el row selecccionado de la tabla junto a la accion a realizar. Valida los permisos de usuario a la acción solicitada y despues ejecuta la acción o muestra un menaje informativo.
    * @param $event
    */
   empleadoSeleccionado($event) {
-    switch ($event.accion) {
-      case Eaccion.DATA_UPDATE:
-        this.dataupdate();
-        break;
-      case Eaccion.EDIT:
-        this.editar($event.data);
-        break;
-      case Eaccion.DELETE:
-        this.delete($event.data);
-        break;
-    }
+    this.accessChecker.isGranted($event.accion, 'empleado')
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(access => {
+        if (access) {
+          switch ($event.accion) {
+            case Eaccion.UPDATE_DATA_LIST: this.loadData(); break;
+            case Eaccion.EDIT: this.editar($event.data); break;
+            case Eaccion.DELETE: this.delete($event.data); break;
+          }
+        } else {
+          const
+            title = 'Acceso denegado.',
+            body = `No tienes permiso para realizar la accion realizada.`;
+          this.toastService.show(title, body, EtypeMessage.INFO);
+        }
+      });
   }
 
-  private dataupdate() {
-    const DATA: Ijefatura[] | Iauxiliar[] = [
-      {
-        idusuario: 1,
-        perfil: 'string',
-        email: 'string',
-        password: 'string',
-        rol: Erol.AUXILIAR,
-        token: 'string',
-        ultima_conexion: new Date(),
-        idunidad: 1,
-        nombre: 'string',
-        ape_1: 'string',
-        ape_2: 'string',
-        telefono: 'string',
-        idjefatura: null,
-        estatus: Eestatus.ALTA,
-      },
-    ];
 
-    this.dataSource = DATA;
-    console.log(this.dataSource);
+  /**
+   * Una vez confirmados los cambios en la información del alumno, realiza la peticion para la actualización de los datos
+   * @param {Iusuario} data 
+   */
+  private editar(data: Iusuario) {
+    this.empleadoService.updateEmpleado$(data)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((res: ResponseData) => {
+        const
+          title = 'Actualización de información',
+          body = res.message,
+          type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
+
+        this.toastService.show(title, body, type);
+      });
   }
 
-  private editar(data: Ijefatura[] | Iauxiliar) {
-    //llamada a alumnoService -> updateAlumno
-    if (true) {
-      const msj = {
-        title: 'Edición de elemento',
-        body: `Información del empleado actaulizada.`
-      };
-      this.toastService.show(msj.title, msj.body);
-    } else {
-      const msj = {
-        title: 'Edición de elemento',
-        body: 'No es posible actualizar la información. Intente nuevamente.'
-      };
-      this.toastService.show(msj.title, msj.body, 'danger');
-    }
-  }
+  /**
+   * Cambia el estatus de un alumno a baja
+   * @param {Iusuario} data 
+   */
+  private delete(data: Iusuario) {
+    this.empleadoService.updateEmpleado$(data)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((res: ResponseData) => {
+        const
+          title = (data.estatus === 'a') ?
+            `El alumno ${data.nombre} ${data.ape_1} ${data.ape_2} se dara de alta.` :
+            `El alumno ${data.nombre} ${data.ape_1} ${data.ape_2} se dara de baja.`,
+          body = res.message,
+          type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
-  private delete(data: Ijefatura[] | Iauxiliar) {
-    //llamada a alumnoService -> updateAlumno : estatus = b
-    if (true) {
-      const msj = {
-        title: 'Baja de empleado',
-        body: 'Empleado dado de baja con exito.'
-      };
-      this.toastService.show(msj.title, msj.body);
-    } else {
-      const msj = {
-        title: 'Baja de alumno',
-        body: 'No es posible la baja del alumno. Intente nuevamente.'
-      };
-      this.toastService.show(msj.title, msj.body, 'danger');
-    }
+        this.toastService.show(title, body, type);
+        this.loadData();
+      });
   }
 }

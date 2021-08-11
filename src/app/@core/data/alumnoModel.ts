@@ -7,7 +7,6 @@ export interface Ialumno {
   matricula: string;
   idunidad: number;
   perfil: string;
-  //documentos: Ipackdocumentacion[] | null;
   nombre: string;
   ape_1: string;
   ape_2: string;
@@ -34,34 +33,37 @@ export enum Egenero {
 export abstract class AlumnoModel extends HeaderOption {
 
   /**
-   * Obtiene los alumnos de una unidad académica
+   * Obtiene listado de los alumnos de una unidad académica
    * @param id_unidad 
    * @returns {Observable<Ialumno[]>} Array de alumnos
    */
-  abstract getAlumnosByUniidad$(id_unidad: number): Observable<Ialumno[]>;
+  abstract getAlumnosByUnidad$(idunidad: number): Observable<Ialumno[]>;
 
   /**
-   * Obtiene los documentos registrados como entregados dado una matricula de alumno y idpack
-   * @param matricula 
-   * @param idpack 
-   * @returns {IdocumentoEntregado[]}
+   * Lista los datos de un alumno mediante su matricula
+   * @param {string} matricula 
+   * @returns {Observable<Ialumno>} Objeto con la informacion del alumno.
    */
-  abstract getDocumentacionEntregadaByAlumnoPack$(
-    matricula: string,
-    idpack: number,
-  ): Observable<IdocumentoEntregado[]>;
+  abstract getAlumnoByMatricula$(matricula: string): Observable<Ialumno>;
+
+  /**
+   * Actualiza los datos de un alumno, el cambio de estatus cuenta como alta o baja
+   * @param {FormData} $data 
+   */
+  abstract updateAlumno$(alumno: Ialumno): Observable<ResponseData>;
 
   /**
    * Ingresa los datos de un nuevo alumno al sistema
    * @param  {Ialumno} $data 
    * @returns {ResponseData} Mensaje de respuesta
    */
-  abstract registrarAlumno$($data: Ialumno): Observable<ResponseData>;
+  abstract newAlumno$(alumno: Ialumno): Observable<ResponseData>;
 
   /**
-   * Actualiza los datos de un alumno, el cambio de estatus cuenta como alta o baja
-   * @param {FormData} $data 
+   * Obtiene los documentos registrados como entregados dado una matricula de alumno y idpack
+   * @param {string} matricula 
+   * @param {number} idpack 
+   * @returns {Observable<IdocumentoEntregado[]>}
    */
-  abstract actualizarAlumno$($data: Ialumno): Observable<ResponseData>;
-
+  abstract getDocsEntregadosByMatriculaPack(matricula: string, idpack: number,): Observable<IdocumentoEntregado[]>;
 }

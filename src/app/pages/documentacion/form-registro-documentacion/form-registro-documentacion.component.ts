@@ -1,20 +1,38 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NbComponentShape, NbComponentStatus, NbTrigger, NbTriggerValues } from '@nebular/theme';
-import { Subject } from 'rxjs';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+import {
+  NbComponentShape,
+  NbComponentStatus,
+  NbTrigger,
+  NbTriggerValues
+} from '@nebular/theme';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
+import { DocumentoModel } from '../../../@core/data/documentoModel';
+import { take } from 'rxjs/operators';
+import { ResponseData } from '../../../@core/data/headerOptions';
+import { Router } from '@angular/router';
+import { EtypeMessage, ToastService } from '../../../@core/mock/root-provider/Toast.service';
 
 @Component({
   selector: 'app-form-registro-documentacion',
   templateUrl: './form-registro-documentacion.component.html',
   styleUrls: ['./form-registro-documentacion.component.scss']
 })
-export class FormRegistroDocumentacionComponent implements OnInit, OnDestroy {
+export class FormRegistroDocumentacionComponent implements OnInit {
 
-  private destroy$: Subject<void> = new Subject<void>(); // Unsuscribe suscripciones
   public loadingData: boolean = false;
 
   public form: FormGroup;
+  private count_documentos: number = 1;
   public nbPopoverError: string = ''; // Msj con el error del input
   public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS; // Forma de disparar el msj
   public nbComponentShape: NbComponentShape = 'semi-round'; // Para inputs
@@ -25,24 +43,24 @@ export class FormRegistroDocumentacionComponent implements OnInit, OnDestroy {
   public formato = [
     { text: '*.PNG', value: 'png' },
     { text: '*.JPG', value: 'jpg' },
+    { text: '*.PDF', value: 'pdf' },
   ];
 
   constructor(
     private formBuilder: FormBuilder,
+    private documentoService: DocumentoModel,
+    private toastService: ToastService,
+    private router: Router,
+
   ) { }
 
   ngOnInit(): void {
     this.initForm();
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   private initForm() {
     this.form = this.formBuilder.group({
-      perfil: new FormControl('', [Validators.required, fileType]),
+      ruta_imagen: new FormControl('', [Validators.required, fileType]),
       nombre: new FormControl('', [
         Validators.required,
         Validators.minLength(5),
@@ -53,7 +71,9 @@ export class FormRegistroDocumentacionComponent implements OnInit, OnDestroy {
         Validators.minLength(5),
         Validators.maxLength(300)
       ]),
-      documentos: this.formBuilder.array([]),
+      numero_documentos: new FormControl(this.count_documentos,
+        [Validators.required]),
+      detalleDocumento: this.formBuilder.array([]),
     });
 
     this.addDocumento();
@@ -63,14 +83,14 @@ export class FormRegistroDocumentacionComponent implements OnInit, OnDestroy {
    * @description Metodo get del array de controles para la catura de la ingormacion de un documento
    */
   get FormControlsdocumentos(): FormArray {
-    return this.form.get('documentos') as FormArray;
+    return this.form.get('detalleDocumento') as FormArray;
   }
 
   /**
    * @description Agrega un grupo de controles al array de documentos
    */
   public addDocumento(): void {
-    const documentos = this.formBuilder.group({
+    const detalleDocumento = this.formBuilder.group({
       foto_ejemplo: new FormControl('', [Validators.required, fileType]),
       nombre: new FormControl('', [
         Validators.required,
@@ -87,7 +107,8 @@ export class FormRegistroDocumentacionComponent implements OnInit, OnDestroy {
       requerido: new FormControl(false, [Validators.required]),
     });
 
-    this.FormControlsdocumentos.push(documentos);
+    this.FormControlsdocumentos.push(detalleDocumento);
+    this.form.get('numero_documentos').setValue(this.count_documentos++);
   }
 
   /**
@@ -146,34 +167,24 @@ export class FormRegistroDocumentacionComponent implements OnInit, OnDestroy {
    * @description Evento que se activa al enviar el formulario
    */
   public formSubmit() {
-    console.log(this.form.value);
-  }
+    // this.loadingData = true;
+    this.documentoService.newPaqueteDocumentos$(this.form.value)
+      .pipe(take(1))
+      .subscribe((res: ResponseData) => {
+        const
+          title = 'Registro de paquete de documentos',
+          body = res.message,
+          type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
-  /**
-   * @description Despues de seleccionar la imagen se realiza inmediatamento la peticion de actualizacion de la imagen
-   * @param fileInput
-   * @returns
-   */
-  public fileEvnet(fileInput: Event) {
-    const file = (<HTMLInputElement>fileInput.target).files[0];
-    if (!(file.type === 'image/png' || file.type === 'image/jpeg')) return;
-    const data = new FormData();
-    data.append('img', file);
+        /** Metodo para subir la foto de perfil (sin terminar)**
+         * const data = new FormData();
+         * data.append('file', this.form.controls['perfil'].value);
+         */
 
-    console.log({ data }, 'Img Cargada');
+
+        this.toastService.show(title, body, type);
+        // this.loadingData = false;
+        // this.router.navigateByUrl('/pages/documentacion/tabla-documentacion');
+      });
   }
 }
-
-/**
-  ruta_imagen file
-  nombre      input text
-  descripcion input area
-
-
-  Array de controles dinamico
-  nombre
-  formato
-  peso_max
-  requerido
-  foto_ejemplo
- */

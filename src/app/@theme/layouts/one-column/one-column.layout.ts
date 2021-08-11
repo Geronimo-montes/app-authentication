@@ -14,6 +14,7 @@ import { Component } from "@angular/core";
 
       <nb-layout-column >
         <ng-content select="router-outlet"></ng-content>
+        <div class="espacio"></div>
       </nb-layout-column>
   
       <nb-layout-footer fixed>

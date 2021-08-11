@@ -27,8 +27,10 @@
     <div class="row justify-content-start container-docs col-md-10 m-auto">
       <!-- PACKS DOCUMENTACIONES -->
       <ng-template [ngIf]="!view_datalle">
-        <nb-card class="col-md-3 pt-2 border-0" *ngFor="let p of elemnts"
-          (click)="detalle_paks_documentos(p)">
+        <nb-card [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
+          [nbSpinnerMessage]="'Cargando información'"
+          [nbSpinnerStatus]="'primary'" class="col-md-3 pt-2 border-0"
+          *ngFor="let p of elemnts" (click)="selectedPackDocumentos(p)">
           <img class="picture m-auto" [src]="p.ruta_imagen" alt="foto">
           <p class="mt-2 text-center text-truncate">{{ p.nombre }} </p>
         </nb-card>
@@ -37,7 +39,7 @@
       <!-- DETALLE DOCUMENTOS -->
       <ng-template [ngIf]="view_datalle">
         <div class="col-md-3 pt-2" *ngFor=" let d of elemnts">
-          <app-item-doc [documento]="d"
+          <app-item-doc [documento]="d" [loadingData]="loading | async"
             [badge]="validarDocumento(d.iddocumento)">
           </app-item-doc>
         </div>

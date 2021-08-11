@@ -6,32 +6,46 @@ export interface Iusuario {
   idusuario: number;
   perfil: string;
   email: string;
-  password: string;
+  password?: string;
   rol: Erol;
-  token: string;
-  ultima_conexion: Date;
-  estatus: Eestatus;
-}
-
-export interface Ijefatura extends Iusuario {
-  idunidad: number;
-  nombre: string;
-  ape_1: string;
-  ape_2: string;
-  telefono: string;
-}
-
-export interface Iauxiliar extends Ijefatura {
+  sesion_conectada?: string;
+  idunidad?: number;
   idjefatura?: number;
-}
+  dataJefatura?: Iusuario;
+  nombre?: string;
+  ape_1?: string;
+  ape_2?: string;
+  telefono?: string;
+  ultima_conexion?: Date;
+  estatus?: Eestatus;
+};
 
 export enum Erol {
+  NOASIGNADO = 'noasignado',
   DIRECTOR = 'director',
   JEFATURA = 'jefatura',
   AUXILIAR = 'auxiliar'
 }
 
 export abstract class UserModel extends HeaderOption {
+  /**
+   * @name getUsuer$
+   * @description Recupera la informacion de la cuenta del usuario logueado
+   * @returns {<Iusuario>usuario}
+   */
   abstract getUser$(): Observable<Iusuario>;
+
+  /**
+   * @name getDataUser$
+   * @description Recupera la informacion personal del usuario
+   * @returns {Observable<Iauxiliar | Ijefatura>}
+   */
+  // abstract getDataUser$(): Observable<Iauxiliar | Ijefatura>;
+
+  /**
+   * @name logOut$
+   * @description Destruye el token de session y elimina la sesion. Redirige al login
+   * @return void
+   */
   abstract logOut$();
 }

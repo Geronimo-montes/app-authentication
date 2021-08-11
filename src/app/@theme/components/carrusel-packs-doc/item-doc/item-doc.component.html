@@ -1,5 +1,7 @@
 <nb-card class="card-principal col-md-12 border-0" [nbPopover]="templeteRef"
-  nbPopoverTrigger="noop" [nbPopoverContext]="{doc: d}">
+  nbPopoverTrigger="noop" [nbPopoverContext]="{doc: d}"
+  [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
+  [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
   <input #f hidden type="file" name="file" id="file">
 
   <nb-badge *ngIf="badge !== undefined" [text]="badge.text"

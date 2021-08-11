@@ -69,8 +69,8 @@
   </nb-card-body>
 
   <nb-card-footer>
-    <app-carrusel-packs-doc [packs_documentos]="packs_documentos"
-      [alumno]="data">
+    <app-carrusel-packs-doc *ngIf="packs_documentos.length > 0"
+      [packs_documentos]="packs_documentos" [alumno]="data">
     </app-carrusel-packs-doc>
   </nb-card-footer>
 </nb-card>

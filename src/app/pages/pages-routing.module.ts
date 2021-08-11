@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RolGuard } from '../@core/guards';
 import { PagesComponent } from './pages.component';
 
 const routes: Routes = [
@@ -15,10 +16,12 @@ const routes: Routes = [
         path: 'unidad-academica',
         loadChildren: () => import('./unidad-academica/unidad-academica.module')
           .then(m => m.UnidadAcademicaModule),
+        canActivate: [RolGuard],
       }, {
         path: 'empleado',
         loadChildren: () => import('./empleado/empleado.module')
           .then(m => m.EmpleadoModule),
+        canActivate: [RolGuard],
       }, {
         path: 'documentacion',
         loadChildren: () => import('./documentacion/documentacion.module')

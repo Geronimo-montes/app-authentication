@@ -1,4 +1,12 @@
-import { Component, ElementRef, HostListener, Input, OnInit, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  forwardRef,
+  HostListener,
+  Input,
+  TemplateRef
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NbComponentStatus, NbTrigger } from '@nebular/theme';
 
@@ -6,9 +14,11 @@ import { NbComponentStatus, NbTrigger } from '@nebular/theme';
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
-    useExisting: FileUploadComponent,
+    // useExisting: FileUploadComponent,
+    useExisting: forwardRef(() => FileUploadComponent),
     multi: true
   }]
 })
@@ -39,7 +49,7 @@ export class FileUploadComponent implements ControlValueAccessor {
     private host: ElementRef<HTMLInputElement>
   ) { }
 
-  writeValue(value: null) {
+  writeValue(value: any): void {
     this.host.nativeElement.value = '';
     this.file = null;
   }
@@ -50,4 +60,5 @@ export class FileUploadComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: Function) {
   }
+
 }

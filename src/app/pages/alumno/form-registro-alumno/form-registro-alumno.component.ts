@@ -1,33 +1,56 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NbComponentShape, NbComponentStatus, NbTrigger, NbTriggerValues } from '@nebular/theme';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { AlumnoModel, Egenero, Ialumno } from '../../../@core/data/alumnoModel';
-import { Eestatus } from '../../../@core/data/comonModel';
+import { ActivatedRoute } from '@angular/router';
+import { take } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
-import { Iunidadacademica, UnidadAcademicaModel } from '../../../@core/data/unidadAcademicaModel';
-import { ToastService } from '../../../@core/mock/Toast.service';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
+import {
+  EtypeMessage,
+  ToastService
+} from '../../../@core/mock/root-provider/Toast.service';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+import {
+  Iunidadacademica,
+  UnidadAcademicaModel
+} from '../../../@core/data/unidadAcademicaModel';
+import {
+  AlumnoModel,
+  Egenero,
+  Ialumno
+} from '../../../@core/data/alumnoModel';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
+import {
+  NbComponentShape,
+  NbComponentStatus,
+  NbTrigger,
+  NbTriggerValues
+} from '@nebular/theme';
+import { FileModel } from '../../../@core/data/fileModel';
 
 @Component({
   selector: 'app-form-registro-alumno',
   templateUrl: './form-registro-alumno.component.html',
   styleUrls: ['./form-registro-alumno.component.scss']
 })
-export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
+export class FormRegistroAlumnoComponent implements OnInit {
 
-  private destroy$: Subject<void> = new Subject<void>(); // Unsuscribe suscripciones
   public loadingData: boolean = false;
+
+  public editMode: boolean = false; // cambia el comportamiento del evento submit
 
   public form: FormGroup;
   public nbPopoverError: string = ''; // Msj con el error del input
   public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS; // Forma de disparar el msj
-  public nbComponentShape: NbComponentShape = 'semi-round';
-  public valid: NbComponentStatus = 'primary';
-  public invalid: NbComponentStatus = 'danger';
+  public nbComponentShape: NbComponentShape = 'semi-round'; // estilo de los imputs
+  public valid: NbComponentStatus = 'primary'; // color primario para campos validos
+  public invalid: NbComponentStatus = 'danger'; // color para campos invalidos
 
-  //DATA 
   public selecGenero: any[] = [
     { value: Egenero.FEMENINO, text: 'Femenino' },
     { value: Egenero.MASCULINO, text: 'Masculino' },
@@ -38,26 +61,39 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private unidadService: UnidadAcademicaModel,
     private alumnoService: AlumnoModel,
+    private fileService: FileModel,
     private toastService: ToastService,
+    private router: ActivatedRoute,
   ) { }
 
-  ngOnInit(): void {
-    this.loadingData = true;
-    this.unidadService.getUnidadesAcademicas$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        this.unidades_academicas = data;
-        this.loadingData = false;
-      });
-
+  async ngOnInit(): Promise<void> {
     this.initForm();
+    this.loadingData = true;
+
+    // datos para el combobox de unidades academicas
+    this.unidades_academicas =
+      await this.unidadService.getUnidadesAcademicas$().toPromise();
+
+    // obtenemos el parametro de la url
+    const matricula = this.router.snapshot.params.matricula;
+
+    // si esta definido activamos el modo edicion y obtenemos la data del alumno
+    if (matricula) {
+      this.editMode = true;
+      let alumno = await this.alumnoService.getAlumnoByMatricula$(matricula).toPromise();
+      // let perfil = await this.fileService.getPerfil$().toPromise();
+      // console.log({ perfil });
+
+      this.setValuesForm(alumno);
+    }
+
+
+    this.loadingData = false;
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
+  /**
+   * construye los controles del formulario reactivo, ademas agrega validadores
+   */
   private initForm() {
     this.form = this.formBuilder.group({
       perfil: new FormControl('', [Validators.required, fileType]),
@@ -110,6 +146,22 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
     });
   }
 
+  private setValuesForm(data: Ialumno) {
+    this.form.setValue({
+      perfil: '',
+      matricula: data.matricula,
+      idunidad: data.idunidad,
+      nombre: data.nombre,
+      ape_1: data.ape_1,
+      ape_2: data.ape_2,
+      genero: data.genero,
+      direccion: data.direccion,
+      telefono: data.telefono,
+      email: data.email,
+    });
+  }
+
+
   /**
    * @description Obtiene el mensaje de error con respecto a la validacion violada
    * @param controlName
@@ -155,29 +207,17 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
    * @description Evento que se activa al enviar el formulario
    */
   public formSubmit() {
-    const data: Ialumno = {
-      perfil: this.form.get('perfil').value,
-      matricula: this.form.get('matricula').value,
-      idunidad: this.form.get('idunidad').value,
-      nombre: this.form.get('nombre').value,
-      ape_1: this.form.get('ape_1').value,
-      ape_2: this.form.get('ape_2').value,
-      genero: this.form.get('genero').value,
-      direccion: this.form.get('direccion').value,
-      telefono: this.form.get('telefono').value,
-      email: this.form.get('email').value,
-      estatus: Eestatus.ALTA,
-    }
-
-
-    this.alumnoService.registrarAlumno$(data)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data: ResponseData) => {
-        console.log(data);
-        this.toastService.show(
-          'Registro de alumno',
-          data.message,
-          (data.response) ? 'success' : 'warning')
-      });
+    this.loadingData = true;
+    this.alumnoService.newAlumno$(this.form.value)
+      .pipe(take(1))
+      .subscribe((res: ResponseData) => {
+        const
+          title = 'Registro de alumno',
+          body = res.message,
+          type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
+        this.toastService.show(title, body, type);
+        this.loadingData = false;
+        // this.router.navigateByUrl('/pages/alumno/tabla-alumnos');
+      })
   }
 }

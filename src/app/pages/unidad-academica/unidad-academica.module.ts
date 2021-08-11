@@ -7,6 +7,7 @@ import { TablaUnidadesAcademicasComponent } from './tabla-unidades-academicas/ta
 import { FormRegistroUnidadComponent } from './form-registro-unidad/form-registro-unidad.component';
 import { NbButtonModule, NbCardModule, NbInputModule, NbPopoverModule, NbSpinnerModule } from '@nebular/theme';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NbSecurityModule } from '@nebular/security';
 
 
 
@@ -21,6 +22,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     NbInputModule,
     NbButtonModule,
     NbPopoverModule,
+    NbSecurityModule,
   ],
   declarations: [
     UnidadAcademicaComponent,

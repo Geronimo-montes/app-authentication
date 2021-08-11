@@ -16,7 +16,7 @@ export class CarruselDirective implements OnChanges {
   private context: ICarruselContext | null = null; // contiene el retorno de la directiva
   private start: number = 0; // elemento inicial para el slice
 
-  @Input('counterFrom') documentos: any[]; //array de elementos
+  @Input('counterFrom') documentos: any[] = []; //array de elementos
   @Input('counterAsCountElem') elementosVisibles: number = 1; // cantidad de elemetos a mostrar
 
   constructor(
@@ -68,7 +68,10 @@ export class CarruselDirective implements OnChanges {
    */
   private renderElements(): any[] {
     let elements: any[] = [];
-    elements = this.documentos.slice(this.start, this.start + this.elementosVisibles);
+
+    if (this.documentos.length > 0)
+      elements = this.documentos
+        .slice(this.start, this.start + this.elementosVisibles);
 
     return elements
   }

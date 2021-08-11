@@ -16,12 +16,18 @@
 
   nb-sidebar {
     box-shadow: 0 0 20px nb-theme(color-basic-500), 0 0 5px nb-theme(color-basic-500);
-    background-color: nb-theme(color-primary-transparent-400);
+    background-color: nb-theme(color-info-300);
     // background-color: rgba(0, 0, 139, 0.082);
   }
 
   nb-layout-column {
     // box-shadow: 0 0 20px nb-theme(color-basic-500), 0 0 5px nb-theme(color-basic-500);
     background-color: nb-theme(color-basic-400);
+  }
+  .espacio {
+    // box-shadow: 0 0 20px nb-theme(color-basic-500), 0 0 5px nb-theme(color-basic-500);
+    background-color: nb-theme(color-basic-400);
+    margin-top: 1rem;
+    height: 1rem;
   }
 }

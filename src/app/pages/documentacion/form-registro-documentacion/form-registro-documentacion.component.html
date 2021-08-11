@@ -8,17 +8,18 @@
   </nb-card-header>
 
   <nb-card-body>
-    <form [formGroup]="form" (submit)="formSubmit();" [hidden]="loadingData">
+    <form [formGroup]="form" (submit)="formSubmit();">
 
       <div class="row">
         <!-- Información del pack de documentos -->
         <div class="col-md-4">
           <!-- IMAGEN -->
           <div class="col-md-8 m-auto">
-            <app-file-upload formControlName="perfil" [text]="'Foto de perfil'"
-              [name]="'perfil'" [status]="validatorInput('perfil', form)"
+            <app-file-upload formControlName="ruta_imagen"
+              [text]="'Foto de perfil'" [name]="'ruta_imagen'"
+              [status]="validatorInput('ruta_imagen', form)"
               [templateRef]="templateRef" [popoverError]="nbPopoverError"
-              (change)="nbPopoverError = getError('perfil', form);">
+              (change)="nbPopoverError = getError('ruta_imagen', form);">
             </app-file-upload>
           </div>
           <!--NOMBRE-->
@@ -51,7 +52,7 @@
         </div>
 
         <!-- Informacion individual de los documentos -->
-        <div formArrayName="documentos" class="col-md-8">
+        <div formArrayName="detalleDocumento" class="col-md-8">
           <!-- Button add -->
           <div class="row col-md-12 justify-content-end">
             <button nbButton (click)="addDocumento();" status="success"
@@ -70,9 +71,9 @@
                 <strong>Documento #{{name + 1}}</strong>
                 <app-file-upload class="picture" formControlName="foto_ejemplo"
                   [text]="'Ejemplo de documento'" [name]="name.toString()"
-                  [status]="validatorInput('documentos.' + name + '.foto_ejemplo', form)"
+                  [status]="validatorInput('detalleDocumento.' + name + '.foto_ejemplo', form)"
                   [templateRef]="templateRef" [popoverError]="nbPopoverError"
-                  (change)="nbPopoverError = getError('documentos.' + name + '.foto_ejemplo', form);">
+                  (change)="nbPopoverError = getError('detalleDocumento.' + name + '.foto_ejemplo', form);">
                 </app-file-upload>
               </div>
 
@@ -86,9 +87,9 @@
                     [nbPopoverTrigger]="nbPopoverTrigger"
                     [shape]="nbComponentShape"
                     [nbPopoverContext]="{ text: nbPopoverError }"
-                    (keyup)="nbPopoverError = getError('documentos.' + name + '.nombre', form);"
-                    (focus)="nbPopoverError = getError('documentos.' + name + '.nombre', form);"
-                    [status]="validatorInput('documentos.' + name + '.nombre', form)">
+                    (keyup)="nbPopoverError = getError('detalleDocumento.' + name + '.nombre', form);"
+                    (focus)="nbPopoverError = getError('detalleDocumento.' + name + '.nombre', form);"
+                    [status]="validatorInput('detalleDocumento.' + name + '.nombre', form)">
                 </div>
 
                 <div class="row">
@@ -100,9 +101,9 @@
                       [nbPopoverTrigger]="nbPopoverTrigger"
                       [shape]="nbComponentShape"
                       [nbPopoverContext]="{ text: nbPopoverError }"
-                      (keyup)="nbPopoverError = getError('documentos.' + name + '.formato', form);"
-                      (focus)="nbPopoverError = getError('documentos.' + name + '.formato', form);"
-                      [status]="validatorInput('documentos.' + name + '.formato', form)">
+                      (keyup)="nbPopoverError = getError('detalleDocumento.' + name + '.formato', form);"
+                      (focus)="nbPopoverError = getError('detalleDocumento.' + name + '.formato', form);"
+                      [status]="validatorInput('detalleDocumento.' + name + '.formato', form)">
 
                       <nb-option [value]="''">Seleccione el formato
                       </nb-option>
@@ -121,9 +122,9 @@
                       [nbPopoverTrigger]="nbPopoverTrigger"
                       [shape]="nbComponentShape"
                       [nbPopoverContext]="{ text: nbPopoverError }"
-                      (keyup)="nbPopoverError = getError('documentos.' + name + '.peso_max', form);"
-                      (focus)="nbPopoverError = getError('documentos.' + name + '.peso_max', form);"
-                      [status]="validatorInput('documentos.' + name + '.peso_max', form)">
+                      (keyup)="nbPopoverError = getError('detalleDocumento.' + name + '.peso_max', form);"
+                      (focus)="nbPopoverError = getError('detalleDocumento.' + name + '.peso_max', form);"
+                      [status]="validatorInput('detalleDocumento.' + name + '.peso_max', form)">
                   </div>
                   <!-- obligatorio -->
                   <div class="form-group col-md-1 mt-0">
@@ -132,8 +133,8 @@
                     <nb-checkbox [nbPopover]="templateRef"
                       [nbPopoverTrigger]="nbPopoverTrigger"
                       [nbPopoverContext]="{ text: nbPopoverError }"
-                      (checkedChange)="nbPopoverError = getError('documentos.' + name + '.requerido', form);"
-                      (focus)="nbPopoverError = getError('documentos.' + name + '.requerido', form);">
+                      (checkedChange)="nbPopoverError = getError('detalleDocumento.' + name + '.requerido', form);"
+                      (focus)="nbPopoverError = getError('detalleDocumento.' + name + '.requerido', form);">
                     </nb-checkbox>
                   </div>
                 </div>
