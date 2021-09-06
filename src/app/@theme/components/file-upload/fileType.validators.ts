@@ -9,7 +9,7 @@ export const fileType: ValidatorFn = (
   control: FormControl
 ): ValidationErrors | null => {
   const file = control.value;
-  const type: string[] = ['png', 'jpg'];
+  const type: string[] = ['png', 'jpg', 'pdf'];
 
   if (file) {
     const extension = file.name.split('.')[1].toLowerCase();

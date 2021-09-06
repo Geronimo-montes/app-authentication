@@ -16,6 +16,9 @@ const routes: Routes = [
         path: 'registro-documentacion',
         component: FormRegistroDocumentacionComponent,
       }, {
+        path: 'update-documentacion/:idpaquete',
+        component: FormRegistroDocumentacionComponent,
+      }, {
         path: '',
         redirectTo: 'tabla-documentacion',
         pathMatch: 'full',

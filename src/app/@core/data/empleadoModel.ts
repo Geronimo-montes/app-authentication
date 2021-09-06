@@ -9,6 +9,8 @@ export abstract class EmpleadoModel extends HeaderOption {
 
   abstract getEmpleados$(): Observable<Iusuario[]>;
 
+  abstract getEmpleadosByUnidad$(idunidad: number): Observable<Iusuario[]>;
+
   abstract getEmpleadoById$(idempleado: number): Observable<Iusuario>;
 
   abstract updateEmpleado$(data: Iusuario): Observable<ResponseData>

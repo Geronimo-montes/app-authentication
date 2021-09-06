@@ -63,4 +63,6 @@ export abstract class DocumentoModel extends HeaderOption {
   abstract updatePaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData>;
 
   abstract newPaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData>;
+
+  abstract entregarDocumento$(file: File, matricula: string, name: string, idpaquete: number, iddocumento: number): Observable<ResponseData>;
 }

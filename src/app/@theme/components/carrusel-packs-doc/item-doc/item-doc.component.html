@@ -1,22 +1,26 @@
 <nb-card class="card-principal col-md-12 border-0" [nbPopover]="templeteRef"
-  nbPopoverTrigger="noop" [nbPopoverContext]="{doc: d}"
+  nbPopoverTrigger="hover" [nbPopoverContext]="{doc: documento}"
   [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
   [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
-  <input #f hidden type="file" name="file" id="file">
 
   <nb-badge *ngIf="badge !== undefined" [text]="badge.text"
-    [status]="badge.status">
-  </nb-badge>
+    [status]="badge.status"></nb-badge>
 
+  <!-- Input para subir el archivo -->
+  <input #f [hidden]="true" type="file" (change)="uploadFile($event);"
+    name="file" id="file">
+
+  <!-- Imagen de muestra del archivo -->
   <img class="picture m-auto" alt="foto"
-    [src]="(d.foto_ejemplo === '') ? 'assets/ext/' + d.formato + '.png'  : d.foto_ejemplo">
+    [src]="(documento.foto_ejemplo === '') ? 'assets/ext/' + documento.formato + '.png'  : documento.foto_ejemplo">
 
-  <p class="mt-2 text-center text-truncate">{{ d.nombre }}</p>
+  <!-- Nombre -->
+  <p class="mt-2 text-center text-truncate">{{ documento.nombre }}</p>
 
+  <!-- button -->
   <div class="content-buttons">
     <button *ngIf="btnView" nbButton shape="semi-round" size="large"
-      status="info" nbPopoverTrigger="hint" nbPopover="Ver documento"
-      (click)="showPopover();">
+      status="info" nbPopoverTrigger="hint" nbPopover="Ver documento">
       <nb-icon icon="eye" pack="eva"></nb-icon>
     </button>
 
@@ -28,6 +32,7 @@
   </div>
 </nb-card>
 
+<!-- Templeate del popover -->
 <ng-template #templeteRef let-data>
   <nb-card style="margin:0;padding:0;">
     <nb-card-header>

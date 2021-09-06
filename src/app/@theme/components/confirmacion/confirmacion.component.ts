@@ -16,6 +16,8 @@ export class ConfirmacionComponent implements OnInit {
   @Input() titulo: string;
   @Input() cuerpo: string;
   @Input() type: typeicon = typeicon.QUESTION;
+  @Input() btnCancel: string = 'Cancelar';
+  @Input() btnConfirmar: string = 'Confirmar';
 
   constructor(
     protected ref: NbDialogRef<ConfirmacionComponent>

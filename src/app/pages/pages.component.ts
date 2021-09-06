@@ -3,8 +3,7 @@ import { NbMenuItem } from '@nebular/theme';
 import { take } from 'rxjs/operators';
 import { Erol, UserModel } from '../@core/data/userModel';
 import { RoleProviderService } from '../@core/mock/rolProvider.service';
-import { UserProvierService } from '../@core/mock/UserProvider.service';
-import { MENU_ITEMS } from './pages-menu';
+import { CONTROLS, FORMS, MENU_ITEMS } from './pages-menu';
 
 @Component({
   selector: 'app-pages',
@@ -37,19 +36,24 @@ export class PagesComponent implements OnInit {
             this.userService.getUser$()
               .pipe(take(1))
               .subscribe(usuario => {
-                // se filtran los controles a los que no tiene acceso
-                this.menu = MENU_ITEMS.filter(i =>
-                  i.title !== 'Unidades Académicas' && i.title !== 'Empleados');
+
+                this.menu = MENU_ITEMS.filter(i => (i.title !== 'Formularios'));
+
+                // filtramos los controles
+                this.menu[1].children = CONTROLS.filter(i =>
+                  i.title !== 'Unidades' && i.title !== 'Empleados');
+
                 // Agregamos el idunidad para la ruta de alumnos
-                this.menu.map(i => {
+                this.menu[1].children.map(i => {
                   if (i.title === 'Alumnos') i.link += `/${usuario.idunidad}`;
                 });
               });
             break;
 
           case Erol.DIRECTOR:
-            // se filtran los controles a los que no tiene acceso
-            this.menu = MENU_ITEMS.filter(i => i.title !== 'Alumnos');
+            this.menu = MENU_ITEMS;
+            this.menu[1].children = CONTROLS.filter(i => i.title !== 'Alumnos');
+            this.menu[2].children = FORMS;
             break;
         }
         this.loadingSuccess = true;

@@ -1,6 +1,13 @@
 import { Observable } from "rxjs";
-import { HeaderOption } from "./headerOptions";
+import { HeaderOption, ResponseData } from "./headerOptions";
 
 export abstract class FileModel extends HeaderOption {
-	abstract getPerfil$(): Observable<any>;
+
+	/**
+	 * Sube un archivo al servidor
+	 * @param {File} file Archivo a subir
+	 */
+	abstract uploadFile$(file: File, matricula: string, name: string): Observable<ResponseData>;
+
+
 }

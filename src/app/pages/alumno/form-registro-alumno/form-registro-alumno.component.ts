@@ -1,14 +1,11 @@
-import { ActivatedRoute } from '@angular/router';
-import { take } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
 import {
-  EtypeMessage,
-  ToastService
-} from '../../../@core/mock/root-provider/Toast.service';
-import {
   Component,
-  OnInit
+  OnDestroy,
+  OnInit,
 } from '@angular/core';
 import {
   Iunidadacademica,
@@ -17,9 +14,14 @@ import {
 import {
   AlumnoModel,
   Egenero,
-  Ialumno
 } from '../../../@core/data/alumnoModel';
 import {
+  EtypeMessage,
+  ToastService
+} from '../../../@core/mock/root-provider/Toast.service';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -31,22 +33,24 @@ import {
   NbTrigger,
   NbTriggerValues
 } from '@nebular/theme';
-import { FileModel } from '../../../@core/data/fileModel';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-form-registro-alumno',
   templateUrl: './form-registro-alumno.component.html',
   styleUrls: ['./form-registro-alumno.component.scss']
 })
-export class FormRegistroAlumnoComponent implements OnInit {
+export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
+
+  private destroy$: Subject<void> = new Subject<void>();
+
+  private idunidad: number;
 
   public loadingData: boolean = false;
 
-  public editMode: boolean = false; // cambia el comportamiento del evento submit
-
   public form: FormGroup;
   public nbPopoverError: string = ''; // Msj con el error del input
-  public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS; // Forma de disparar el msj
+  public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS;
   public nbComponentShape: NbComponentShape = 'semi-round'; // estilo de los imputs
   public valid: NbComponentStatus = 'primary'; // color primario para campos validos
   public invalid: NbComponentStatus = 'danger'; // color para campos invalidos
@@ -61,34 +65,26 @@ export class FormRegistroAlumnoComponent implements OnInit {
     private formBuilder: FormBuilder,
     private unidadService: UnidadAcademicaModel,
     private alumnoService: AlumnoModel,
-    private fileService: FileModel,
     private toastService: ToastService,
-    private router: ActivatedRoute,
+    private activatedRouter: ActivatedRoute,
+    private router: Router,
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.initForm();
     this.loadingData = true;
 
-    // datos para el combobox de unidades academicas
     this.unidades_academicas =
       await this.unidadService.getUnidadesAcademicas$().toPromise();
 
-    // obtenemos el parametro de la url
-    const matricula = this.router.snapshot.params.matricula;
+    this.idunidad = Number(this.activatedRouter.snapshot.params.idunidad);
 
-    // si esta definido activamos el modo edicion y obtenemos la data del alumno
-    if (matricula) {
-      this.editMode = true;
-      let alumno = await this.alumnoService.getAlumnoByMatricula$(matricula).toPromise();
-      // let perfil = await this.fileService.getPerfil$().toPromise();
-      // console.log({ perfil });
-
-      this.setValuesForm(alumno);
-    }
-
-
+    this.initForm();
     this.loadingData = false;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -96,32 +92,47 @@ export class FormRegistroAlumnoComponent implements OnInit {
    */
   private initForm() {
     this.form = this.formBuilder.group({
-      perfil: new FormControl('', [Validators.required, fileType]),
+      perfil: new FormControl('', [
+        Validators.required,
+        fileType
+      ]),
       matricula: new FormControl('',
+        {
+          validators: [
+            Validators.required,
+            Validators.pattern(/^[0-9]{10,10}$/),
+          ],
+          asyncValidators: [
+            this.validatorMatricula(this.alumnoService)
+          ],
+        }),
+      idunidad: new FormControl(
+        {
+          value: (this.idunidad) ? this.idunidad : '',
+          disabled: (this.idunidad) ? true : false,
+        },
         [
-          Validators.required,
-          Validators.pattern(/^[0-9]{10,10}$/),
+          Validators.required
         ]),
-      idunidad: new FormControl('', [Validators.required]),
       nombre: new FormControl('',
         [
           Validators.required,
-          Validators.pattern(/^[a-zA-Z ]+$/),
-          Validators.minLength(5),
+          Validators.pattern(/^[a-zA-Záéóúí ]+$/),
+          Validators.minLength(3),
           Validators.maxLength(100)
         ]),
       ape_1: new FormControl('',
         [
           Validators.required,
-          Validators.pattern(/^[a-zA-Z ]+$/),
-          Validators.minLength(5),
+          Validators.pattern(/^[a-zA-Záéóúí ]+$/),
+          Validators.minLength(3),
           Validators.maxLength(100)
         ]),
       ape_2: new FormControl('',
         [
           Validators.required,
-          Validators.pattern(/^[a-zA-Z  ]+$/),
-          Validators.minLength(5),
+          Validators.pattern(/^[a-zA-Záéóúí  ]+$/),
+          Validators.minLength(3),
           Validators.maxLength(100)
         ]),
       genero: new FormControl('', [Validators.required]),
@@ -146,21 +157,17 @@ export class FormRegistroAlumnoComponent implements OnInit {
     });
   }
 
-  private setValuesForm(data: Ialumno) {
-    this.form.setValue({
-      perfil: '',
-      matricula: data.matricula,
-      idunidad: data.idunidad,
-      nombre: data.nombre,
-      ape_1: data.ape_1,
-      ape_2: data.ape_2,
-      genero: data.genero,
-      direccion: data.direccion,
-      telefono: data.telefono,
-      email: data.email,
-    });
+  /**
+   * Validad si la matricula esta registrada en la BD. 
+   * @param api 
+   * @returns {AsyncValidatorFn} Objeto de la estructura { invalidMatricula: resultado } | null
+   */
+  validatorMatricula(api: any): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      return this.alumnoService.validarMatricula$(control.value)
+        .pipe(map((response) => (response) ? { invalidMatricula: response } : null));
+    }
   }
-
 
   /**
    * @description Obtiene el mensaje de error con respecto a la validacion violada
@@ -171,8 +178,8 @@ export class FormRegistroAlumnoComponent implements OnInit {
     // para lanzar el validador necesitamos levantar las bandreas dirty y touched
     form.get(controlName).markAsDirty();
     form.get(controlName).markAsTouched();
-
     const control = form.get(controlName);
+
     if (control.touched && control.errors != null)
       return (control.errors.required)
         ? `Campo obligatorio.` :
@@ -187,7 +194,9 @@ export class FormRegistroAlumnoComponent implements OnInit {
                 (control.errors.minlength)
                   ? `La lonjitud mínima para el campo es ${control.errors.minlength.requiredLength}.` :
                   (control.errors.maxlength)
-                    ? `La lonjitud máxima para el campo es ${control.errors.maxlength.requiredLength}.` : '';
+                    ? `La lonjitud máxima para el campo es ${control.errors.maxlength.requiredLength}.` :
+                    (control.errors.invalidMatricula)
+                      ? `La matricula proporcionada ya esta registrada.` : '';
     return '';
   }
 
@@ -206,18 +215,37 @@ export class FormRegistroAlumnoComponent implements OnInit {
   /**
    * @description Evento que se activa al enviar el formulario
    */
-  public formSubmit() {
-    this.loadingData = true;
-    this.alumnoService.newAlumno$(this.form.value)
-      .pipe(take(1))
-      .subscribe((res: ResponseData) => {
+  public async formSubmit() {
+    // this.loadingData = true;
+    // Titulo de la notificacion
+    const title = 'Registro de alumno';
+    // Habilitamos el campo para poder obtener su valor
+    this.form.get('idunidad').enable();
+    // Iniciamos la peticion
+    const responseNew: ResponseData =
+      await this.alumnoService.newAlumno$(this.form.value).toPromise();
+
+    if (responseNew)
+      if (responseNew.response) {
         const
-          title = 'Registro de alumno',
-          body = res.message,
-          type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
-        this.toastService.show(title, body, type);
-        this.loadingData = false;
-        // this.router.navigateByUrl('/pages/alumno/tabla-alumnos');
-      })
+          perfil = this.form.get('perfil').value,
+          matricula = this.form.get('matricula').value;
+        // Update perfil de alumno
+        const response: ResponseData = await this.alumnoService
+          .uploadFile$(perfil, matricula).toPromise();
+
+        if (response.response) {
+          this.toastService.show(title, responseNew.message, EtypeMessage.SUCCESS);
+
+          this.router.navigateByUrl(
+            `/pages/alumno/tabla-alumnos/${this.form.get('idunidad').value}`)
+        } else {
+          this.toastService.show(title, responseNew.message, EtypeMessage.DANGER);
+        }
+      } else {
+        this.toastService.show(title, responseNew.message, EtypeMessage.DANGER);
+      }
+
+    this.loadingData = false;
   }
 }

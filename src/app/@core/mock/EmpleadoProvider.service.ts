@@ -10,36 +10,43 @@ import { Iusuario } from "../data/userModel";
 export class EmpleadoProvierService extends EmpleadoModel {
 
   constructor(
-    protected httpClient: HttpClient,
+    protected http: HttpClient,
   ) {
-    super(httpClient);
+    super(http);
   }
 
   public getEmpleados$(): Observable<Iusuario[]> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}empleado/all`,
+    return this.http.get<ResponseData>(
+      `empleado/all`,
       this.getOptions()
     ).pipe(map((response) => <Iusuario[]>response.data));
   }
 
-  getEmpleadoById$(idempleado: number): Observable<Iusuario> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}empleado/:idempleado`,
+  public getEmpleadosByUnidad$(idunidad: number): Observable<Iusuario[]> {
+    return this.http.get<ResponseData>(
+      `empleado/all/${idunidad}`,
+      this.getOptions()
+    ).pipe(map((response) => <Iusuario[]>response.data));
+  }
+
+  public getEmpleadoById$(idempleado: number): Observable<Iusuario> {
+    return this.http.get<ResponseData>(
+      `empleado/:idempleado`,
       this.getOptions()
     ).pipe(map((response) => <Iusuario>response.data));
   }
 
-  updateEmpleado$(data: Iusuario): Observable<ResponseData> {
-    return this.httpClient.put<ResponseData>(
-      `${this.baseURL}empleado/update`,
+  public updateEmpleado$(data: Iusuario): Observable<ResponseData> {
+    return this.http.put<ResponseData>(
+      `empleado/update`,
       { data },
       this.getOptions()
     ).pipe(map((response) => response));
   }
 
-  newEmpleado$(data: Iusuario): Observable<ResponseData> {
-    return this.httpClient.post<ResponseData>(
-      `${this.baseURL}empleado/new`,
+  public newEmpleado$(data: Iusuario): Observable<ResponseData> {
+    return this.http.post<ResponseData>(
+      `empleado/new`,
       { data },
       this.getOptions()
     ).pipe(map((response) => response));

@@ -7,9 +7,14 @@ export const SETTINGS = {
   ...GENERAL_CONFIG,
   columns: {
     perfil: PERFIL_SETTINGS,
-    idusuario: { title: 'No.', type: 'text', filter: false, editable: false, },
-    nombre: { title: 'Nombre Completo', type: 'text', filter: false, },
-    telefono: { title: 'Telefono', type: 'text', filter: false, },
+    idusuario: {
+      title: 'No.', type: 'text', filter: false, editable: false,
+      valuePrepareFunction: ($valor: number): string => {
+        return '0'.repeat(5 - $valor.toString().length) + $valor;
+      }
+
+    },
+    nombre: { title: 'Nombre Completo', type: 'text', filter: false, editable: false },
     dataJefatura: {
       title: 'Asiganada a', type: 'text', filter: false,
       valuePrepareFunction: ($valor: Iusuario): string => {
@@ -19,6 +24,7 @@ export const SETTINGS = {
       }
     },
     // email: { title: 'Email', type: 'text', filter: false, },
+    email: { title: 'Correo', type: 'text', filter: false, },
     rol: ROL_SETTINGS,
     ultima_conexion: {
       title: 'Ultima conexión', type: 'text', filter: false, editable: false,

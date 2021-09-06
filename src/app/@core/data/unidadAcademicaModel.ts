@@ -34,7 +34,6 @@ export abstract class UnidadAcademicaModel extends HeaderOption {
    */
   abstract updateUnidadAcademica$(unidad_academica: Iunidadacademica): Observable<ResponseData>;
 
-
   abstract newUnidadAcademica(unidad_academica: Iunidadacademica): Observable<ResponseData>;
 
   // abstract uploadFile(file: FormData, idunidad: number): Observable<boolean>;

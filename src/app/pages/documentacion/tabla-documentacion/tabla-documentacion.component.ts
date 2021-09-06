@@ -20,10 +20,11 @@ import {
   Ipackdocumentacion
 } from '../../../@core/data/documentoModel';
 import { ResponseData } from '../../../@core/data/headerOptions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tabla-documentacion',
-  template: `<app-tabla [object]="object" [settings]="settings" 
+  template: `<app-tabla [title]="title" [object]="object" [settings]="settings" 
   [loadingData]="loading | async"  [data]="data | async" 
   (rowSelected)="documentacionSeleccionado($event)" [filter]="filter">
 </app-tabla>`,
@@ -33,7 +34,8 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  public object = 'documento';
+  public title: string = 'Lista de paquetes de documentos';
+  public object: string = 'documento';
   public settings = SETTINGS;
   public filter = FILTER;
   public dataSource: Ipackdocumentacion[] = [];
@@ -44,6 +46,7 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private dialogService: NbDialogService,
     private accessChecker: NbAccessChecker,
+    private roter: Router,
   ) { }
 
   ngOnInit(): void {

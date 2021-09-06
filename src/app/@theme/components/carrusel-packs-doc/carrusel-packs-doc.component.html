@@ -39,7 +39,8 @@
       <!-- DETALLE DOCUMENTOS -->
       <ng-template [ngIf]="view_datalle">
         <div class="col-md-3 pt-2" *ngFor=" let d of elemnts">
-          <app-item-doc [documento]="d" [loadingData]="loading | async"
+          <app-item-doc (loadData)="cargarEntregas();" [alumno]="alumno"
+            [documento]="d" [loadingData]="loading | async"
             [badge]="validarDocumento(d.iddocumento)">
           </app-item-doc>
         </div>

@@ -69,9 +69,10 @@ export class CarruselDirective implements OnChanges {
   private renderElements(): any[] {
     let elements: any[] = [];
 
-    if (this.documentos.length > 0)
-      elements = this.documentos
-        .slice(this.start, this.start + this.elementosVisibles);
+    if (this.documentos)
+      if (this.documentos.length > 0)
+        elements = this.documentos
+          .slice(this.start, this.start + this.elementosVisibles);
 
     return elements
   }

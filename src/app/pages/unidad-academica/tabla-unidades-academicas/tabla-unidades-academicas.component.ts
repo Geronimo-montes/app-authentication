@@ -30,7 +30,7 @@ import {
 
 @Component({
   selector: 'app-tabla-unidades-academicas',
-  template: `<app-tabla [object]="object" [settings]="settings" 
+  template: `<app-tabla [title]="title" [object]="object" [settings]="settings" 
     [loadingData]="loading | async" [data]="data | async" 
     (rowSelected)="unidadSeleccionada($event)" 
     [filter]="filter">
@@ -41,6 +41,7 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
+  public title: string = 'Lista de Unidades Académicas'; // nombre de la tabla
   public object: string = 'unidad'; // nombre de la tabla
   public settings = SETTINGS;
   public filter = FILTER;
@@ -130,6 +131,7 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
         this.toastService.show(title, body, type);
+        this.loadData();
       });
   }
 
@@ -159,17 +161,19 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
    */
   private view(data: Iunidadacademica) {
     const
-      title = `Listar alumnos de la unidad ${data.nombre}.`,
-      body = `Esta por abandonar la ruta actual.`,
+      title = `Unidad Académica ${data.nombre}`,
+      body = `¿Desea listar alumnos ó empleados?`,
       type = typeicon.QUESTION;
 
     this.dialogService.open(ConfirmacionComponent, {
-      context: { titulo: title, cuerpo: body },
+      context: { titulo: title, cuerpo: body, btnCancel: 'Alumnos', btnConfirmar: 'Empleados' },
       closeOnEsc: false,
       closeOnBackdropClick: false,
     }).onClose.pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
         if (res)
+          this.router.navigateByUrl(`/pages/empleado/tabla-empleados/${data.idunidad}`);
+        else
           this.router.navigateByUrl(`/pages/alumno/tabla-alumnos/${data.idunidad}`);
       })
   }

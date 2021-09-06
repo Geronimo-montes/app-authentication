@@ -5,7 +5,7 @@ export const SETTINGS = {
   ...GENERAL_CONFIG,
   columns: {
     perfil: PERFIL_SETTINGS,
-    idunidad: { title: 'No.', type: 'text', filter: false, editable: false },
+    // idunidad: { title: 'No.', type: 'text', filter: false, editable: false },
     clave: { title: 'Clave', type: 'text', filter: false, editable: false },
     nombre: { title: 'Nombre', type: 'text', filter: false, },
     direccion: { title: 'Direccción', type: 'text', filter: false, },

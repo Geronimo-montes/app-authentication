@@ -1,26 +1,86 @@
 <nb-card [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
   [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
-  <nb-card-header class="row col-md-12 justify-content-end m-auto">
-    <nb-form-field>
-      <input #search_input type="text" shape="round" nbInput
-        nbPopover="Filtrar tabla" nbPopoverTrigger="hover"
-        (keyup)="search(search_input.value)">
-      <nb-icon nbSuffix icon="search-outline" pack="eva"></nb-icon>
-    </nb-form-field>
+  <nb-card-header class="row col-md-12 justify-content-between">
+    <div class="row col-md-auto justify-content-between">
+      <nb-icon [nbPopover]="templateRef" [nbPopoverTrigger]="'hover'"
+        class="text-white h1" icon="alert-circle-outline" pack="eva">
+      </nb-icon>
 
-    <button class=" button-refresh ml-2" nbButton shape="round"
-      [size]="'medium'" [status]="'info'"
-      (click)="rowSelectedEmit($event,'update_data_list')"
-      nbPopover="Actualizar datos de la tabla" [nbPopoverTrigger]="'hover'">
-      <nb-icon nbSuffix icon="refresh-outline" pack="eva"></nb-icon>
-    </button>
+      <h5 class="text-white ml-2">
+        {{ title }}
+      </h5>
+    </div>
+
+    <div class="row col-md-auto justify-content-between">
+      <nb-form-field>
+        <input #search_input type="text" shape="round" nbInput
+          nbPopover="Filtrar tabla" nbPopoverTrigger="hover"
+          (keyup)="search(search_input.value)">
+        <nb-icon nbSuffix icon="search-outline" pack="eva"></nb-icon>
+      </nb-form-field>
+
+      <button class="button-refresh ml-2" nbButton shape="round"
+        [size]="'medium'" [status]="'info'"
+        (click)="rowSelectedEmit($event,'update_data_list')"
+        nbPopover="Actualizar datos de la tabla" [nbPopoverTrigger]="'hover'">
+        <nb-icon nbSuffix icon="refresh-outline" pack="eva"></nb-icon>
+      </button>
+    </div>
   </nb-card-header>
 
   <nb-card-body>
     <ng2-smart-table [settings]="settings" [source]="source"
       (custom)="rowSelectedEmit($event.data, 'view')"
       (editConfirm)="editConfirmacion($event);"
-      (delete)="deleteConfirmacion($event);">
+      (deleteConfirm)="deleteConfirmacion($event);">
     </ng2-smart-table>
   </nb-card-body>
 </nb-card>
+
+<!-- Template para los popovers -->
+<ng-template #templateRef let-data>
+  <div class="border rounded p-2" style="max-width: 22rem; min-width: 10rem;">
+
+    <div
+      class="row justify-content-between aling-item-center mb-2 text-justify p-2">
+      <img class="col-md-3" src="assets/edit.png">
+      <p class="col-md-9 m-auto"><strong>Editar:</strong> Seleccione el control
+        para editar el
+        elemento correspondiente.</p>
+    </div>
+
+    <div
+      class="row justify-content-between aling-item-center mb-2 text-justify p-2">
+      <img class="col-md-3" src="assets/add-remove.png">
+      <p class="col-md-9 m-auto"><strong>Alta/Baja:</strong> Seleccione el
+        control y confirme la
+        acción
+        para alta/baja del elemento.</p>
+    </div>
+
+    <div
+      class="row justify-content-between aling-item-center mb-2 text-justify p-2">
+      <img class="col-md-3" src="assets/view.png">
+      <p class="col-md-9 m-auto"><strong>Mirar:</strong> Seleccione para
+        desplegar los detalles
+        del
+        elemento.</p>
+    </div>
+
+    <div
+      class="row justify-content-between aling-item-center mb-2 text-justify p-2">
+      <img class="col-md-3" src="assets/search.png">
+      <p class="col-md-9 m-auto"><strong>Buscar:</strong> Introduzca el termino
+        deseado para
+        filtrar la
+        tabla.</p>
+    </div>
+
+    <div
+      class="row justify-content-between aling-item-center mb-2 text-justify p-2">
+      <img class="col-md-3" src="assets/load.png">
+      <p class="col-md-9 m-auto"><strong>Recargar:</strong> Para actualizar los
+        datos presentados seleccione el control.</p>
+    </div>
+  </div>
+</ng-template>

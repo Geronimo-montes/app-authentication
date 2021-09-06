@@ -13,47 +13,59 @@ import { ResponseData } from "../data/headerOptions";
 export class DocumentoProvierService extends DocumentoModel {
 
   constructor(
-    protected httpClient: HttpClient,
+    protected http: HttpClient,
   ) {
-    super(httpClient);
+    super(http);
   }
 
-
-
   public getPaqueteDocumentos$(): Observable<Ipackdocumentacion[]> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}pack-documento/all`,
+    return this.http.get<ResponseData>(
+      `pack-documento/all`,
       this.getOptions()
     ).pipe(map((response) => <Ipackdocumentacion[]>response.data));
   }
 
   public getPaqueteDocumentosById$(idpaquetedocumentos: number): Observable<Ipackdocumentacion> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}pack-documento/${idpaquetedocumentos}`,
+    return this.http.get<ResponseData>(
+      `pack-documento/${idpaquetedocumentos}`,
       this.getOptions()
     ).pipe(map((response) => <Ipackdocumentacion>response.data));
   }
 
   public getDetallePackDocumento$(idpaquete: number): Observable<Idocumento[]> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}pack-documento/detalle-paquete/${idpaquete}`,
+    return this.http.get<ResponseData>(
+      `pack-documento/detalle-paquete/${idpaquete}`,
       this.getOptions()
     ).pipe(map((response) => <Idocumento[]>response.data));
   }
 
   public updatePaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData> {
-    return this.httpClient.put<ResponseData>(
-      `${this.baseURL}pack-documento/update`,
+    return this.http.put<ResponseData>(
+      `pack-documento/update`,
       { data: data },
       this.getOptions()
     ).pipe(map((response) => response));
   }
 
   public newPaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData> {
-    return this.httpClient.post<ResponseData>(
-      `${this.baseURL}pack-documento/new`,
+    return this.http.post<ResponseData>(
+      `pack-documento/new`,
       { data: data },
       this.getOptions()
+    ).pipe(map((response) => response));
+  }
+
+  public entregarDocumento$(file: File, matricula: string, name: string, idpaquete: number, iddocumento: number): Observable<ResponseData> {
+    const data: FormData = new FormData();
+    data.append('file', file);
+    data.append('matricula', matricula);
+    data.append('idpaquete', idpaquete.toString());
+    data.append('iddocumento', iddocumento.toString());
+
+    return this.http.post<ResponseData>(
+      `pack-documento/upload/${name}`,
+      data,
+      this.getOptionsFile(),
     ).pipe(map((response) => response));
   }
 }

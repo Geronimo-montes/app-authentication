@@ -1,16 +1,20 @@
 import { Router } from '@angular/router';
-import { take } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
 import { UnidadAcademicaModel } from '../../../@core/data/unidadAcademicaModel';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
 import {
-  Component,
-  OnInit
-} from '@angular/core';
+  take,
+  takeUntil
+} from 'rxjs/operators';
 import {
   EtypeMessage,
   ToastService
 } from '../../../@core/mock/root-provider/Toast.service';
+import {
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -23,19 +27,23 @@ import {
   NbTrigger,
   NbTriggerValues
 } from '@nebular/theme';
+import { async, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-form-registro-unidad',
   templateUrl: './form-registro-unidad.component.html',
   styleUrls: ['./form-registro-unidad.component.scss']
 })
-export class FormRegistroUnidadComponent implements OnInit {
+export class FormRegistroUnidadComponent implements OnInit, OnDestroy {
+
+
+  private destroy$: Subject<void> = new Subject<void>();
 
   public loadingData: boolean = false;
 
   public form: FormGroup;
   public nbPopoverError: string = ''; // Msj con el error del input
-  public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS; // Forma de disparar el msj
+  public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS;
   public nbComponentShape: NbComponentShape = 'semi-round'; // estilo de los imputs
   public valid: NbComponentStatus = 'primary'; // color primario para campos validos
   public invalid: NbComponentStatus = 'danger'; // color para campos invalidos
@@ -47,8 +55,13 @@ export class FormRegistroUnidadComponent implements OnInit {
     private router: Router,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.initForm();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -131,18 +144,12 @@ export class FormRegistroUnidadComponent implements OnInit {
   public formSubmit() {
     this.loadingData = true;
     this.unidadService.newUnidadAcademica(this.form.value)
-      .pipe(take(1))
+      .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
           title = 'Registro de unidad académica',
           body = res.message,
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
-
-        /** Metodo para subir la foto de perfil (sin terminar)**
-         * const data = new FormData();
-         * data.append('file', this.form.controls['perfil'].value);
-         */
-
 
         this.toastService.show(title, body, type);
         this.loadingData = false;
@@ -150,13 +157,3 @@ export class FormRegistroUnidadComponent implements OnInit {
       });
   }
 }
-
-
-/**
- perfil: string;
-  clave: string;   normal
-  nombre: string;  normal
-  direccion: string;  normal
-  correo: string;     normal
-  telefono: string;   normal
- */

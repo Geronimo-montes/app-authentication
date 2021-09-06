@@ -38,6 +38,7 @@ import { ItemDocComponent } from './components/carrusel-packs-doc/item-doc/item-
 
 const NB_MODULES = [
   ReactiveFormsModule,
+  FormsModule,
   NbLayoutModule,
   NbEvaIconsModule,
   NbIconModule,

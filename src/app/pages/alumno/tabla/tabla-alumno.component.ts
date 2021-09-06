@@ -1,8 +1,8 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NbAccessChecker } from '@nebular/security';
 import { NbDialogService } from '@nebular/theme';
 import { Observable, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { finalize, take, takeUntil } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
 import { ViewAlumnoComponent } from '../view-alumno/view-alumno.component';
 import {
@@ -26,10 +26,11 @@ import {
   AlumnoModel,
   Ialumno
 } from '../../../@core/data/alumnoModel';
+import { UnidadAcademicaModel } from '../../../@core/data/unidadAcademicaModel';
 
 @Component({
   selector: 'app-tabla-alumno',
-  template: `<app-tabla [object]="object" [settings]="settings" 
+  template: `<app-tabla [title]="title" [object]="object" [settings]="settings" 
   [loadingData]="loading | async" [data]="data | async" 
   (rowSelected)="alumnoSeleccionado($event)" [filter]="filter">
   </app-tabla>`,
@@ -39,6 +40,7 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
+  public title: string = `Unidad Acadmica: `;
   public object: string = 'alumno';  // nombre de la tabla
   public settings = SETTINGS;
   public filter = FILTER;
@@ -47,10 +49,11 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
 
   constructor(
     private alumnoService: AlumnoModel,
+    private unidadService: UnidadAcademicaModel,
     private toastService: ToastService,
     private dialogService: NbDialogService,
     private accessChecker: NbAccessChecker,
-    private router: ActivatedRoute,
+    private activateRouter: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -77,18 +80,23 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Realiza la peticion para obtener la lista de alumnos de la unidad_academica especificada. 
+   * Realiza la peticion para obtener la lista de alumnos de la unidad_academica especificada.
    */
-  private loadData() {
+  private async loadData() {
     this.loadingData = true;
-    const idunidad = this.router.snapshot.params.idunidad;
+    const idunidad = this.activateRouter.snapshot.params.idunidad;
 
+    // Suscripciones encadenadas
     this.alumnoService.getAlumnosByUnidad$(idunidad)
-      .pipe(take(1), takeUntil(this.destroy$))
-      .subscribe(alumnos => {
-        this.dataSource = alumnos;
-        this.loadingData = false;
-      });
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() =>
+          this.unidadService.getUnidadAcademicaById$(idunidad)
+            .pipe(
+              takeUntil(this.destroy$),
+              finalize(() => this.loadingData = false)
+            ).subscribe(u => this.title += `${u.clave} ${u.nombre}`))
+      ).subscribe(data => this.dataSource = data);
   }
 
   /**
@@ -129,6 +137,7 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
         this.toastService.show(title, body, type);
+        this.loadData();
       });
   }
 

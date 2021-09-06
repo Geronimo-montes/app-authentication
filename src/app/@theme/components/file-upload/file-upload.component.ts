@@ -60,5 +60,4 @@ export class FileUploadComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: Function) {
   }
-
 }

@@ -2,6 +2,7 @@
   [nbSpinnerSize]="'giant'" [nbSpinnerMessage]="'Cargando información'"
   [nbSpinnerStatus]="'primary'">
 
+  <!-- Data del usuario -->
   <nb-card-header>
     <div class="row justify-content-between m-auto">
       <h5 class="text-white">Datos del alumno</h5>
@@ -14,7 +15,7 @@
       </button>
     </div>
   </nb-card-header>
-
+  <!-- Data del usuario -->
   <nb-card-body>
     <div class="row">
       <div class="col-md-4">
@@ -67,10 +68,10 @@
       </div>
     </div>
   </nb-card-body>
-
+  <!-- Detalle documentos -->
   <nb-card-footer>
-    <app-carrusel-packs-doc *ngIf="packs_documentos.length > 0"
-      [packs_documentos]="packs_documentos" [alumno]="data">
+    <app-carrusel-packs-doc [packs_documentos]="packs_documentos"
+      [alumno]="data">
     </app-carrusel-packs-doc>
   </nb-card-footer>
 </nb-card>

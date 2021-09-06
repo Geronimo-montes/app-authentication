@@ -1,9 +1,15 @@
 import { NbAccessChecker } from '@nebular/security';
 import { NbDialogService } from '@nebular/theme';
 import { LocalDataSource } from 'ng2-smart-table';
-import { Observable, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
 import { ConfirmacionComponent } from '../confirmacion/confirmacion.component';
+import {
+  take,
+  takeUntil
+} from 'rxjs/operators';
+import {
+  Observable,
+  Subject
+} from 'rxjs';
 import {
   EDIT_CONTROL,
   DELETE_CONTROL,
@@ -44,6 +50,7 @@ export class TablaComponent implements OnInit, OnChanges, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   @Input() object: string;
+  @Input() title: string;
   @Input() settings;
   @Input() loadingData: boolean = false;
   @Input() data: any[] = [];
@@ -100,17 +107,15 @@ export class TablaComponent implements OnInit, OnChanges, OnDestroy {
   public editConfirmacion($event) {
     const
       title = 'Mensaje de confirmacion',
-      body = `Se han realizado cambios en el elemento seleccionado.`;
+      body = `Esta por entrar guardar los cambios realizados.`;
 
     this.dialogeConfirmacion(title, body)
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
-        if (res) {
-          this.rowSelectedEmit($event.newData, Eaccion.EDIT);
-          $event.confirm.resolve($event.newData);
-        } else {
+        if (res)
+          this.rowSelectedEmit($event.data, Eaccion.EDIT);
+        else
           $event.confirm.reject();
-        }
       });
   }
 

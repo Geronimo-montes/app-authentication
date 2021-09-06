@@ -16,10 +16,10 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
-import { DocumentoModel } from '../../../@core/data/documentoModel';
+import { DocumentoModel, Idocumento, Ipackdocumentacion } from '../../../@core/data/documentoModel';
 import { take } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EtypeMessage, ToastService } from '../../../@core/mock/root-provider/Toast.service';
 
 @Component({
@@ -54,13 +54,16 @@ export class FormRegistroDocumentacionComponent implements OnInit {
 
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.initForm();
+    this.addDocumento();
   }
 
   private initForm() {
     this.form = this.formBuilder.group({
-      ruta_imagen: new FormControl('', [Validators.required, fileType]),
+      ruta_imagen: new FormControl('', [
+        Validators.required,
+        fileType]),
       nombre: new FormControl('', [
         Validators.required,
         Validators.minLength(5),
@@ -75,8 +78,6 @@ export class FormRegistroDocumentacionComponent implements OnInit {
         [Validators.required]),
       detalleDocumento: this.formBuilder.array([]),
     });
-
-    this.addDocumento();
   }
 
   /**
@@ -91,6 +92,7 @@ export class FormRegistroDocumentacionComponent implements OnInit {
    */
   public addDocumento(): void {
     const detalleDocumento = this.formBuilder.group({
+      iddocumento: new FormControl(0,),
       foto_ejemplo: new FormControl('', [Validators.required, fileType]),
       nombre: new FormControl('', [
         Validators.required,
@@ -167,7 +169,7 @@ export class FormRegistroDocumentacionComponent implements OnInit {
    * @description Evento que se activa al enviar el formulario
    */
   public formSubmit() {
-    // this.loadingData = true;
+    this.loadingData = true;
     this.documentoService.newPaqueteDocumentos$(this.form.value)
       .pipe(take(1))
       .subscribe((res: ResponseData) => {
@@ -176,15 +178,9 @@ export class FormRegistroDocumentacionComponent implements OnInit {
           body = res.message,
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
-        /** Metodo para subir la foto de perfil (sin terminar)**
-         * const data = new FormData();
-         * data.append('file', this.form.controls['perfil'].value);
-         */
-
-
         this.toastService.show(title, body, type);
-        // this.loadingData = false;
-        // this.router.navigateByUrl('/pages/documentacion/tabla-documentacion');
+        this.loadingData = false;
+        this.router.navigateByUrl('/pages/documentacion/tabla-documentacion');
       });
   }
 }

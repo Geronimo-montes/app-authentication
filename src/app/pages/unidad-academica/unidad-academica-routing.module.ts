@@ -16,6 +16,9 @@ const routes: Routes = [
         path: 'registro-unidad-academica',
         component: FormRegistroUnidadComponent,
       }, {
+        path: 'update-unidad-academica/:idunidad',
+        component: FormRegistroUnidadComponent,
+      }, {
         path: '',
         redirectTo: 'tabla-unidad-academica',
         pathMatch: 'full',

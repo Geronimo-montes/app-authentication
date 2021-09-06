@@ -16,7 +16,7 @@ const routes: Routes = [
         path: 'registro-alumno',
         component: FormRegistroAlumnoComponent,
       }, {
-        path: 'registro-alumno/:matricula',
+        path: 'registro-alumno/:idunidad',
         component: FormRegistroAlumnoComponent,
       }, {
         path: '',

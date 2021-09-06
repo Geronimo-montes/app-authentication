@@ -14,7 +14,7 @@ export interface ResponseData {
 }
 
 export abstract class HeaderOption {
-  protected httpClient: HttpClient;
+  protected http: HttpClient;
   protected baseURL: string = environment.API_URL;
 
   constructor(httpClient: HttpClient) { }
@@ -31,6 +31,15 @@ export abstract class HeaderOption {
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.token}`,
+      }),
+    };
+  }
+
+  protected getOptionsFile() {
+    return {
+      headers: new HttpHeaders({
+        // 'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${this.token}`,
       }),
     };

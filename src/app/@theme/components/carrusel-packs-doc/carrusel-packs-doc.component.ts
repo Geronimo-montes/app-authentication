@@ -30,15 +30,30 @@ interface Ibadge {
 })
 export class CarruselPacksDocComponent {
 
+  /**
+   * Data de los paquetes de documentos
+   */
   @Input('packs_documentos') packs: Ipackdocumentacion[] = [];
+  /**
+   * Data del alumno seleccionado
+   */
   @Input('alumno') alumno: Ialumno;
-
+  /**
+   * Indica cuando un proceso asincrono esta cargando
+   */
   public loadingData: boolean = false;
-
+  /**
+   * Bandera que indica cuando se ingresa a visualizar el detalle
+   */
   public view_datalle: boolean = false;
+  /**
+   * data del paquete seleccionado
+   */
   public selected_pack: Ipackdocumentacion = null; // info pack_documentos + detalle
-  public docs_entregados: IdocumentoEntregado[] = []; // documentos entregados por el alumno.
-
+  /**
+   * Array que obtiene los documentos que ya han sido entregados del paquete selecciondo por el alumno.
+   */
+  public docs_entregados: IdocumentoEntregado[] = [];
 
   constructor(
     private alumnoService: AlumnoModel,
@@ -52,6 +67,9 @@ export class CarruselPacksDocComponent {
     return (this.view_datalle) ? this.selected_pack.detalleDocumento : this.packs;
   }
 
+  /**
+   * Indica si se esta cargando datos
+   */
   get loading(): Observable<boolean> {
     return new Observable(obs => obs.next(this.loadingData));
   }
@@ -65,12 +83,16 @@ export class CarruselPacksDocComponent {
     this.selected_pack = pack;
     this.view_datalle = true
 
+    // Obtenermos los documentos que conforman el pauqete
     this.selected_pack.detalleDocumento = await this.documentoService
       .getDetallePackDocumento$(this.selected_pack.idpaquete).toPromise();
-
-    this.docs_entregados = await this.alumnoService.getDocsEntregadosByMatriculaPack(this.alumno.matricula, this.selected_pack.idpaquete).toPromise();
-
+    // Obtenemos los documentos que el alumno ya ha entregado
+    this.cargarEntregas();
     this.loadingData = false;
+  }
+
+  public async cargarEntregas() {
+    this.docs_entregados = await this.alumnoService.getDocsEntregadosByMatriculaPack(this.alumno.matricula, this.selected_pack.idpaquete).toPromise();
   }
 
   /**

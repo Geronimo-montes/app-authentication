@@ -13,46 +13,67 @@ import {
 export class AlumnoProvierService extends AlumnoModel {
 
   constructor(
-    protected httpClient: HttpClient,
+    protected http: HttpClient,
   ) {
-    super(httpClient);
+    super(http);
   }
 
   public getAlumnosByUnidad$(idunidad: number): Observable<Ialumno[]> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}alumno/all/${idunidad}`,
+    return this.http.get<ResponseData>(
+      `alumno/all/${idunidad}`,
       this.getOptions()
     ).pipe(map((response) => <Ialumno[]>response.data));
   }
 
   public getAlumnoByMatricula$(matricula: string): Observable<Ialumno> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}alumno/${matricula}`,
+    return this.http.get<ResponseData>(
+      `alumno/${matricula}`,
       this.getOptions()
     ).pipe(map((response) => <Ialumno>response.data));
   }
 
   public updateAlumno$(alumno_data: Ialumno): Observable<ResponseData> {
-    return this.httpClient.put<ResponseData>(
-      `${this.baseURL}alumno/update`,
+    return this.http.put<ResponseData>(
+      `alumno/update`,
       { data: alumno_data },
       this.getOptions()
     ).pipe(map((response) => response));
+  }
+
+  public validarMatricula$(matricula: string): Observable<boolean> {
+    return this.http.get<ResponseData>(
+      `alumno/validar/${matricula}`,
+      this.getOptions()
+    ).pipe(map((response) => response.data));
   }
 
   public newAlumno$(alumno_data: Ialumno): Observable<ResponseData> {
-    return this.httpClient.post<ResponseData>(
-      `${this.baseURL}alumno/new`,
+    return this.http.post<ResponseData>(
+      `alumno/new`,
       { data: alumno_data },
       this.getOptions()
     ).pipe(map((response) => response));
   }
 
-
   public getDocsEntregadosByMatriculaPack(matricula: string, idpack: number): Observable<IdocumentoEntregado[]> {
-    return this.httpClient.get<ResponseData>(
-      `${this.baseURL}alumno/${matricula}/${idpack}`,
+    return this.http.get<ResponseData>(
+      `alumno/${matricula}/${idpack}`,
       this.getOptions()
     ).pipe(map((response) => <IdocumentoEntregado[]>response.data));
+  }
+
+  public uploadFile$(file: File, matricula: string): Observable<ResponseData> {
+    const data: FormData = new FormData();
+    data.append('file', file);
+
+    return this.http.post<ResponseData>(
+      `alumno/upload/${matricula}/${this.getRandomString()}`,
+      data,
+      this.getOptionsFile(),
+    ).pipe(map((response) => response));
+  }
+
+  private getRandomString(): string {
+    return (Math.random() + 1).toString(36).substring(0, 20).replace(/\./g, 'a')
   }
 }

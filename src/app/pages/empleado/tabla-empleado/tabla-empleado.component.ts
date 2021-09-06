@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { Iusuario } from '../../../@core/data/userModel';
 import { NbDialogService } from '@nebular/theme';
 import { NbAccessChecker } from '@nebular/security';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ResponseData } from '../../../@core/data/headerOptions';
 import {
   EtypeMessage,
@@ -20,12 +20,13 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core';
+import { UnidadAcademicaModel } from '../../../@core/data/unidadAcademicaModel';
 
 @Component({
   selector: 'app-tabla-empleado',
-  template: ` <app-tabla [object]="object" [settings]="settings" [loadingData]="loading | async"
-    [data]="data  | async" (rowSelected)="empleadoSeleccionado($event)"
-    [filter]="filter">
+  template: ` <app-tabla [title]="title" [object]="object" [settings]="settings"
+   [loadingData]="loading | async" [data]="data  | async"
+   (rowSelected)="empleadoSeleccionado($event)" [filter]="filter">
   </app-tabla>`,
   styleUrls: ['./tabla-empleado.component.scss']
 })
@@ -33,6 +34,7 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
+  public title: string = '';  // nombre de la tabla
   public object: string = 'empleado';  // nombre de la tabla
   public settings = SETTINGS;
   public filter = FILTER;
@@ -42,9 +44,11 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
 
   constructor(
     private empleadoService: EmpleadoModel,
+    private unidadService: UnidadAcademicaModel,
     private toastService: ToastService,
     private dialogService: NbDialogService,
     private accessChecker: NbAccessChecker,
+    private activateRouter: ActivatedRoute,
     private router: Router,
   ) { }
 
@@ -75,14 +79,29 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
   /**
    * Realiza la petición para listar los datos de los empleados regustrados. Se utiliza para inicializar la tabla y recargar la data.
    */
-  private loadData() {
+  private async loadData() {
     this.loadingData = true;
-    this.empleadoService.getEmpleados$()
-      .pipe(take(1), takeUntil(this.destroy$))
-      .subscribe(data => {
-        this.dataSource = data;
-        this.loadingData = false;
-      });
+    const idunidad = this.activateRouter.snapshot.params.idunidad;
+
+
+    if (idunidad) {
+      const unidad =
+        await this.unidadService.getUnidadAcademicaById$(idunidad).toPromise();
+      this.dataSource =
+
+        await this.empleadoService.getEmpleadosByUnidad$(idunidad).toPromise()
+      this.title = `Unidad Acadmica: ${unidad.clave} ${unidad.nombre}`;
+
+    } else {
+      this.dataSource = await this.empleadoService.getEmpleados$().toPromise();
+      this.title = `Lista de empleados`;
+    }
+    // .pipe(take(1), takeUntil(this.destroy$))
+    // .subscribe(data => {
+    //   this.dataSource = data;
+    // });
+
+    this.loadingData = false;
   }
   /**
    * Recibe el row selecccionado de la tabla junto a la accion a realizar. Valida los permisos de usuario a la acción solicitada y despues ejecuta la acción o muestra un menaje informativo.
@@ -122,6 +141,7 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
         this.toastService.show(title, body, type);
+        this.loadData();
       });
   }
 

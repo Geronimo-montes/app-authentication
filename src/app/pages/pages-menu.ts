@@ -7,8 +7,26 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/dashboard',
     home: true,
   }, {
-    title: 'Unidades Académicas',
-    icon: 'cube',
+    title: 'Catalagos',
+    icon: 'clipboard-outline',
+    expanded: true,
+    children: [],
+  }, {
+    title: 'Formularios',
+    icon: 'folder-add-outline',
+    expanded: false,
+    children: [],
+  }, {
+    title: 'Reportes',
+    icon: 'bar-chart',
+    link: '/pages/reportes',
+  }
+];
+
+export const CONTROLS = [
+  {
+    title: 'Unidades',
+    icon: 'cube-outline',
     link: '/pages/unidad-academica/tabla-unidad-academica',
   }, {
     title: 'Empleados',
@@ -22,9 +40,25 @@ export const MENU_ITEMS: NbMenuItem[] = [
     title: 'Documentacón',
     icon: 'clipboard',
     link: '/pages/documentacion/tabla-documentacion',
-  }, {
-    title: 'Reportes',
-    icon: 'bar-chart',
-    link: '/pages/reportes',
-  },
+  }
 ];
+
+export const FORMS = [
+  {
+    title: 'Unidad',
+    icon: 'plus-circle-outline',
+    link: '/pages/unidad-academica/registro-unidad-academica',
+  }, {
+    title: 'Empleado',
+    icon: 'plus-circle-outline',
+    link: '/pages/empleado/registro-empleado',
+  }, {
+    title: 'Alumno',
+    icon: 'plus-circle-outline',
+    link: '/pages/alumno/registro-alumno',
+  }, {
+    title: 'Documentacón',
+    icon: 'plus-circle-outline',
+    link: '/pages/documentacion/registro-documentacion',
+  },
+]

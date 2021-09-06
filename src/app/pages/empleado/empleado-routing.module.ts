@@ -10,6 +10,9 @@ const routes: Routes = [
     component: EmpleadoComponent,
     children: [
       {
+        path: 'tabla-empleados/:idunidad',
+        component: TablaEmpleadoComponent,
+      }, {
         path: 'tabla-empleados',
         component: TablaEmpleadoComponent,
       }, {

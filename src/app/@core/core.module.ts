@@ -1,11 +1,17 @@
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { environment } from '../../environments/environment';
-import { LayoutService } from './utils';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NbRoleProvider, NbSecurityModule } from '@nebular/security';
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
 
+import { AuthGuard, RolGuard, AuthenticatedGuard } from './guards';
+import { BaseURLInterceptor, HttpErrorInterceptor } from './http-interceptores';
+import { LayoutService } from './utils';
+
 import { MockDataModule } from './mock/mock-data.module';
+
+import { RoleProviderService } from './mock/rolProvider.service';
 
 import { UserModel } from './data/userModel';
 import { UserProvierService } from './mock/UserProvider.service';
@@ -22,11 +28,9 @@ import { AlumnoProvierService } from './mock/AlumnoProvider.service';
 import { EmpleadoModel } from './data/empleadoModel';
 import { EmpleadoProvierService } from './mock/EmpleadoProvider.service';
 
-import { RoleProviderService } from './mock/rolProvider.service';
-
-import { AuthGuard, RolGuard, AuthenticatedGuard } from './guards';
 import { FileModel } from './data/fileModel';
 import { FileProvierService } from './mock/FileProvider.service';
+
 
 const GUARDS = [
   AuthGuard,
@@ -43,6 +47,11 @@ const DATA_SERVICES = [
   { provide: FileModel, useClass: FileProvierService },
 ];
 
+const INTERCEPTORES_HTTP = [
+  { provide: HTTP_INTERCEPTORS, useClass: BaseURLInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true },
+];
+
 const formSetting: any = {
   redirectDelay: 1000,
   strategy: 'email',
@@ -57,6 +66,7 @@ export const NB_CORE_PROVIDERS = [
   LayoutService,
   ...GUARDS,
   ...DATA_SERVICES,
+  ...INTERCEPTORES_HTTP,
   ...MockDataModule.forRoot().providers,
   ...NbAuthModule.forRoot({
     strategies: [
@@ -94,7 +104,7 @@ export const NB_CORE_PROVIDERS = [
       logout: { redirecDelay: 0 },
     }
   }).providers,
-  NbSecurityModule.forRoot({
+  ...NbSecurityModule.forRoot({
     /** c         deribados
      * perfil
      * unidad   unidad-asignada

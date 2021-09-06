@@ -1,3 +1,4 @@
+import { AsyncValidatorFn } from "@angular/forms";
 import { Observable } from "rxjs";
 import { Eestatus } from "./comonModel";
 import { Idocumento, Ipackdocumentacion } from "./documentoModel";
@@ -53,6 +54,12 @@ export abstract class AlumnoModel extends HeaderOption {
   abstract updateAlumno$(alumno: Ialumno): Observable<ResponseData>;
 
   /**
+   * Valida si la matricula se enecuentra registrada. 
+   * @param matricula true: para cuando este registrada en la BD. false: si no esta registrada en la BD.
+   */
+  abstract validarMatricula$(matricula: string): Observable<boolean>;
+
+  /**
    * Ingresa los datos de un nuevo alumno al sistema
    * @param  {Ialumno} $data 
    * @returns {ResponseData} Mensaje de respuesta
@@ -66,4 +73,10 @@ export abstract class AlumnoModel extends HeaderOption {
    * @returns {Observable<IdocumentoEntregado[]>}
    */
   abstract getDocsEntregadosByMatriculaPack(matricula: string, idpack: number,): Observable<IdocumentoEntregado[]>;
+
+  /**
+   * Actualiza la foto de perfil del alumno indicado
+   * @param {File} file Archivo a subir
+   */
+  abstract uploadFile$(file: File, matricula: string): Observable<ResponseData>;
 }

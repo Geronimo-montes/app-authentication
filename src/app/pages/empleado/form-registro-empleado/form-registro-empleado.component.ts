@@ -1,11 +1,32 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { NbComponentShape, NbComponentStatus, NbTrigger, NbTriggerValues } from '@nebular/theme';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { Iunidadacademica, UnidadAcademicaModel } from '../../../@core/data/unidadAcademicaModel';
 import { Erol } from '../../../@core/data/userModel';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
+import { Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
+import {
+  Iunidadacademica,
+  UnidadAcademicaModel,
+} from '../../../@core/data/unidadAcademicaModel';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import {
+  NbComponentShape,
+  NbComponentStatus,
+  NbTrigger,
+  NbTriggerValues,
+} from '@nebular/theme';
+import { EmpleadoModel } from '../../../@core/data/empleadoModel';
+import { Router } from '@angular/router';
+import { ResponseData } from '../../../@core/data/headerOptions';
+import { EtypeMessage, ToastService } from '../../../@core/mock/root-provider/Toast.service';
 
 @Component({
   selector: 'app-form-registro-empleado',
@@ -19,7 +40,7 @@ export class FormRegistroEmpleadoComponent implements OnInit, OnDestroy {
 
   public form: FormGroup;
   public nbPopoverError: string = ''; // Msj con el error del input
-  public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS; // Forma de disparar el msj
+  public nbPopoverTrigger: NbTriggerValues = NbTrigger.FOCUS;
   public nbComponentShape: NbComponentShape = 'semi-round';
   public valid: NbComponentStatus = 'primary';
   public invalid: NbComponentStatus = 'danger';
@@ -35,14 +56,18 @@ export class FormRegistroEmpleadoComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private unidadService: UnidadAcademicaModel,
+    private empleadoService: EmpleadoModel,
+    private toastService: ToastService,
+    private router: Router,
   ) { }
 
-  ngOnInit(): void {
-    this.unidadService.getUnidadesAcademicas$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => this.unidades_academicas = data);
+  async ngOnInit(): Promise<void> {
+    this.loadingData = true;
+
+    this.unidades_academicas = await this.unidadService.getUnidadesAcademicas$().toPromise();
 
     this.initForm();
+    this.loadingData = false;
   }
 
   ngOnDestroy() {
@@ -145,7 +170,20 @@ export class FormRegistroEmpleadoComponent implements OnInit, OnDestroy {
    * @description Evento que se activa al enviar el formulario
    */
   public formSubmit() {
-    console.log(this.form.controls);
+    this.loadingData = true;
+
+    this.empleadoService.newEmpleado$(this.form.value)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((res: ResponseData) => {
+        const
+          title = 'Registro de empleado',
+          body = res.message,
+          type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
+
+        this.toastService.show(title, body, type);
+        this.loadingData = false;
+        this.router.navigateByUrl('/pages/empleado/tabla-empleado');
+      });
   }
 
   /**

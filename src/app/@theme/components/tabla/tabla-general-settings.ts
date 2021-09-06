@@ -3,7 +3,7 @@ import { Eestatus } from "../../../@core/data/comonModel";
 import { Erol } from "../../../@core/data/userModel";
 
 export const GENERAL_CONFIG = {
-  mode: 'external',
+  // mode: 'external',
   hideSubHeader: false,
   noDataMessage: 'Tabla sin registros...',
   actions: {
@@ -162,20 +162,20 @@ export const GENERO_SETTINGS = {
 };
 
 export const EDIT_CONTROL = {
-  editButtonContent: `<img   src="assets/edit.png" height="35">`,
-  saveButtonContent: '<img   src="assets/save.png" height="35" alt="">',
-  cancelButtonContent: '<img   src="assets/cancel.png" height="35" alt="">',
+  editButtonContent: `<img src="assets/edit.png" height="35">`,
+  saveButtonContent: '<img src="assets/save.png" height="35">',
+  cancelButtonContent: '<img src="assets/cancel.png" height="35">',
   confirmSave: true,
 };
 
 export const DELETE_CONTROL = {
-  deleteButtonContent: `<img   src="assets/add-remove.png" height="35">`,
-  saveButtonContent: '<img   src="assets/save.png" height="35" alt="">',
-  cancelButtonContent: '<img   src="assets/cancel.png" height="35" alt="">',
+  deleteButtonContent: `<img src="assets/add-remove.png" height="35">`,
+  saveButtonContent: '<img src="assets/save.png" height="35">',
+  cancelButtonContent: '<img src="assets/cancel.png" height="35">',
   confirmDelete: true,
 };
 
 export const VIEW_CONTROL = [{
   name: 'Visualizar',
-  title: `<img   src="assets/view.png" height="35">`,
+  title: `<img src="assets/view.png" height="35">`,
 }];

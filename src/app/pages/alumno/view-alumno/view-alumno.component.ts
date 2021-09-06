@@ -11,7 +11,11 @@ import { DocumentoModel, Ipackdocumentacion } from '../../../@core/data/document
 })
 export class ViewAlumnoComponent implements OnInit {
 
-  @Input() data: Ialumno; // alumno seleccionado desde la tabla de alumnos
+  /**
+   * Alumno seleccionado.
+   */
+  @Input() data: Ialumno;
+
   public loadingData: boolean = false;
   public packs_documentos: Ipackdocumentacion[] = []; // paquetes de documentos registrados
 
@@ -22,12 +26,8 @@ export class ViewAlumnoComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.loadingData = true;
-
     this.packs_documentos =
       await this.documentoService.getPaqueteDocumentos$().toPromise();
-
-    console.log({ packs: this.packs_documentos });
-
     this.loadingData = false;
   }
 

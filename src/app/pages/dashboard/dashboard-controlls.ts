@@ -2,12 +2,6 @@ import { Icontrolls } from "./dashboard.component";
 
 export const CONTROLLS: Icontrolls[] = [
   {
-    objeto: 'perfil',
-    nombre: 'Perfil de usuario',
-    icono: 'assets/user.png',
-    class: 'status-primary',
-    link: '/pages/profile',
-  }, {
     objeto: 'unidad',
     nombre: 'Unidades Académicas',
     icono: 'assets/unidades.png',
@@ -20,6 +14,7 @@ export const CONTROLLS: Icontrolls[] = [
     class: 'status-info',
     link: '/pages/alumno/tabla-alumnos',
   }, {
+
     objeto: 'documento',
     nombre: 'Documentación',
     icono: 'assets/documentos.png',
@@ -37,5 +32,33 @@ export const CONTROLLS: Icontrolls[] = [
     icono: 'assets/empleados.png',
     class: 'status-danger',
     link: '/pages/empleado',
+  },
+];
+
+export const CONTROL_REGISTROS: Icontrolls[] = [
+  {
+    objeto: 'registro-unidad',
+    nombre: 'Registrar Unidad',
+    icono: 'assets/add-unidades.png',
+    class: 'status-primary',
+    link: '/pages/unidad-academica/registro-unidad-academica',
+  }, {
+    objeto: 'registro-alumno',
+    nombre: 'Registrar Alumno',
+    icono: 'assets/add-alumno.png',
+    class: 'status-warning',
+    link: '/pages/alumno/registro-alumno',
+  }, {
+    objeto: 'registro-documento',
+    nombre: 'Registrar Documentación',
+    icono: 'assets/add-document.png',
+    class: 'status-danger',
+    link: '/pages/documentacion/registro-documentacion',
+  }, {
+    objeto: 'registro-empleado',
+    nombre: 'Registrar Empleado',
+    icono: 'assets/add-empleado.png',
+    class: 'status-info',
+    link: '/pages/empleado/registro-empleado',
   },
 ];

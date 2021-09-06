@@ -5,10 +5,10 @@ import { UserProvierService } from './UserProvider.service';
 import { AlumnoProvierService } from './AlumnoProvider.service';
 import { UnidadProvierService } from './UnidadProvider.service';
 import { DocumentoProvierService } from './DocumentoProvider.service';
-import { ToastService } from './root-provider/Toast.service';
 import { EmpleadoProvierService } from './EmpleadoProvider.service';
 import { RoleProviderService } from './rolProvider.service';
 import { FileProvierService } from './FileProvider.service';
+import { ToastService } from './root-provider';
 
 const SERVICES = [
   UserProvierService,
@@ -18,7 +18,7 @@ const SERVICES = [
   EmpleadoProvierService,
   RoleProviderService,
   FileProvierService,
-  // provider root
+
   ToastService,
 ];
 
