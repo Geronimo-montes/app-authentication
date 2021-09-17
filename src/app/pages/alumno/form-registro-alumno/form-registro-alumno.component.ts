@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
 import {
@@ -41,12 +41,11 @@ import { Subject } from 'rxjs';
   styleUrls: ['./form-registro-alumno.component.scss']
 })
 export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
-
+  public title: string = ``;
   private destroy$: Subject<void> = new Subject<void>();
-
-  private idunidad: number;
-
   public loadingData: boolean = false;
+
+  private clave_unidad: string;
 
   public form: FormGroup;
   public nbPopoverError: string = ''; // Msj con el error del input
@@ -76,7 +75,15 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
     this.unidades_academicas =
       await this.unidadService.getUnidadesAcademicas$().toPromise();
 
-    this.idunidad = Number(this.activatedRouter.snapshot.params.idunidad);
+    this.clave_unidad = this.activatedRouter.snapshot.params.claveunidad;
+
+    if (this.clave_unidad) {
+      const unidad = this.unidades_academicas
+        .find((data) => data.clave === this.clave_unidad);
+
+      this.title =
+        `Unidad Academica: ${unidad.nombre}`;
+    }
 
     this.initForm();
     this.loadingData = false;
@@ -106,10 +113,10 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
             this.validatorMatricula(this.alumnoService)
           ],
         }),
-      idunidad: new FormControl(
+      clave: new FormControl(
         {
-          value: (this.idunidad) ? this.idunidad : '',
-          disabled: (this.idunidad) ? true : false,
+          value: (this.clave_unidad) ? this.clave_unidad : '',
+          disabled: (this.clave_unidad) ? true : false,
         },
         [
           Validators.required
@@ -207,7 +214,9 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
    * @returns <NbComponentStatus>
    */
   public validatorInput(controlName: string, form: FormGroup): NbComponentStatus {
-    return (!form.get(controlName).valid && form.get(controlName).dirty && form.get(controlName).touched) ?
+    return (!form.get(controlName).valid
+      && form.get(controlName).dirty
+      && form.get(controlName).touched) ?
       this.invalid :
       this.valid;
   }
@@ -215,37 +224,40 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
   /**
    * @description Evento que se activa al enviar el formulario
    */
-  public async formSubmit() {
-    // this.loadingData = true;
-    // Titulo de la notificacion
+  public formSubmit() {
+    this.loadingData = true;
+    // TITULO DE LA NOTIFICACION
     const title = 'Registro de alumno';
-    // Habilitamos el campo para poder obtener su valor
-    this.form.get('idunidad').enable();
-    // Iniciamos la peticion
-    const responseNew: ResponseData =
-      await this.alumnoService.newAlumno$(this.form.value).toPromise();
+    // PARA OBTENER EL VALOR EL CONTROL TIENE QUE ESTAR HABILITADO
+    this.form.get('clave').enable();
 
-    if (responseNew)
-      if (responseNew.response) {
-        const
-          perfil = this.form.get('perfil').value,
-          matricula = this.form.get('matricula').value;
-        // Update perfil de alumno
-        const response: ResponseData = await this.alumnoService
-          .uploadFile$(perfil, matricula).toPromise();
+    // CREAMOS UN FORM DATA PARA SUBIR LA DATA Y LA IMAGEN
+    const data: FormData = new FormData();
+    data.append('perfil', this.form.get('perfil').value);
+    data.append('matricula', this.form.get('matricula').value);
+    data.append('clave', this.form.get('clave').value);
+    data.append('nombre', this.form.get('nombre').value);
+    data.append('ape_1', this.form.get('ape_1').value);
+    data.append('ape_2', this.form.get('ape_2').value);
+    data.append('genero', this.form.get('genero').value);
+    data.append('direccion', this.form.get('direccion').value);
+    data.append('telefono', this.form.get('telefono').value);
+    data.append('email', this.form.get('email').value);
 
-        if (response.response) {
-          this.toastService.show(title, responseNew.message, EtypeMessage.SUCCESS);
+    this.alumnoService.newAlumno$(data)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((respons: ResponseData) => {
+        this.toastService.show(
+          title,
+          respons.message,
+          (respons.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER
+        );
 
+        if (respons.response)
           this.router.navigateByUrl(
-            `/pages/alumno/tabla-alumnos/${this.form.get('idunidad').value}`)
-        } else {
-          this.toastService.show(title, responseNew.message, EtypeMessage.DANGER);
-        }
-      } else {
-        this.toastService.show(title, responseNew.message, EtypeMessage.DANGER);
-      }
+            `/pages/alumno/tabla-alumnos/${this.form.get('clave').value}`)
 
-    this.loadingData = false;
+        this.loadingData = false;
+      });
   }
 }

@@ -21,25 +21,25 @@ export class UnidadProvierService extends UnidadAcademicaModel {
     ).pipe(map((response) => <Iunidadacademica[]>response.data));
   }
 
-  getUnidadAcademicaById$(idunidad: number): Observable<Iunidadacademica> {
+  getUnidadAcademicaById$(clave: string): Observable<Iunidadacademica> {
     return this.http.get<ResponseData>(
-      `unidad-academica/${idunidad}`,
+      `unidad-academica/${clave}`,
       this.getOptions()
     ).pipe(map((response) => <Iunidadacademica>response.data));
   }
 
-  updateUnidadAcademica$(unidad_academica: Iunidadacademica): Observable<ResponseData> {
+  updateUnidadAcademica$(data: Iunidadacademica): Observable<ResponseData> {
     return this.http.put<ResponseData>(
       `unidad-academica/update`,
-      unidad_academica,
+      data,
       this.getOptions()
     ).pipe(map((response) => response));
   }
 
-  newUnidadAcademica(unidad_academica: Iunidadacademica): Observable<ResponseData> {
+  newUnidadAcademica(data: Iunidadacademica): Observable<ResponseData> {
     return this.http.post<ResponseData>(
       `unidad-academica/new`,
-      unidad_academica,
+      data,
       this.getOptions()
     ).pipe(map((response) => response));
   }

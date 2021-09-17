@@ -10,13 +10,16 @@ const routes: Routes = [
     component: EmpleadoComponent,
     children: [
       {
-        path: 'tabla-empleados/:idunidad',
+        path: 'tabla-empleados/:claveunidad',
         component: TablaEmpleadoComponent,
       }, {
         path: 'tabla-empleados',
         component: TablaEmpleadoComponent,
       }, {
         path: 'registro-empleado',
+        component: FormRegistroEmpleadoComponent,
+      }, {
+        path: 'registro-empleado/:claveunidad',
         component: FormRegistroEmpleadoComponent,
       }, {
         path: '',

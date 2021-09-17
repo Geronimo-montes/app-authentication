@@ -1,12 +1,11 @@
-import { AsyncValidatorFn } from "@angular/forms";
 import { Observable } from "rxjs";
 import { Eestatus } from "./comonModel";
-import { Idocumento, Ipackdocumentacion } from "./documentoModel";
 import { HeaderOption, ResponseData } from "./headerOptions";
 
 export interface Ialumno {
   matricula: string;
-  idunidad: number;
+  idunidad?: number;
+  clave: string;
   perfil: string;
   nombre: string;
   ape_1: string;
@@ -38,7 +37,7 @@ export abstract class AlumnoModel extends HeaderOption {
    * @param id_unidad 
    * @returns {Observable<Ialumno[]>} Array de alumnos
    */
-  abstract getAlumnosByUnidad$(idunidad: number): Observable<Ialumno[]>;
+  abstract getAlumnosByUnidad$(unidad: string): Observable<Ialumno[]>;
 
   /**
    * Lista los datos de un alumno mediante su matricula
@@ -46,12 +45,6 @@ export abstract class AlumnoModel extends HeaderOption {
    * @returns {Observable<Ialumno>} Objeto con la informacion del alumno.
    */
   abstract getAlumnoByMatricula$(matricula: string): Observable<Ialumno>;
-
-  /**
-   * Actualiza los datos de un alumno, el cambio de estatus cuenta como alta o baja
-   * @param {FormData} $data 
-   */
-  abstract updateAlumno$(alumno: Ialumno): Observable<ResponseData>;
 
   /**
    * Valida si la matricula se enecuentra registrada. 
@@ -64,7 +57,13 @@ export abstract class AlumnoModel extends HeaderOption {
    * @param  {Ialumno} $data 
    * @returns {ResponseData} Mensaje de respuesta
    */
-  abstract newAlumno$(alumno: Ialumno): Observable<ResponseData>;
+  abstract newAlumno$(alumno: FormData): Observable<ResponseData>;
+
+  /**
+   * Actualiza los datos de un alumno, el cambio de estatus cuenta como alta o baja
+   * @param {FormData} $data 
+   */
+  abstract updateAlumno$(alumno: FormData): Observable<ResponseData>;
 
   /**
    * Obtiene los documentos registrados como entregados dado una matricula de alumno y idpack
@@ -73,10 +72,4 @@ export abstract class AlumnoModel extends HeaderOption {
    * @returns {Observable<IdocumentoEntregado[]>}
    */
   abstract getDocsEntregadosByMatriculaPack(matricula: string, idpack: number,): Observable<IdocumentoEntregado[]>;
-
-  /**
-   * Actualiza la foto de perfil del alumno indicado
-   * @param {File} file Archivo a subir
-   */
-  abstract uploadFile$(file: File, matricula: string): Observable<ResponseData>;
 }

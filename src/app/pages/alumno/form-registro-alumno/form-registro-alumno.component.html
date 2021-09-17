@@ -3,7 +3,17 @@
   [nbSpinnerStatus]="'primary'">
 
   <nb-card-header>
-    <h5 class="text-white">Formulario de registro para alumno</h5>
+    <div class="row col-md-auto justify-content-start">
+      <!-- [nbPopover]="templateRef" [nbPopoverTrigger]="'hover'" -->
+      <nb-icon class="text-white h1 mt-auto mb-auto mr-2"
+        icon="alert-circle-outline" pack="eva">
+      </nb-icon>
+
+      <div>
+        <h4 class="text-white">{{ title }}</h4>
+        <h5 class="text-white">Registro de alumno</h5>
+      </div>
+    </div>
   </nb-card-header>
 
   <nb-card-body>
@@ -89,19 +99,19 @@
             <!-- UNIDAD ACADEMICA -->
             <div class="form-group col-md-9 mt-0">
               <label class="label">Unidad Academica</label>
-              <nb-select formControlName="idunidad" fullWidth
+              <nb-select formControlName="clave" fullWidth
                 [nbPopover]="templateRef" [nbPopoverTrigger]="nbPopoverTrigger"
                 [shape]="nbComponentShape"
                 [nbPopoverContext]="{ text: nbPopoverError }"
-                (keyup)="nbPopoverError = getError('idunidad', form);"
-                (focus)="nbPopoverError = getError('idunidad', form);"
-                [status]="validatorInput('idunidad', form)">
+                (keyup)="nbPopoverError = getError('clave', form);"
+                (focus)="nbPopoverError = getError('clave', form);"
+                [status]="validatorInput('clave', form)">
 
                 <nb-option [value]="''">Seleccione Unidad Académica
                 </nb-option>
 
                 <nb-option *ngFor="let g of unidades_academicas"
-                  [value]="g.idunidad">
+                  [value]="g.clave">
                   Clave: {{ g.clave }}, {{ g.nombre }}
                 </nb-option>
               </nb-select>

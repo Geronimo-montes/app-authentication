@@ -10,13 +10,13 @@ const routes: Routes = [
     component: AlumnoComponent,
     children: [
       {
-        path: 'tabla-alumnos/:idunidad',
+        path: 'tabla-alumnos/:claveunidad',
         component: TablaAlumnoComponent,
       }, {
         path: 'registro-alumno',
         component: FormRegistroAlumnoComponent,
       }, {
-        path: 'registro-alumno/:idunidad',
+        path: 'registro-alumno/:claveunidad',
         component: FormRegistroAlumnoComponent,
       }, {
         path: '',

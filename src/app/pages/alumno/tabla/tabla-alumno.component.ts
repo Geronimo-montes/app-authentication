@@ -40,7 +40,7 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  public title: string = `Unidad Acadmica: `;
+  public title: string = ``;
   public object: string = 'alumno';  // nombre de la tabla
   public settings = SETTINGS;
   public filter = FILTER;
@@ -84,19 +84,19 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
    */
   private async loadData() {
     this.loadingData = true;
-    const idunidad = this.activateRouter.snapshot.params.idunidad;
+    const claveunidad = this.activateRouter.snapshot.params.claveunidad;
 
-    // Suscripciones encadenadas
-    this.alumnoService.getAlumnosByUnidad$(idunidad)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() =>
-          this.unidadService.getUnidadAcademicaById$(idunidad)
-            .pipe(
-              takeUntil(this.destroy$),
-              finalize(() => this.loadingData = false)
-            ).subscribe(u => this.title += `${u.clave} ${u.nombre}`))
-      ).subscribe(data => this.dataSource = data);
+    if (claveunidad) {
+      const unidad =
+        await this.unidadService.getUnidadAcademicaById$(claveunidad).toPromise();
+
+      this.dataSource =
+        await this.alumnoService.getAlumnosByUnidad$(claveunidad).toPromise();
+
+      this.title += `Unidad Acadmica: ${unidad.nombre}`;
+    }
+
+    this.loadingData = false;
   }
 
   /**
@@ -127,7 +127,20 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
    * Una vez confirmados los cambios en la información del alumno, realiza la peticion para la actualización de los datos
    * @param {Ialumno} data 
    */
-  private editar(data: Ialumno) {
+  private editar(alumno: Ialumno) {
+    const data: FormData = new FormData();
+    data.append('perfil', alumno.perfil);
+    data.append('matricula', alumno.matricula);
+    data.append('clave', alumno.clave);
+    data.append('nombre', alumno.nombre);
+    data.append('ape_1', alumno.ape_1);
+    data.append('ape_2', alumno.ape_2);
+    data.append('genero', alumno.genero);
+    data.append('direccion', alumno.direccion);
+    data.append('telefono', alumno.telefono);
+    data.append('email', alumno.email);
+    data.append('estatus', alumno.estatus);
+
     this.alumnoService.updateAlumno$(data)
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
@@ -145,12 +158,25 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
    * Cambia el estatus de un alumno a baja
    * @param {Ialumno} data 
    */
-  private delete(data: Ialumno) {
+  private delete(alumno: Ialumno) {
+    const data: FormData = new FormData();
+    data.append('perfil', alumno.perfil);
+    data.append('matricula', alumno.matricula);
+    data.append('clave', alumno.clave);
+    data.append('nombre', alumno.nombre);
+    data.append('ape_1', alumno.ape_1);
+    data.append('ape_2', alumno.ape_2);
+    data.append('genero', alumno.genero);
+    data.append('direccion', alumno.direccion);
+    data.append('telefono', alumno.telefono);
+    data.append('email', alumno.email);
+    data.append('estatus', alumno.estatus);
+
     this.alumnoService.updateAlumno$(data)
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
-          title = `${(data.estatus === 'a') ? 'Alta' : 'Baja'} del alumno ${data.nombre} ${data.ape_1}.`,
+          title = `${(alumno.estatus === 'a') ? 'Alta' : 'Baja'} del alumno ${alumno.nombre} ${alumno.ape_1}.`,
           body = res.message,
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 

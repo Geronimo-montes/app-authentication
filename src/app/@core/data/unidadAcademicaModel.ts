@@ -3,7 +3,6 @@ import { Eestatus } from "./comonModel";
 import { HeaderOption, ResponseData } from "./headerOptions";
 
 export interface Iunidadacademica {
-  idunidad: number;
   clave: string;
   nombre: string;
   perfil: string;
@@ -26,15 +25,15 @@ export abstract class UnidadAcademicaModel extends HeaderOption {
    * @param {number} idunidad 
    * @returns {Observable<Iunidadacademica>} Datos de la unidad académica proporcionada
    */
-  abstract getUnidadAcademicaById$(idunidad: number): Observable<Iunidadacademica>;
+  abstract getUnidadAcademicaById$(clave: string): Observable<Iunidadacademica>;
 
   /**
    * Actualiza los campos de una unidad academica. El campo esperado por la api es: unidad_academica
-   * @param {Iunidadacademica} unidad_academica 
+   * @param {Iunidadacademica} data 
    */
-  abstract updateUnidadAcademica$(unidad_academica: Iunidadacademica): Observable<ResponseData>;
+  abstract updateUnidadAcademica$(data: Iunidadacademica): Observable<ResponseData>;
 
-  abstract newUnidadAcademica(unidad_academica: Iunidadacademica): Observable<ResponseData>;
+  abstract newUnidadAcademica(data: Iunidadacademica): Observable<ResponseData>;
 
   // abstract uploadFile(file: FormData, idunidad: number): Observable<boolean>;
 }

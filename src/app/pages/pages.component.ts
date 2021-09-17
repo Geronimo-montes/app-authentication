@@ -45,7 +45,12 @@ export class PagesComponent implements OnInit {
 
                 // Agregamos el idunidad para la ruta de alumnos
                 this.menu[1].children.map(i => {
-                  if (i.title === 'Alumnos') i.link += `/${usuario.idunidad}`;
+                  if (i.title === 'Alumnos') {
+                    i.link += `/${usuario.clave}`;
+                  } else if (i.title === 'Alumnos') {
+                    i.link += `/${usuario.clave}`;
+                  }
+                  return i;
                 });
               });
             break;

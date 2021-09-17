@@ -51,7 +51,7 @@ export class AlumnoComponent implements OnInit {
   }
 
   onActivated($event) {
-    if ($event.router) this.updateEnlaces($event.router)
+    if ($event.router) this.updateEnlaces($event.router);
   }
 
   /**

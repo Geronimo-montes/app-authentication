@@ -1,14 +1,16 @@
-<nb-card [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
+<nb-card class="col-md-12" [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
   [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
-  <nb-card-header class="row col-md-12 justify-content-between">
-    <div class="row col-md-auto justify-content-between">
-      <nb-icon [nbPopover]="templateRef" [nbPopoverTrigger]="'hover'"
-        class="text-white h1" icon="alert-circle-outline" pack="eva">
-      </nb-icon>
 
-      <h5 class="text-white ml-2">
-        {{ title }}
-      </h5>
+  <nb-card-header class="row col-md-12 m-auto justify-content-between">
+    <div class="row col-md-auto">
+      <nb-icon [nbPopover]="templateRef" [nbPopoverTrigger]="'hover'"
+        class="text-white h1 mt-auto mb-auto mr-2" icon="alert-circle-outline"
+        pack="eva">
+      </nb-icon>
+      <div>
+        <h4 class="text-white">{{ title }}</h4>
+        <h5 class="text-white">Listado de {{object}}s</h5>
+      </div>
     </div>
 
     <div class="row col-md-auto justify-content-between">
@@ -19,7 +21,7 @@
         <nb-icon nbSuffix icon="search-outline" pack="eva"></nb-icon>
       </nb-form-field>
 
-      <button class="button-refresh ml-2" nbButton shape="round"
+      <button class="button-refresh mt-auto mb-auto ml-2" nbButton shape="round"
         [size]="'medium'" [status]="'info'"
         (click)="rowSelectedEmit($event,'update_data_list')"
         nbPopover="Actualizar datos de la tabla" [nbPopoverTrigger]="'hover'">

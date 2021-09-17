@@ -22,9 +22,9 @@ export class EmpleadoProvierService extends EmpleadoModel {
     ).pipe(map((response) => <Iusuario[]>response.data));
   }
 
-  public getEmpleadosByUnidad$(idunidad: number): Observable<Iusuario[]> {
+  public getEmpleadosByUnidad$(clave_unidad: string): Observable<Iusuario[]> {
     return this.http.get<ResponseData>(
-      `empleado/all/${idunidad}`,
+      `empleado/all/${clave_unidad}`,
       this.getOptions()
     ).pipe(map((response) => <Iusuario[]>response.data));
   }

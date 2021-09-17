@@ -18,9 +18,9 @@ export class AlumnoProvierService extends AlumnoModel {
     super(http);
   }
 
-  public getAlumnosByUnidad$(idunidad: number): Observable<Ialumno[]> {
+  public getAlumnosByUnidad$(clave: string): Observable<Ialumno[]> {
     return this.http.get<ResponseData>(
-      `alumno/all/${idunidad}`,
+      `alumno/all/${clave}`,
       this.getOptions()
     ).pipe(map((response) => <Ialumno[]>response.data));
   }
@@ -32,14 +32,6 @@ export class AlumnoProvierService extends AlumnoModel {
     ).pipe(map((response) => <Ialumno>response.data));
   }
 
-  public updateAlumno$(alumno_data: Ialumno): Observable<ResponseData> {
-    return this.http.put<ResponseData>(
-      `alumno/update`,
-      { data: alumno_data },
-      this.getOptions()
-    ).pipe(map((response) => response));
-  }
-
   public validarMatricula$(matricula: string): Observable<boolean> {
     return this.http.get<ResponseData>(
       `alumno/validar/${matricula}`,
@@ -47,11 +39,19 @@ export class AlumnoProvierService extends AlumnoModel {
     ).pipe(map((response) => response.data));
   }
 
-  public newAlumno$(alumno_data: Ialumno): Observable<ResponseData> {
+  public newAlumno$(data: FormData): Observable<ResponseData> {
     return this.http.post<ResponseData>(
       `alumno/new`,
-      { data: alumno_data },
-      this.getOptions()
+      data,
+      this.getOptionsFile()
+    ).pipe(map((response) => response));
+  }
+
+  public updateAlumno$(data: FormData): Observable<ResponseData> {
+    return this.http.put<ResponseData>(
+      `alumno/update`,
+      data,
+      this.getOptionsFile()
     ).pipe(map((response) => response));
   }
 
@@ -60,20 +60,5 @@ export class AlumnoProvierService extends AlumnoModel {
       `alumno/${matricula}/${idpack}`,
       this.getOptions()
     ).pipe(map((response) => <IdocumentoEntregado[]>response.data));
-  }
-
-  public uploadFile$(file: File, matricula: string): Observable<ResponseData> {
-    const data: FormData = new FormData();
-    data.append('file', file);
-
-    return this.http.post<ResponseData>(
-      `alumno/upload/${matricula}/${this.getRandomString()}`,
-      data,
-      this.getOptionsFile(),
-    ).pipe(map((response) => response));
-  }
-
-  private getRandomString(): string {
-    return (Math.random() + 1).toString(36).substring(0, 20).replace(/\./g, 'a')
   }
 }

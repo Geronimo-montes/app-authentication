@@ -1,7 +1,20 @@
+import { EmpleadoModel } from '../../../@core/data/empleadoModel';
+import { ResponseData } from '../../../@core/data/headerOptions';
 import { Erol } from '../../../@core/data/userModel';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
 import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import {
+  take,
+  takeUntil,
+} from 'rxjs/operators';
+import {
+  ActivatedRoute,
+  Router,
+} from '@angular/router';
+import {
+  EtypeMessage,
+  ToastService,
+} from '../../../@core/mock/root-provider/Toast.service';
 import {
   Iunidadacademica,
   UnidadAcademicaModel,
@@ -23,10 +36,6 @@ import {
   NbTrigger,
   NbTriggerValues,
 } from '@nebular/theme';
-import { EmpleadoModel } from '../../../@core/data/empleadoModel';
-import { Router } from '@angular/router';
-import { ResponseData } from '../../../@core/data/headerOptions';
-import { EtypeMessage, ToastService } from '../../../@core/mock/root-provider/Toast.service';
 
 @Component({
   selector: 'app-form-registro-empleado',
@@ -34,9 +43,11 @@ import { EtypeMessage, ToastService } from '../../../@core/mock/root-provider/To
   styleUrls: ['./form-registro-empleado.component.scss']
 })
 export class FormRegistroEmpleadoComponent implements OnInit, OnDestroy {
-
+  public title: string = ``;
   private destroy$: Subject<void> = new Subject<void>(); // Unsuscribe suscripciones
   public loadingData: boolean = false;
+
+  private clave_unidad: string;
 
   public form: FormGroup;
   public nbPopoverError: string = ''; // Msj con el error del input
@@ -58,13 +69,24 @@ export class FormRegistroEmpleadoComponent implements OnInit, OnDestroy {
     private unidadService: UnidadAcademicaModel,
     private empleadoService: EmpleadoModel,
     private toastService: ToastService,
+    private activatedRouter: ActivatedRoute,
     private router: Router,
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.loadingData = true;
 
-    this.unidades_academicas = await this.unidadService.getUnidadesAcademicas$().toPromise();
+    this.unidades_academicas =
+      await this.unidadService.getUnidadesAcademicas$().toPromise();
+
+    this.clave_unidad = this.activatedRouter.snapshot.params.claveunidad;
+
+    if (this.clave_unidad) {
+      const unidad = this.unidades_academicas
+        .find((data) => data.clave === this.clave_unidad);
+
+      this.title = `Unidad Academica ${unidad.nombre}`;
+    }
 
     this.initForm();
     this.loadingData = false;
@@ -92,7 +114,14 @@ export class FormRegistroEmpleadoComponent implements OnInit, OnDestroy {
         Validators.maxLength(100)
       ]),
       rol: new FormControl('', [Validators.required,]),
-      idunidad: new FormControl('', [Validators.required,]),
+      clave: new FormControl(
+        {
+          value: (this.clave_unidad) ? this.clave_unidad : '',
+          disabled: (this.clave_unidad) ? true : false,
+        },
+        [
+          Validators.required
+        ]),
       nombre: new FormControl('',
         [
           Validators.required,
@@ -161,9 +190,11 @@ export class FormRegistroEmpleadoComponent implements OnInit, OnDestroy {
    * @returns <NbComponentStatus>
    */
   public validatorInput(controlName: string, form: FormGroup): NbComponentStatus {
-    return (!form.get(controlName).valid && form.get(controlName).dirty && form.get(controlName).touched) ?
-      this.invalid :
-      this.valid;
+    return (
+      !form.get(controlName).valid
+      && form.get(controlName).dirty
+      && form.get(controlName).touched
+    ) ? this.invalid : this.valid;
   }
 
   /**

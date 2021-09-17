@@ -65,7 +65,7 @@ export class DashboardComponent implements OnInit {
             .pipe(take(1))
             .subscribe(usuario => {
               this.controlls.map(o => {
-                if (o.objeto === 'alumno') o.link += `/${usuario.idunidad}`;
+                if (o.objeto === 'alumno') o.link += `/${usuario.clave}`;
               });
             });
         };

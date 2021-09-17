@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmpleadoComponent } from './empleado.component';
-import { NbButtonModule, NbCardModule, NbInputModule, NbPopoverModule, NbSelectModule, NbSpinnerModule } from '@nebular/theme';
+import { NbButtonModule, NbCardModule, NbIconModule, NbInputModule, NbPopoverModule, NbSelectModule, NbSpinnerModule } from '@nebular/theme';
 import { ThemeModule } from '../../@theme/theme.module';
 import { EmpleadoRoutingModule } from './empleado-routing.module';
 import { TablaEmpleadoComponent } from './tabla-empleado/tabla-empleado.component';
@@ -21,7 +21,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     NbInputModule,
     NbButtonModule,
     NbPopoverModule,
-    NbSelectModule
+    NbSelectModule,
+    NbIconModule,
   ],
   declarations: [
     EmpleadoComponent,

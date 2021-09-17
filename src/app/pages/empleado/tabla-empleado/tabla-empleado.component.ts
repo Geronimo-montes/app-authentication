@@ -81,25 +81,21 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
    */
   private async loadData() {
     this.loadingData = true;
-    const idunidad = this.activateRouter.snapshot.params.idunidad;
+    const claveunidad = this.activateRouter.snapshot.params.claveunidad;
 
 
-    if (idunidad) {
+    if (claveunidad) {
       const unidad =
-        await this.unidadService.getUnidadAcademicaById$(idunidad).toPromise();
+        await this.unidadService.getUnidadAcademicaById$(claveunidad).toPromise();
+
       this.dataSource =
+        await this.empleadoService.getEmpleadosByUnidad$(claveunidad).toPromise();
 
-        await this.empleadoService.getEmpleadosByUnidad$(idunidad).toPromise()
-      this.title = `Unidad Acadmica: ${unidad.clave} ${unidad.nombre}`;
-
+      this.title = `Unidad Academica ${unidad.nombre}`;
     } else {
       this.dataSource = await this.empleadoService.getEmpleados$().toPromise();
       this.title = `Lista de empleados`;
     }
-    // .pipe(take(1), takeUntil(this.destroy$))
-    // .subscribe(data => {
-    //   this.dataSource = data;
-    // });
 
     this.loadingData = false;
   }

@@ -9,7 +9,7 @@ export interface Iusuario {
   password?: string;
   rol: Erol;
   sesion_conectada?: string;
-  idunidad?: number;
+  clave?: string;
   idjefatura?: number;
   dataJefatura?: Iusuario;
   nombre?: string;

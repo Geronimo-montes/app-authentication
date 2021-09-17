@@ -1,32 +1,38 @@
 import { Router } from '@angular/router';
 import { NbAccessChecker } from '@nebular/security';
 import { NbDialogService } from '@nebular/theme';
-import { Observable, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
+import {
+  Observable,
+  Subject,
+} from 'rxjs';
+import {
+  take,
+  takeUntil,
+} from 'rxjs/operators';
 import {
   EtypeMessage,
   ToastService
 } from '../../../@core/mock/root-provider/Toast.service';
+import {
+  Iunidadacademica,
+  UnidadAcademicaModel
+} from '../../../@core/data/unidadAcademicaModel';
+import {
+  FILTER,
+  SETTINGS
+} from './unidad-academica-settings';
 import {
   Component,
   OnDestroy,
   OnInit
 } from '@angular/core';
 import {
-  Iunidadacademica,
-  UnidadAcademicaModel
-} from '../../../@core/data/unidadAcademicaModel';
-import {
   ConfirmacionComponent,
   Eaccion,
   Iacciondata,
   typeicon
 } from '../../../@theme/components';
-import {
-  FILTER,
-  SETTINGS
-} from './unidad-academica-settings';
 
 @Component({
   selector: 'app-tabla-unidades-academicas',
@@ -41,7 +47,7 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  public title: string = 'Lista de Unidades Académicas'; // nombre de la tabla
+  public title: string = ''; // nombre de la tabla
   public object: string = 'unidad'; // nombre de la tabla
   public settings = SETTINGS;
   public filter = FILTER;
@@ -172,9 +178,9 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
     }).onClose.pipe(take(1), takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
         if (res)
-          this.router.navigateByUrl(`/pages/empleado/tabla-empleados/${data.idunidad}`);
+          this.router.navigateByUrl(`/pages/empleado/tabla-empleados/${data.clave}`);
         else
-          this.router.navigateByUrl(`/pages/alumno/tabla-alumnos/${data.idunidad}`);
+          this.router.navigateByUrl(`/pages/alumno/tabla-alumnos/${data.clave}`);
       })
   }
 }
