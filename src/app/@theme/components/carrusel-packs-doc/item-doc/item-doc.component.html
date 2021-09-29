@@ -19,14 +19,20 @@
 
   <!-- button -->
   <div class="content-buttons">
-    <button *ngIf="btnView" nbButton shape="semi-round" size="large"
-      status="info" nbPopoverTrigger="hint" nbPopover="Ver documento">
+    <button *ngIf="btnView" nbButton shape="semi-round" status="warning"
+      nbPopoverTrigger="hint" nbPopover="Ver documento"
+      (click)="viewDocumento(documento)">
       <nb-icon icon="eye" pack="eva"></nb-icon>
     </button>
 
-    <button *ngIf="btnUpload" nbButton shape="semi-round" size="large"
-      status="info" nbPopoverTrigger="hint" nbPopover="Subir documento"
-      (click)="f.click()">
+    <button *ngIf="btnUpload" nbButton shape="semi-round" status="success"
+      nbPopoverTrigger="hint" nbPopover="Descargar"
+      (click)="downloadDocumento(documento)">
+      <nb-icon icon="cloud-download" pack="eva"></nb-icon>
+    </button>
+
+    <button *ngIf="btnUpload" nbButton shape="semi-round" status="info"
+      nbPopoverTrigger="hint" nbPopover="Subir documento" (click)="f.click()">
       <nb-icon icon="cloud-upload" pack="eva"></nb-icon>
     </button>
   </div>

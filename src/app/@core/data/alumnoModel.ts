@@ -57,19 +57,17 @@ export abstract class AlumnoModel extends HeaderOption {
    * @param  {Ialumno} $data 
    * @returns {ResponseData} Mensaje de respuesta
    */
-  abstract newAlumno$(alumno: FormData): Observable<ResponseData>;
+  abstract postAlumno$(alumno: FormData, matricula: string): Observable<ResponseData>;
 
   /**
-   * Actualiza los datos de un alumno, el cambio de estatus cuenta como alta o baja
+   * Actualiza los datos de un alumno
    * @param {FormData} $data 
    */
-  abstract updateAlumno$(alumno: FormData): Observable<ResponseData>;
+  abstract putAlumno$(alumno: FormData, matricula: string): Observable<ResponseData>;
 
   /**
-   * Obtiene los documentos registrados como entregados dado una matricula de alumno y idpack
-   * @param {string} matricula 
-   * @param {number} idpack 
-   * @returns {Observable<IdocumentoEntregado[]>}
+   * Elimina un alumno
+   * @param {FormData} $matricula 
    */
-  abstract getDocsEntregadosByMatriculaPack(matricula: string, idpack: number,): Observable<IdocumentoEntregado[]>;
+  abstract putEstatusAlumno$(matricula: string, estatus: string): Observable<ResponseData>;
 }

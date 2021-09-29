@@ -6,14 +6,15 @@ import {
 import {
   DocumentoModel,
   Idocumento,
-  Ipackdocumentacion
 } from '../../../@core/data/documentoModel';
 import {
   AlumnoModel,
   Ialumno,
   IdocumentoEntregado
 } from '../../../@core/data/alumnoModel';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { Ipackdocumentacion } from '../../../@core/data/paqueteDocumentoModel';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Recuadro que indica si el documento ya ha sido entregado o no.
@@ -29,6 +30,7 @@ interface Ibadge {
   styleUrls: ['./carrusel-packs-doc.component.scss']
 })
 export class CarruselPacksDocComponent {
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * Data de los paquetes de documentos
@@ -84,15 +86,18 @@ export class CarruselPacksDocComponent {
     this.view_datalle = true
 
     // Obtenermos los documentos que conforman el pauqete
-    this.selected_pack.detalleDocumento = await this.documentoService
-      .getDetallePackDocumento$(this.selected_pack.idpaquete).toPromise();
+    this.selected_pack.detalleDocumento =
+      await this.documentoService.getDocumentosByPaquete$(this.selected_pack.idpaquete)
+        .toPromise();
     // Obtenemos los documentos que el alumno ya ha entregado
     this.cargarEntregas();
     this.loadingData = false;
   }
 
   public async cargarEntregas() {
-    this.docs_entregados = await this.alumnoService.getDocsEntregadosByMatriculaPack(this.alumno.matricula, this.selected_pack.idpaquete).toPromise();
+    this.docs_entregados =
+      await this.documentoService
+        .getEntregasByPaqueteMatricula$(this.selected_pack.idpaquete, this.alumno.matricula).toPromise();
   }
 
   /**
@@ -108,6 +113,23 @@ export class CarruselPacksDocComponent {
       text: (validacion === undefined) ? 'Sin entrega' : 'Entregado',
       status: (validacion === undefined) ? 'danger' : 'success'
     };
+  }
+
+  public downloadDocumentosZIP() {
+    const { idpaquete } = this.selected_pack;
+    const { matricula } = this.alumno;
+
+    this.documentoService.getDownloadDocumentosByPaquete$(idpaquete, matricula)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        const a = document.createElement('a');
+        const ruta = window.URL.createObjectURL(data);
+        a.href = ruta;
+        a.setAttribute('download', 'nombre.zip');
+        document.body.appendChild(a);
+        a.click();
+      });
+
   }
 }
 

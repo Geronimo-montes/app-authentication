@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
-import { Idocumento, Ipackdocumentacion } from '../../../@core/data/documentoModel';
+import { Idocumento } from '../../../@core/data/documentoModel';
+import { Ipackdocumentacion } from '../../../@core/data/paqueteDocumentoModel';
 
 @Component({
   selector: 'app-view-pack',

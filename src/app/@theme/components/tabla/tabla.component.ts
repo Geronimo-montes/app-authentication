@@ -110,10 +110,10 @@ export class TablaComponent implements OnInit, OnChanges, OnDestroy {
       body = `Esta por entrar guardar los cambios realizados.`;
 
     this.dialogeConfirmacion(title, body)
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
         if (res)
-          this.rowSelectedEmit($event.data, Eaccion.EDIT);
+          this.rowSelectedEmit($event.newData, Eaccion.EDIT);
         else
           $event.confirm.reject();
       });
@@ -131,7 +131,7 @@ export class TablaComponent implements OnInit, OnChanges, OnDestroy {
         `El elemento seleccionado se dara de alta en el sistema.`;
 
     this.dialogeConfirmacion(title, body)
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
         if (res) {
           $event.data.estatus = ($event.data.estatus === 'a') ? 'b' : 'a';
@@ -164,15 +164,15 @@ export class TablaComponent implements OnInit, OnChanges, OnDestroy {
    */
   private addControlsViewEditDelete(): void {
     this.accessChecker.isGranted(Eaccion.EDIT, this.object)
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(access => this.settings.edit = (access) ? EDIT_CONTROL : null);
 
     this.accessChecker.isGranted(Eaccion.DELETE, this.object)
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(access => this.settings.delete = (access) ? DELETE_CONTROL : null);
 
     this.accessChecker.isGranted(Eaccion.VIEW, this.object)
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(access => this.settings.actions.custom = (access) ? VIEW_CONTROL : null);
   }
 }

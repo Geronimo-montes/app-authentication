@@ -17,7 +17,7 @@ export class EmpleadoProvierService extends EmpleadoModel {
 
   public getEmpleados$(): Observable<Iusuario[]> {
     return this.http.get<ResponseData>(
-      `empleado/all`,
+      `empleado/`,
       this.getOptions()
     ).pipe(map((response) => <Iusuario[]>response.data));
   }
@@ -36,19 +36,50 @@ export class EmpleadoProvierService extends EmpleadoModel {
     ).pipe(map((response) => <Iusuario>response.data));
   }
 
-  public updateEmpleado$(data: Iusuario): Observable<ResponseData> {
+  public updateEmpleado$(empleado: Iusuario): Observable<ResponseData> {
+    const data = new FormData();
+    data.append('idusuario', empleado.idusuario.toString());
+    data.append('email', empleado.email);
+    data.append('password', empleado.password);
+    data.append('rol', empleado.rol);
+    data.append('clave', empleado.clave);
+    data.append('nombre', empleado.nombre);
+    data.append('ape_1', empleado.ape_1);
+    data.append('ape_2', empleado.ape_2);
+    data.append('telefono', empleado.telefono);
+
     return this.http.put<ResponseData>(
-      `empleado/update`,
-      { data },
+      `empleado/${empleado.idusuario}`,
+      data,
+      this.getOptionsFile()
+    ).pipe(map((response) => response));
+  }
+
+  public updateEstatusEmpleado$(idusuario: number, estatus: string): Observable<ResponseData> {
+    return this.http.put<ResponseData>(
+      `empleado/${idusuario}/${estatus}`,
+      {},
       this.getOptions()
     ).pipe(map((response) => response));
   }
 
-  public newEmpleado$(data: Iusuario): Observable<ResponseData> {
+  public newEmpleado$(empleado: Iusuario): Observable<ResponseData> {
+
+    const data = new FormData();
+    data.append('perfil', empleado.perfil);
+    data.append('email', empleado.email);
+    data.append('password', empleado.password);
+    data.append('rol', empleado.rol);
+    data.append('clave', empleado.clave);
+    data.append('nombre', empleado.nombre);
+    data.append('ape_1', empleado.ape_1);
+    data.append('ape_2', empleado.ape_2);
+    data.append('telefono', empleado.telefono);
+
     return this.http.post<ResponseData>(
       `empleado/new`,
-      { data },
-      this.getOptions()
+      data,
+      this.getOptionsFile()
     ).pipe(map((response) => response));
   }
 }

@@ -9,12 +9,14 @@ import { EmpleadoProvierService } from './EmpleadoProvider.service';
 import { RoleProviderService } from './rolProvider.service';
 import { FileProvierService } from './FileProvider.service';
 import { ToastService } from './root-provider';
+import { PaqueteDocProvierService } from './PaqueteDocProvider.service';
 
 const SERVICES = [
   UserProvierService,
   AlumnoProvierService,
   UnidadProvierService,
   DocumentoProvierService,
+  PaqueteDocProvierService,
   EmpleadoProvierService,
   RoleProviderService,
   FileProvierService,

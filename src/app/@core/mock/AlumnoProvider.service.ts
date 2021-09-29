@@ -39,26 +39,27 @@ export class AlumnoProvierService extends AlumnoModel {
     ).pipe(map((response) => response.data));
   }
 
-  public newAlumno$(data: FormData): Observable<ResponseData> {
+  public postAlumno$(data: FormData, matricula: string): Observable<ResponseData> {
     return this.http.post<ResponseData>(
-      `alumno/new`,
+      `alumno/${matricula}`,
       data,
       this.getOptionsFile()
     ).pipe(map((response) => response));
   }
 
-  public updateAlumno$(data: FormData): Observable<ResponseData> {
+  public putAlumno$(data: FormData, matricula: string): Observable<ResponseData> {
     return this.http.put<ResponseData>(
-      `alumno/update`,
+      `alumno/${matricula}`,
       data,
       this.getOptionsFile()
     ).pipe(map((response) => response));
   }
 
-  public getDocsEntregadosByMatriculaPack(matricula: string, idpack: number): Observable<IdocumentoEntregado[]> {
-    return this.http.get<ResponseData>(
-      `alumno/${matricula}/${idpack}`,
+  public putEstatusAlumno$(matricula: string, estatus: string): Observable<ResponseData> {
+    return this.http.put<ResponseData>(
+      `alumno/${matricula}/${estatus}`,
+      {},
       this.getOptions()
-    ).pipe(map((response) => <IdocumentoEntregado[]>response.data));
+    ).pipe(map((response) => response));
   }
 }

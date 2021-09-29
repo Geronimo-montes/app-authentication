@@ -39,6 +39,14 @@ export abstract class HeaderOption {
   protected getOptionsFile() {
     return {
       headers: new HttpHeaders({
+        Authorization: `Bearer ${this.token}`,
+      }),
+    };
+  }
+
+  protected getOptionsMultipart() {
+    return {
+      headers: new HttpHeaders({
         // 'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${this.token}`,
       }),

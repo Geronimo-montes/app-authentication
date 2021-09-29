@@ -1,18 +1,8 @@
 import { Observable } from "rxjs";
+import { IdocumentoEntregado } from "./alumnoModel";
 import { Eestatus } from "./comonModel";
 import { HeaderOption, ResponseData } from "./headerOptions";
-
-export interface Ipackdocumentacion {
-  idpaquete: number;
-  ruta_imagen: string;
-  nombre: string;
-  descripcion: string;
-  numero_documentos: number;
-  detalleDocumento: Idocumento[];
-  fecha_creacion: Date;
-  fecha_modificacion: Date;
-  estatus: Eestatus;
-};
+import { Ipackdocumentacion } from "./paqueteDocumentoModel";
 
 export interface Idocumento {
   iddocumento: number;
@@ -40,29 +30,19 @@ export enum Erequerido {
 
 export abstract class DocumentoModel extends HeaderOption {
 
-  /**
-   * lista todos los paquetes de documentos registrados en la bd.
-   * @returns {Observable<IpackDocumentacion[]>} 
-   */
-  abstract getPaqueteDocumentos$(): Observable<Ipackdocumentacion[]>;
+  abstract getDocumentosByPaquete$(idpaquete: number): Observable<Idocumento[]>;
 
-  /**
-   * Lsita los datos generales de un paquete de documentos mediante el id.
-   * @param {number} idpaquetedocumentos 
-   * @returns {Observable<Ipackdocumentacion>}
-   */
-  abstract getPaqueteDocumentosById$(idpaquetedocumentos: number): Observable<Ipackdocumentacion>;
+  abstract getInfoDocumento$(idpaquete: number, iddocumento: number): Observable<Idocumento>;
 
-  /**
-   * Obtiene los documentos que conforman el paquete de documento. Solo lista los detalles tecnicos de cada documento.
-   * @param {number} idpaquete 
-   * @returns {Observable<Idocumento[]>} Lista de documentos con su informacion
-   */
-  abstract getDetallePackDocumento$(idpaquete: number): Observable<Idocumento[]>;
+  abstract getEntregasByPaqueteMatricula$(idpaquete: number, matricula: string): Observable<IdocumentoEntregado[]>;
 
-  abstract updatePaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData>;
+  abstract getDownloadDocumentosByPaquete$(idpaquete: number, matricula: string): Observable<any>;
 
-  abstract newPaqueteDocumentos$(data: Ipackdocumentacion): Observable<ResponseData>;
+  abstract getDownloadDocumentoById$(idpaquete: number, iddocumento: number, matricula: string): Observable<any>
 
-  abstract entregarDocumento$(file: File, matricula: string, name: string, idpaquete: number, iddocumento: number): Observable<ResponseData>;
+  abstract getDocumentoById$(idpaquete: number, iddocumento: number, matricula: string): Observable<any>;
+
+  abstract postUploadDocumento$(idpaquete: number, iddocumento: number, matricula: string, file: File): Observable<ResponseData>;
+
+  abstract putUploadDocumento$(idpaquete: number, iddocumento: number, matricula: string, file: File): Observable<ResponseData>;
 }

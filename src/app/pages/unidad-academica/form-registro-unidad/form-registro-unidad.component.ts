@@ -1,11 +1,9 @@
 import { Router } from '@angular/router';
 import { ResponseData } from '../../../@core/data/headerOptions';
 import { UnidadAcademicaModel } from '../../../@core/data/unidadAcademicaModel';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { fileType } from '../../../@theme/components/file-upload/fileType.validators';
-import {
-  take,
-  takeUntil
-} from 'rxjs/operators';
 import {
   EtypeMessage,
   ToastService
@@ -27,7 +25,6 @@ import {
   NbTrigger,
   NbTriggerValues
 } from '@nebular/theme';
-import { async, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-form-registro-unidad',
@@ -143,8 +140,8 @@ export class FormRegistroUnidadComponent implements OnInit, OnDestroy {
    */
   public formSubmit() {
     this.loadingData = true;
-    this.unidadService.newUnidadAcademica(this.form.value)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.unidadService.postUnidadAcademica(this.form.value)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
           title = 'Registro de unidad académica',

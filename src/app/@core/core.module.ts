@@ -30,6 +30,8 @@ import { EmpleadoProvierService } from './mock/EmpleadoProvider.service';
 
 import { FileModel } from './data/fileModel';
 import { FileProvierService } from './mock/FileProvider.service';
+import { PaqueteDocModel } from './data/paqueteDocumentoModel';
+import { PaqueteDocProvierService } from './mock/PaqueteDocProvider.service';
 
 
 const GUARDS = [
@@ -42,6 +44,7 @@ const DATA_SERVICES = [
   { provide: UserModel, useClass: UserProvierService },
   { provide: UnidadAcademicaModel, useClass: UnidadProvierService },
   { provide: DocumentoModel, useClass: DocumentoProvierService },
+  { provide: PaqueteDocModel, useClass: PaqueteDocProvierService },
   { provide: AlumnoModel, useClass: AlumnoProvierService },
   { provide: EmpleadoModel, useClass: EmpleadoProvierService },
   { provide: FileModel, useClass: FileProvierService },

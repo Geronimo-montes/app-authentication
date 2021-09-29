@@ -92,7 +92,7 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
     this.loadingData = true;
 
     this.unidadService.getUnidadesAcademicas$()
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(unidadesAcademicas => {
         this.dataSource = unidadesAcademicas;
         this.loadingData = false;
@@ -105,7 +105,7 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
    */
   public unidadSeleccionada($event: Iacciondata) {
     this.accessChecker.isGranted($event.accion, 'unidad')
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(access => {
         if (access) {
           switch ($event.accion) {
@@ -128,8 +128,8 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
    * @param {Iunidadacademica} data 
    */
   private editar(data: Iunidadacademica) {
-    this.unidadService.updateUnidadAcademica$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.unidadService.putUnidadAcademica$(data)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
           title = 'Actualización de información',
@@ -146,8 +146,8 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
    * @param {Iunidadacademica} data 
    */
   private delete(data: Iunidadacademica) {
-    this.unidadService.updateUnidadAcademica$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.unidadService.putEstatusUnidadAcademica(data.clave, data.estatus)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
           title = (data.estatus === 'a') ?
@@ -175,7 +175,7 @@ export class TablaUnidadesAcademicasComponent implements OnInit, OnDestroy {
       context: { titulo: title, cuerpo: body, btnCancel: 'Alumnos', btnConfirmar: 'Empleados' },
       closeOnEsc: false,
       closeOnBackdropClick: false,
-    }).onClose.pipe(take(1), takeUntil(this.destroy$))
+    }).onClose.pipe(takeUntil(this.destroy$))
       .subscribe((res: boolean) => {
         if (res)
           this.router.navigateByUrl(`/pages/empleado/tabla-empleados/${data.clave}`);

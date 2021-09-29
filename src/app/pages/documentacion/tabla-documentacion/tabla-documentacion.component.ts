@@ -17,10 +17,10 @@ import {
 import {
   DocumentoModel,
   Idocumento,
-  Ipackdocumentacion
 } from '../../../@core/data/documentoModel';
 import { ResponseData } from '../../../@core/data/headerOptions';
 import { Router } from '@angular/router';
+import { Ipackdocumentacion, PaqueteDocModel } from '../../../@core/data/paqueteDocumentoModel';
 
 @Component({
   selector: 'app-tabla-documentacion',
@@ -43,6 +43,7 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
 
   constructor(
     private documentoService: DocumentoModel,
+    private paqueteDocService: PaqueteDocModel,
     private toastService: ToastService,
     private dialogService: NbDialogService,
     private accessChecker: NbAccessChecker,
@@ -75,15 +76,19 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
   /**
    * Realiza la peticion para obtener la lista de paquetes de documentacion registrados.
    */
-  private loadData() {
+  private async loadData() {
     this.loadingData = true;
 
-    this.documentoService.getPaqueteDocumentos$()
-      .pipe(take(1), takeUntil(this.destroy$))
-      .subscribe(paquetesDocumentos => {
-        this.dataSource = paquetesDocumentos;
-        this.loadingData = false;
-      });
+    this.dataSource =
+      await this.paqueteDocService.getAllPaquete$().toPromise();
+
+    this.loadingData = false;
+    //  this.documentoService.getPaqueteDocumentos$()
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe(paquetesDocumentos => {
+    //     this.dataSource = paquetesDocumentos;
+    //     this.loadingData = false;
+    //   });
   }
 
   /**
@@ -92,7 +97,7 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
    */
   documentacionSeleccionado($event) {
     this.accessChecker.isGranted($event.accion, 'documento')
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(access => {
         if (access) {
           switch ($event.accion) {
@@ -115,8 +120,8 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
    * @param {Ipackdocumentacion} data 
    */
   private editar(data: Ipackdocumentacion) {
-    this.documentoService.updatePaqueteDocumentos$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.paqueteDocService.updatePaquete$(data)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
           title = 'Actualización de información',
@@ -130,16 +135,16 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
 
   /**
    * Al confirmar la accion se realiza la peticion para la actualizacion del estatus del paquete de documentos, si esta dado de baja lo actualiza a alta y viceverza.
-   * @param {Ipackdocumentacion} data 
+   * @param {Ipackdocumentacion} row 
    */
-  private delete(data: Ipackdocumentacion) {
-    this.documentoService.updatePaqueteDocumentos$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+  private delete(row: Ipackdocumentacion) {
+    this.paqueteDocService.updateEstatusPaquete$(row.idpaquete, row.estatus)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
-          title = (data.estatus === 'a') ?
-            `El paquete de documentos ${data.nombre} se dara de alta.` :
-            `El paquete de documentos ${data.nombre} se dara de Baja.`,
+          title = (row.estatus === 'a') ?
+            `El paquete de documentos ${row.nombre} se dara de alta.` :
+            `El paquete de documentos ${row.nombre} se dara de Baja.`,
           body = res.message,
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
@@ -149,8 +154,8 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
   }
 
   private view(data: Ipackdocumentacion) {
-    this.documentoService.getDetallePackDocumento$(data.idpaquete)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.documentoService.getDocumentosByPaquete$(data.idpaquete)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((documentos: Idocumento[]) => {
         data.detalleDocumento = documentos;
 
@@ -160,7 +165,7 @@ export class TablaDocumentacionComponent implements OnInit, OnDestroy {
             closeOnEsc: false,
             closeOnBackdropClick: false,
           }).onClose
-          .pipe(take(1), takeUntil(this.destroy$))
+          .pipe(takeUntil(this.destroy$))
           .subscribe(() => { });
       });
   }

@@ -1,14 +1,11 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NbPopoverDirective } from '@nebular/theme';
 import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Ialumno } from '../../../../@core/data/alumnoModel';
 import { DocumentoModel, Idocumento } from '../../../../@core/data/documentoModel';
-import { FileModel } from '../../../../@core/data/fileModel';
 import { ResponseData } from '../../../../@core/data/headerOptions';
 import { EtypeMessage, ToastService } from '../../../../@core/mock/root-provider/Toast.service';
-import { fileType } from '../../file-upload/fileType.validators';
 
 @Component({
   selector: 'app-item-doc',
@@ -84,14 +81,12 @@ export class ItemDocComponent implements OnInit, OnDestroy {
     const
       file = $event.target.files[0],
       matricula = this.alumno.matricula,
-      name = this.documento.nombre.replace(/ /gi, '').toLocaleLowerCase(),
       idpaquete = this.documento.idpaquete,
       iddocumento = this.documento.iddocumento,
       title = 'Entrega de documento';
 
-    this.documentoService.entregarDocumento$(
-      file, matricula, name, idpaquete, iddocumento)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.documentoService.postUploadDocumento$(idpaquete, iddocumento, matricula, file)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((response: ResponseData) => {
         if (response.response) {
           this.toastService.show(title, response.message, EtypeMessage.SUCCESS);
@@ -101,5 +96,32 @@ export class ItemDocComponent implements OnInit, OnDestroy {
 
         this.loadingData = false;
       })
+  }
+
+  public viewDocumento(documento: Idocumento) {
+    const { idpaquete, iddocumento } = documento;
+    const { matricula } = this.alumno;
+
+    this.documentoService.getDocumentoById$(idpaquete, iddocumento, matricula)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        window.open(window.URL.createObjectURL(response));
+      });
+  }
+
+  public downloadDocumento(documento: Idocumento) {
+    const { idpaquete, iddocumento, nombre, formato } = documento;
+    const { matricula } = this.alumno;
+
+    this.documentoService.getDownloadDocumentoById$(idpaquete, iddocumento, matricula)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((response) => {
+        const a = document.createElement('a');
+        const ruta = window.URL.createObjectURL(response);
+        a.href = ruta;
+        a.setAttribute('download', `${nombre.split(' ').join('_')}.${formato}`)
+        document.body.appendChild(a);
+        a.click();
+      });
   }
 }

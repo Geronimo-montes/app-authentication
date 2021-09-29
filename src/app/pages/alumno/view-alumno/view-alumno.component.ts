@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { take } from 'rxjs/operators';
 import { Ialumno } from '../../../@core/data/alumnoModel';
-import { DocumentoModel, Ipackdocumentacion } from '../../../@core/data/documentoModel';
+import { DocumentoModel } from '../../../@core/data/documentoModel';
+import { Ipackdocumentacion, PaqueteDocModel } from '../../../@core/data/paqueteDocumentoModel';
 
 @Component({
   selector: 'app-view-alumno',
@@ -21,13 +22,13 @@ export class ViewAlumnoComponent implements OnInit {
 
   constructor(
     protected ref: NbDialogRef<ViewAlumnoComponent>,
-    private documentoService: DocumentoModel,
+    private paqueteDocService: PaqueteDocModel,
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.loadingData = true;
     this.packs_documentos =
-      await this.documentoService.getPaqueteDocumentos$().toPromise();
+      await this.paqueteDocService.getAllPaquete$().toPromise();
     this.loadingData = false;
   }
 

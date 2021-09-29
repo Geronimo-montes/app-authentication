@@ -16,11 +16,13 @@ import {
   FormGroup,
   Validators
 } from '@angular/forms';
-import { DocumentoModel, Idocumento, Ipackdocumentacion } from '../../../@core/data/documentoModel';
-import { take } from 'rxjs/operators';
+import { DocumentoModel, Idocumento } from '../../../@core/data/documentoModel';
+import { takeUntil } from 'rxjs/operators';
 import { ResponseData } from '../../../@core/data/headerOptions';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { EtypeMessage, ToastService } from '../../../@core/mock/root-provider/Toast.service';
+import { Subject } from 'rxjs';
+import { PaqueteDocModel } from '../../../@core/data/paqueteDocumentoModel';
 
 @Component({
   selector: 'app-form-registro-documentacion',
@@ -28,6 +30,7 @@ import { EtypeMessage, ToastService } from '../../../@core/mock/root-provider/To
   styleUrls: ['./form-registro-documentacion.component.scss']
 })
 export class FormRegistroDocumentacionComponent implements OnInit {
+  private destroy$: Subject<void> = new Subject<void>();
 
   public loadingData: boolean = false;
 
@@ -48,7 +51,7 @@ export class FormRegistroDocumentacionComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private documentoService: DocumentoModel,
+    private paqueteDocService: PaqueteDocModel,
     private toastService: ToastService,
     private router: Router,
 
@@ -170,17 +173,21 @@ export class FormRegistroDocumentacionComponent implements OnInit {
    */
   public formSubmit() {
     this.loadingData = true;
-    this.documentoService.newPaqueteDocumentos$(this.form.value)
-      .pipe(take(1))
-      .subscribe((res: ResponseData) => {
-        const
-          title = 'Registro de paquete de documentos',
-          body = res.message,
-          type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
+    // TITULO DE LA NOTIFICACION
+    const title = 'Registro de paquete de documentos';
+    // LANZAMOS LA PETICION DE REGISTRO
+    this.paqueteDocService.newPaquete$(this.form.value)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((r: ResponseData) => {
+        this.toastService.show(
+          title, r.message, (r.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER
+        );
 
-        this.toastService.show(title, body, type);
+        if (r.response)
+          this.router.navigateByUrl(
+            '/pages/documentacion/tabla-documentacion');
+
         this.loadingData = false;
-        this.router.navigateByUrl('/pages/documentacion/tabla-documentacion');
       });
   }
 }

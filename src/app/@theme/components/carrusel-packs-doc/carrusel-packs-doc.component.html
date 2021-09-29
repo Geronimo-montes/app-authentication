@@ -8,9 +8,21 @@
         <nb-icon nbSuffix icon="arrow-back-outline" pack="eva"></nb-icon>
       </button>
     </div>
-    <!-- TITULO DEL CONTENIDO -->
-    <h5 class="text-white"> {{ (view_datalle) ? selected_pack.nombre :
-      'Paquetes de documentacion' }} </h5>
+
+    <div class="col-md-10">
+      <!-- TITULO DEL CONTENIDO -->
+      <h5 class="text-white"> {{ (view_datalle) ? selected_pack.nombre :
+        'Paquetes de documentacion' }} </h5>
+    </div>
+
+    <div class="col-md-1">
+      <!-- Botton de descarga de zip -->
+      <button *ngIf="view_datalle" nbButton shape="semi-round" status="success"
+        nbPopoverTrigger="hint" nbPopover="Descargar todos los documentos"
+        (click)="downloadDocumentosZIP()">
+        <nb-icon icon="cloud-download" pack="eva"></nb-icon>
+      </button>
+    </div>
   </div>
 
   <div class="row"

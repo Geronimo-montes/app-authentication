@@ -93,7 +93,7 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
       this.dataSource =
         await this.alumnoService.getAlumnosByUnidad$(claveunidad).toPromise();
 
-      this.title += `Unidad Acadmica: ${unidad.nombre}`;
+      this.title = `Unidad Acadmica: ${unidad.nombre}`;
     }
 
     this.loadingData = false;
@@ -105,7 +105,7 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
    */
   public alumnoSeleccionado($event: Iacciondata) {
     this.accessChecker.isGranted($event.accion, 'alumno')
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(access => {
         if (access) {
           switch ($event.accion) {
@@ -127,22 +127,20 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
    * Una vez confirmados los cambios en la información del alumno, realiza la peticion para la actualización de los datos
    * @param {Ialumno} data 
    */
-  private editar(alumno: Ialumno) {
+  private editar(row: Ialumno) {
     const data: FormData = new FormData();
-    data.append('perfil', alumno.perfil);
-    data.append('matricula', alumno.matricula);
-    data.append('clave', alumno.clave);
-    data.append('nombre', alumno.nombre);
-    data.append('ape_1', alumno.ape_1);
-    data.append('ape_2', alumno.ape_2);
-    data.append('genero', alumno.genero);
-    data.append('direccion', alumno.direccion);
-    data.append('telefono', alumno.telefono);
-    data.append('email', alumno.email);
-    data.append('estatus', alumno.estatus);
+    data.append('matricula', row.matricula);
+    data.append('clave', row.clave);
+    data.append('nombre', row.nombre);
+    data.append('ape_1', row.ape_1);
+    data.append('ape_2', row.ape_2);
+    data.append('genero', row.genero);
+    data.append('direccion', row.direccion);
+    data.append('telefono', row.telefono);
+    data.append('email', row.email);
 
-    this.alumnoService.updateAlumno$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.alumnoService.putAlumno$(data, row.matricula)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
           title = 'Actualización de información',
@@ -158,25 +156,12 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
    * Cambia el estatus de un alumno a baja
    * @param {Ialumno} data 
    */
-  private delete(alumno: Ialumno) {
-    const data: FormData = new FormData();
-    data.append('perfil', alumno.perfil);
-    data.append('matricula', alumno.matricula);
-    data.append('clave', alumno.clave);
-    data.append('nombre', alumno.nombre);
-    data.append('ape_1', alumno.ape_1);
-    data.append('ape_2', alumno.ape_2);
-    data.append('genero', alumno.genero);
-    data.append('direccion', alumno.direccion);
-    data.append('telefono', alumno.telefono);
-    data.append('email', alumno.email);
-    data.append('estatus', alumno.estatus);
-
-    this.alumnoService.updateAlumno$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+  private delete(row: Ialumno) {
+    this.alumnoService.putEstatusAlumno$(row.matricula, row.estatus)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
-          title = `${(alumno.estatus === 'a') ? 'Alta' : 'Baja'} del alumno ${alumno.nombre} ${alumno.ape_1}.`,
+          title = `${(row.estatus === 'a') ? 'Alta' : 'Baja'} del alumno ${row.nombre} ${row.ape_1}.`,
           body = res.message,
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 
@@ -187,15 +172,15 @@ export class TablaAlumnoComponent implements OnInit, OnDestroy {
 
   /**
    * Visualiza los datos del alumno, muestra la interfaz para la subida de documentos
-   * @param {Ialumno} data 
+   * @param {Ialumno} row 
    */
-  private view(data: Ialumno) {
+  private view(row: Ialumno) {
     this.dialogService.open(ViewAlumnoComponent, {
-      context: { data: data },
+      context: { data: row },
       closeOnEsc: false,
       closeOnBackdropClick: false,
     }).onClose
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => { });
   }
 }

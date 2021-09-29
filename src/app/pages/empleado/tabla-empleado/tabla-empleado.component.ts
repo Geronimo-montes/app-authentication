@@ -105,7 +105,7 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
    */
   empleadoSeleccionado($event) {
     this.accessChecker.isGranted($event.accion, 'empleado')
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(access => {
         if (access) {
           switch ($event.accion) {
@@ -129,7 +129,7 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
    */
   private editar(data: Iusuario) {
     this.empleadoService.updateEmpleado$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
           title = 'Actualización de información',
@@ -146,13 +146,11 @@ export class TablaEmpleadoComponent implements OnInit, OnDestroy {
    * @param {Iusuario} data 
    */
   private delete(data: Iusuario) {
-    this.empleadoService.updateEmpleado$(data)
-      .pipe(take(1), takeUntil(this.destroy$))
+    this.empleadoService.updateEstatusEmpleado$(data.idusuario, data.estatus)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((res: ResponseData) => {
         const
-          title = (data.estatus === 'a') ?
-            `El alumno ${data.nombre} ${data.ape_1} ${data.ape_2} se dara de alta.` :
-            `El alumno ${data.nombre} ${data.ape_1} ${data.ape_2} se dara de baja.`,
+          title = `${(data.estatus === 'a') ? 'Alta' : 'Baja'} de empleado.`,
           body = res.message,
           type = (res.response) ? EtypeMessage.SUCCESS : EtypeMessage.DANGER;
 

@@ -11,7 +11,7 @@ export interface Iusuario {
   sesion_conectada?: string;
   clave?: string;
   idjefatura?: number;
-  dataJefatura?: Iusuario;
+  jefatura?: string;
   nombre?: string;
   ape_1?: string;
   ape_2?: string;
@@ -34,13 +34,6 @@ export abstract class UserModel extends HeaderOption {
    * @returns {<Iusuario>usuario}
    */
   abstract getUser$(): Observable<Iusuario>;
-
-  /**
-   * @name getDataUser$
-   * @description Recupera la informacion personal del usuario
-   * @returns {Observable<Iauxiliar | Ijefatura>}
-   */
-  // abstract getDataUser$(): Observable<Iauxiliar | Ijefatura>;
 
   /**
    * @name logOut$

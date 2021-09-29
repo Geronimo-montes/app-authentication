@@ -232,6 +232,7 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
     this.form.get('clave').enable();
 
     // CREAMOS UN FORM DATA PARA SUBIR LA DATA Y LA IMAGEN
+    const matricula: string = this.form.get('matricula').value;
     const data: FormData = new FormData();
     data.append('perfil', this.form.get('perfil').value);
     data.append('matricula', this.form.get('matricula').value);
@@ -244,7 +245,7 @@ export class FormRegistroAlumnoComponent implements OnInit, OnDestroy {
     data.append('telefono', this.form.get('telefono').value);
     data.append('email', this.form.get('email').value);
 
-    this.alumnoService.newAlumno$(data)
+    this.alumnoService.postAlumno$(data, matricula)
       .pipe(takeUntil(this.destroy$))
       .subscribe((respons: ResponseData) => {
         this.toastService.show(

@@ -31,9 +31,11 @@ export abstract class UnidadAcademicaModel extends HeaderOption {
    * Actualiza los campos de una unidad academica. El campo esperado por la api es: unidad_academica
    * @param {Iunidadacademica} data 
    */
-  abstract updateUnidadAcademica$(data: Iunidadacademica): Observable<ResponseData>;
+  abstract putUnidadAcademica$(data: Iunidadacademica): Observable<ResponseData>;
 
-  abstract newUnidadAcademica(data: Iunidadacademica): Observable<ResponseData>;
+  abstract postUnidadAcademica(data: Iunidadacademica): Observable<ResponseData>;
+
+  abstract putEstatusUnidadAcademica(clave: string, estatus: string): Observable<ResponseData>;
 
   // abstract uploadFile(file: FormData, idunidad: number): Observable<boolean>;
 }

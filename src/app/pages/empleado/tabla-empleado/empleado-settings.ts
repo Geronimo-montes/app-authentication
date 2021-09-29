@@ -15,14 +15,7 @@ export const SETTINGS = {
 
     },
     nombre: { title: 'Nombre Completo', type: 'text', filter: false, editable: false },
-    dataJefatura: {
-      title: 'Asiganada a', type: 'text', filter: false,
-      valuePrepareFunction: ($valor: Iusuario): string => {
-        return ($valor === null) ?
-          '' :
-          `${$valor.nombre} ${$valor.ape_1} ${$valor.ape_2}`;
-      }
-    },
+    jefatura: { title: 'Asiganada a', type: 'text', filter: false, editable: false },
     // email: { title: 'Email', type: 'text', filter: false, },
     email: { title: 'Correo', type: 'text', filter: false, },
     rol: ROL_SETTINGS,
