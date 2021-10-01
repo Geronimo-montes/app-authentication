@@ -1,7 +1,8 @@
-<nb-card class="col-md-12 border-0 m-0 p-0" [nbPopover]=" tempRefInfoDoc "
-  [nbPopoverTrigger]="'noop'" [nbPopoverContext]="{doc: documento }"
+<nb-card class="col-md-12 border-0 m-0 p-0" [nbPopover]=" tempRf "
+  [nbPopoverTrigger]="'noop'" [nbPopoverContext]="{doc: data.data }"
   [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
-  [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
+  [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'"
+  (click)="emitirData(data.data);">
 
   <nb-badge *ngIf="badge !== undefined" [text]="badge.text"
     [status]="badge.status"></nb-badge>
@@ -10,27 +11,25 @@
   <input #f [hidden]="true" type="file" (change)="uploadFile($event);"
     name="file" id="file">
 
-
   <!-- Imagen de muestra del archivo -->
-  <img class="picture" alt="foto"
-    [src]="(documento.foto_ejemplo === '') ? 'assets/ext/' + documento.formato + '.png'  : documento.foto_ejemplo">
+  <img class="picture" alt="foto" [src]="data.imagen">
 
   <!-- Nombre -->
-  <p class="mt-2 text-center text-break">{{ documento.nombre }}</p>
+  <p class="mt-2 text-center text-break">{{ data.nombre }}</p>
 
   <!-- buttons -->
   <div class="content-buttons">
     <button *ngIf="buttons.includes('VIEW')"
       [disabled]="badge?.status === 'danger'" nbButton shape="semi-round"
       status="warning" nbPopoverTrigger="hint" nbPopover="Visualizar entrega"
-      (click)="viewDocumento(documento)">
+      (click)="viewDocumento(data.data)">
       <nb-icon icon="eye" pack="eva"></nb-icon>
     </button>
 
     <button *ngIf="buttons.includes('DOWNLOAD')"
       [disabled]="badge?.status === 'danger'" nbButton shape="semi-round"
       status="success" nbPopoverTrigger="hint" nbPopover="Descargar"
-      (click)="downloadDocumento(documento)">
+      (click)="downloadDocumento(data.data)">
       <nb-icon icon="cloud-download" pack="eva"></nb-icon>
     </button>
 
@@ -43,42 +42,28 @@
 </nb-card>
 
 <!-- Templeate del popover -->
-<ng-template #tempRefInfoDoc let-data>
+<ng-template #tempRf let-data>
   <nb-list>
     <nb-list-item>
-      <img class="" alt="foto" height="150"
+      <img class="m-auto" alt="foto" height="150"
         src="assets/ext/{{data.doc.formato}}.png">
     </nb-list-item>
     <nb-list-item>
-      Formato: {{ data.doc.formato }}
+      <p class="h5">{{ data.doc.nombre }}</p>
     </nb-list-item>
     <nb-list-item>
-      Peso maximo (mb): {{ data.doc.peso_max }}
+      <p class="h6">*.{{ data.doc.formato }} {{ data.doc.peso_max
+        }}mb</p>
     </nb-list-item>
     <nb-list-item>
-      {{ (data.doc.requerido === 'a')? 'Obligatorio' : 'Opcional' }}
-    </nb-list-item>
-  </nb-list>
-</ng-template>
-
-<!-- Templeate del popover -->
-<ng-template #tempRefInfoEntrega let-data>
-  <nb-list>
-    <nb-list-item>
-      <img class="" alt="foto" height="150"
-        src="assets/ext/{{data.doc.documento.formato}}.png">
+      <p class="h6 ">{{
+        (data.doc.requerido === 'a')? 'Obligatorio' : 'Opcional'
+        }}</p>
     </nb-list-item>
     <nb-list-item>
-      {{ data.doc.documento.nombre }}
-    </nb-list-item>
-    <nb-list-item>
-      Formato: {{ data.doc.documento.formato }}
-    </nb-list-item>
-    <nb-list-item>
-      {{ (data.doc.documento.requerido === 'a')? 'Obligatorio' : 'Opcional' }}
-    </nb-list-item>
-    <nb-list-item>
-      Fecha de Entrega: {{ data.doc.entrega?.fecha_entrega | date:'short'}}
+      <p class="h5" [ngClass]="{'text-danger': data.doc.requerido !== 'a'}">
+        Fecha de Entrega: {{'date'}}
+      </p>
     </nb-list-item>
     <nb-list-item>
       <button nbButton shape="semi-round" status="info" nbPopoverTrigger="hint"

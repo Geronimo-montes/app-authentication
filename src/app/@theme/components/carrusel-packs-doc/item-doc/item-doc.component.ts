@@ -1,12 +1,34 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { NbPopoverDirective } from '@nebular/theme';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Ialumno, IdocumentoEntregado } from '../../../../@core/data/alumnoModel';
-import { DocumentoModel, Idocumento } from '../../../../@core/data/documentoModel';
 import { ResponseData } from '../../../../@core/data/headerOptions';
-import { EtypeMessage, ToastService } from '../../../../@core/mock/root-provider/Toast.service';
+import {
+  NbComponentStatus,
+  NbPopoverDirective,
+} from '@nebular/theme';
+import {
+  Ialumno,
+  IdocumentoEntregado,
+} from '../../../../@core/data/alumnoModel';
+import {
+  DocumentoModel,
+  Idocumento,
+} from '../../../../@core/data/documentoModel';
+import {
+  EtypeMessage,
+  ToastService,
+} from '../../../../@core/mock/root-provider/Toast.service';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { Ipackdocumentacion } from '../../../../@core/data/paqueteDocumentoModel';
 
+export type KAccionButton = keyof typeof EAccionButtons;
 export enum EAccionButtons {
   VIEW_DOC = 1,
   VIEW = 2,
@@ -14,7 +36,12 @@ export enum EAccionButtons {
   UPLOAD = 4,
 }
 
-export type KAccionButton = keyof typeof EAccionButtons;
+export interface Idata {
+  nombre: string;
+  imagen: string;
+  data: any;
+}
+
 
 @Component({
   selector: 'app-item-doc',
@@ -23,57 +50,69 @@ export type KAccionButton = keyof typeof EAccionButtons;
 })
 export class ItemDocComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
-  //
-  @Output() loadData: any = new EventEmitter<boolean>();
+  // Emite un paquete de documentos o null
+  @Output('elementSelected') eleSelected = new EventEmitter<Ipackdocumentacion | null>();
   // Bandera para indicar que un evento asincrono esta cargando
   @Input('loadingData') loadingData: boolean;
   // Informacion tecnica del documento
-  @Input('documento') documento: Idocumento;
-  // Informacion de la entrega del documento
-  @Input('entrega') data_entrega: IdocumentoEntregado;
+  @Input('data') data: Idata;
   // Alumno seleccionado
   @Input('alumno') alumno: Ialumno;
-  // Objeto compuesto. Idica el estado de la entrega. {text: string, status: color}
-  @Input('badge') badge: any;
   // Indica si el boton se debe renderizar
   @Input('buttons') buttons: KAccionButton[] = [];
   // Permite manipular el popover
   @ViewChild(NbPopoverDirective) popover: NbPopoverDirective;
+  // Informacion de la entrega del documento
+  data_entrega: IdocumentoEntregado;
+  // Objeto compuesto. Idica el estado de la entrega. {text: string, status: color}
+  badge: { text: string, status: NbComponentStatus } = undefined;
 
   constructor(
     private documentoService: DocumentoModel,
     private toastService: ToastService,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.documentoIsEntregado();
+  }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  /**
-   * Muestra el popover del item
-   */
-  public showPopover() {
-    if (this.popover.isShown)
-      this.popover.hide();
-    else
-      this.popover.show();
+  public async documentoIsEntregado() {
+    const { idpaquete, iddocumento } = this.data.data;
+    const { matricula } = this.alumno;
+
+    this.data_entrega =
+      await this.documentoService
+        .getEntregaByPaqueteDocumentoMatricula$(idpaquete, iddocumento, matricula)
+        .toPromise();
+
+    this.badge = (this.data_entrega) ?
+      { text: 'Entregado', status: 'success' } :
+      { text: 'Sin entrega', status: 'danger' };
+
+    console.log(this.data_entrega)
   }
 
-  /**
-   * Carga el documento y los sube a la plataforma
-   * @param $event Documento a subir
-   */
+  public showPopover() {
+    (this.popover.isShown) ? this.popover.hide() : this.popover.show();
+  }
+
+  public emitirData($event) {
+    this.eleSelected.emit($event);
+  }
+
   public uploadFile($event) {
     this.loadingData = true;
 
     const
       file = $event.target.files[0],
       matricula = this.alumno.matricula,
-      idpaquete = this.documento.idpaquete,
-      iddocumento = this.documento.iddocumento,
+      idpaquete = this.data.data.idpaquete,
+      iddocumento = this.data.data.iddocumento,
       title = 'Entrega de documento';
 
     this.documentoService.postUploadDocumento$(idpaquete, iddocumento, matricula, file)
@@ -81,7 +120,7 @@ export class ItemDocComponent implements OnInit, OnDestroy {
       .subscribe((response: ResponseData) => {
         if (response.response) {
           this.toastService.show(title, response.message, EtypeMessage.SUCCESS);
-          this.loadData.emit(true);
+          this.documentoIsEntregado();
         } else
           this.toastService.show(title, response.message, EtypeMessage.DANGER);
 

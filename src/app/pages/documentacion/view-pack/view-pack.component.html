@@ -75,7 +75,9 @@
       <!-- DETALLE DOCUMENTOS -->
       <div class="row justify-content-start container-docs col-md-10 m-auto">
         <div class="col-md-3 pt-2" *ngFor=" let d of elements">
-          <app-item-doc [documento]="d" [buttons]="['VIEW']"></app-item-doc>
+          <app-item-doc [buttons]="['VIEW']"
+            [data]="{nombre: d.nombre, imagen: d.foto_ejemplo, data:d}">
+          </app-item-doc>
         </div>
       </div>
       <!-- BUTTON NEXT -->

@@ -36,6 +36,8 @@ export abstract class DocumentoModel extends HeaderOption {
 
   abstract getEntregasByPaqueteMatricula$(idpaquete: number, matricula: string): Observable<IdocumentoEntregado[]>;
 
+  abstract getEntregaByPaqueteDocumentoMatricula$(idpaquete: number, iddocumento: number, matricula: string): Observable<IdocumentoEntregado>;
+
   abstract getDownloadDocumentosByPaquete$(idpaquete: number, matricula: string): Observable<any>;
 
   abstract getDownloadDocumentoById$(idpaquete: number, iddocumento: number, matricula: string): Observable<any>

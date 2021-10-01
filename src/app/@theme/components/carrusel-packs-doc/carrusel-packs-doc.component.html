@@ -48,11 +48,9 @@
     <!-- DETALLE DOCUMENTOS -->
     <ng-template [ngIf]="view_datalle">
       <div class="col-md-3" *ngFor=" let d of elemnts">
-        <app-item-doc (loadData)="cargarEntregas();" [alumno]="alumno"
-          [documento]="d" [loadingData]="loading | async"
-          [buttons]="['VIEW','DOWNLOAD', 'UPLOAD']"
-          [badge]="findDocInDocsEntregados(d.iddocumento).badge"
-          [entrega]="findDocInDocsEntregados(d.iddocumento).entrega">
+        <app-item-doc
+          [data]="{nombre: d.nombre, imagen: d.foto_ejemplo, data:d}"
+          [alumno]="alumno" [buttons]="['VIEW','DOWNLOAD', 'UPLOAD']">
         </app-item-doc>
       </div>
     </ng-template>

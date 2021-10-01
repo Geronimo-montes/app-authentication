@@ -39,6 +39,13 @@ export class DocumentoProvierService extends DocumentoModel {
     ).pipe(map((response) => response.data));
   }
 
+  public getEntregaByPaqueteDocumentoMatricula$(idpaquete: number, iddocumento: number, matricula: string): Observable<IdocumentoEntregado> {
+    return this.http.get<ResponseData>(
+      `documento/entregas/${idpaquete}/${iddocumento}/${matricula}`,
+      this.getOptions()
+    ).pipe(map((response) => response.data));
+  }
+
   public getDownloadDocumentosByPaquete$(idpaquete: number, matricula: string): Observable<any> {
     return this.http.get(
       `documento/download/${idpaquete}/${matricula}`,
