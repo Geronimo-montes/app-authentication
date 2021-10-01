@@ -35,6 +35,8 @@ import { CarruselPacksDocComponent } from './components/carrusel-packs-doc/carru
 
 import { CarruselDirective } from './directives/carrusel.directive';
 import { ItemDocComponent } from './components/carrusel-packs-doc/item-doc/item-doc.component';
+import { PopoverDocumentoComponent } from './components/popover/popover-documento/popover-documento.component';
+import { PopoverTemprefDirective } from './directives/popover-tempref.directive';
 
 const NB_MODULES = [
   ReactiveFormsModule,
@@ -83,7 +85,7 @@ const DIRECTIVES = [
 @NgModule({
   imports: [CommonModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS, ...DIRECTIVES],
-  declarations: [...COMPONENTS, ...PIPES, ...DIRECTIVES],
+  declarations: [...COMPONENTS, ...PIPES, ...DIRECTIVES, PopoverDocumentoComponent, PopoverTemprefDirective],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders<ThemeModule> {

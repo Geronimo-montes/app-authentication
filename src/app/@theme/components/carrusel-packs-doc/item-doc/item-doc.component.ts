@@ -2,10 +2,19 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } 
 import { NbPopoverDirective } from '@nebular/theme';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Ialumno } from '../../../../@core/data/alumnoModel';
+import { Ialumno, IdocumentoEntregado } from '../../../../@core/data/alumnoModel';
 import { DocumentoModel, Idocumento } from '../../../../@core/data/documentoModel';
 import { ResponseData } from '../../../../@core/data/headerOptions';
 import { EtypeMessage, ToastService } from '../../../../@core/mock/root-provider/Toast.service';
+
+export enum EAccionButtons {
+  VIEW_DOC = 1,
+  VIEW = 2,
+  DOWNLOAD = 3,
+  UPLOAD = 4,
+}
+
+export type KAccionButton = keyof typeof EAccionButtons;
 
 @Component({
   selector: 'app-item-doc',
@@ -14,39 +23,21 @@ import { EtypeMessage, ToastService } from '../../../../@core/mock/root-provider
 })
 export class ItemDocComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
-
+  //
   @Output() loadData: any = new EventEmitter<boolean>();
-  /**
-   * Bandera para indicar que un evento asincrono esta cargando
-   */
+  // Bandera para indicar que un evento asincrono esta cargando
   @Input('loadingData') loadingData: boolean;
-  /**
-   * Informacion tecnica del documento
-   */
+  // Informacion tecnica del documento
   @Input('documento') documento: Idocumento;
-  /**
-   * Alumno seleccionado
-   */
+  // Informacion de la entrega del documento
+  @Input('entrega') data_entrega: IdocumentoEntregado;
+  // Alumno seleccionado
   @Input('alumno') alumno: Ialumno;
-  /**
-   * Objeto compuesto. Idica el estado de la entrega. {text: string, status: color}
-   */
+  // Objeto compuesto. Idica el estado de la entrega. {text: string, status: color}
   @Input('badge') badge: any;
-  /**
-   * @description Inidica si el boton de visualizacion del popover se habilita. Por defecto su valor es true.
-   */
-  @Input('btnView') btnView: boolean = true;
-  /**
-   * @description Inidica si el boton de subidad de documentos se habilita. Por defecto su valor es true.
-   */
-  @Input('btnUpload') btnUpload: boolean = true;
-  /**
-   * @description Habilita la edición de los datos del documento desde el popover. Por defecto su valor es false.
-   */
-  @Input('editPopover') editTemplate: boolean = false;
-  /**
-   * Permite manupular el popover 
-   */
+  // Indica si el boton se debe renderizar
+  @Input('buttons') buttons: KAccionButton[] = [];
+  // Permite manipular el popover
   @ViewChild(NbPopoverDirective) popover: NbPopoverDirective;
 
   constructor(

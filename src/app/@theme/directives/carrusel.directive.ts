@@ -1,4 +1,11 @@
-import { Directive, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core';
+import {
+  Directive,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  TemplateRef,
+  ViewContainerRef,
+} from '@angular/core';
 
 export interface ICarruselContext {
   $implicit: any;
@@ -21,6 +28,7 @@ export class CarruselDirective implements OnChanges {
 
   constructor(
     private container: ViewContainerRef,
+
     private template: TemplateRef<Object>,
   ) { }
 

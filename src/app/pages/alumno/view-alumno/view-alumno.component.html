@@ -1,15 +1,14 @@
 <nb-card class="col-md-10 m-auto" [nbSpinner]="loadingData"
   [nbSpinnerSize]="'giant'" [nbSpinnerMessage]="'Cargando información'"
   [nbSpinnerStatus]="'primary'">
-
-  <!-- Data del usuario -->
+  <!-- Titulo y boton de cerrar -->
   <nb-card-header>
     <div class="row justify-content-between m-auto">
       <h5 class="text-white">Datos del alumno</h5>
 
       <button class="button-refresh ml-2" nbButton shape="round" size="medium"
-        status="danger" (click)="close();" nbPopover="Cerrar ventana"
-        nbPopoverTrigger="hover">
+        status="danger" nbPopover="Cerrar ventana" nbPopoverTrigger="hover"
+        (click)="close();">
         <nb-icon nbSuffix icon="close-circle"
           [options]="{ animation: { type: 'pulse' } }" pack="eva"></nb-icon>
       </button>
@@ -68,7 +67,7 @@
       </div>
     </div>
   </nb-card-body>
-  <!-- Detalle documentos -->
+  <!-- Detalle -->
   <nb-card-footer>
     <app-carrusel-packs-doc [packs_documentos]="packs_documentos"
       [alumno]="data">

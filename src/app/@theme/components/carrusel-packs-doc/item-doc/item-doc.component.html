@@ -1,5 +1,5 @@
-<nb-card class="card-principal col-md-12 border-0" [nbPopover]="templeteRef"
-  nbPopoverTrigger="hover" [nbPopoverContext]="{doc: documento}"
+<nb-card class="col-md-12 border-0 m-0 p-0" [nbPopover]=" tempRefInfoDoc "
+  [nbPopoverTrigger]="'noop'" [nbPopoverContext]="{doc: documento }"
   [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
   [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
 
@@ -10,57 +10,82 @@
   <input #f [hidden]="true" type="file" (change)="uploadFile($event);"
     name="file" id="file">
 
+
   <!-- Imagen de muestra del archivo -->
-  <img class="picture m-auto" alt="foto"
+  <img class="picture" alt="foto"
     [src]="(documento.foto_ejemplo === '') ? 'assets/ext/' + documento.formato + '.png'  : documento.foto_ejemplo">
 
   <!-- Nombre -->
-  <p class="mt-2 text-center text-truncate">{{ documento.nombre }}</p>
+  <p class="mt-2 text-center text-break">{{ documento.nombre }}</p>
 
-  <!-- button -->
+  <!-- buttons -->
   <div class="content-buttons">
-    <button *ngIf="btnView" nbButton shape="semi-round" status="warning"
-      nbPopoverTrigger="hint" nbPopover="Ver documento"
+    <button *ngIf="buttons.includes('VIEW')"
+      [disabled]="badge?.status === 'danger'" nbButton shape="semi-round"
+      status="warning" nbPopoverTrigger="hint" nbPopover="Visualizar entrega"
       (click)="viewDocumento(documento)">
       <nb-icon icon="eye" pack="eva"></nb-icon>
     </button>
 
-    <button *ngIf="btnUpload" nbButton shape="semi-round" status="success"
-      nbPopoverTrigger="hint" nbPopover="Descargar"
+    <button *ngIf="buttons.includes('DOWNLOAD')"
+      [disabled]="badge?.status === 'danger'" nbButton shape="semi-round"
+      status="success" nbPopoverTrigger="hint" nbPopover="Descargar"
       (click)="downloadDocumento(documento)">
       <nb-icon icon="cloud-download" pack="eva"></nb-icon>
     </button>
 
-    <button *ngIf="btnUpload" nbButton shape="semi-round" status="info"
-      nbPopoverTrigger="hint" nbPopover="Subir documento" (click)="f.click()">
+    <button *ngIf="buttons.includes('UPLOAD')" nbButton shape="semi-round"
+      status="info" nbPopoverTrigger="hint" nbPopover="Detalles de entrega"
+      (click)="showPopover()">
       <nb-icon icon="cloud-upload" pack="eva"></nb-icon>
     </button>
   </div>
 </nb-card>
 
 <!-- Templeate del popover -->
-<ng-template #templeteRef let-data>
-  <nb-card style="margin:0;padding:0;">
-    <nb-card-header>
-      {{ data.doc.nombre }}
-    </nb-card-header>
+<ng-template #tempRefInfoDoc let-data>
+  <nb-list>
+    <nb-list-item>
+      <img class="" alt="foto" height="150"
+        src="assets/ext/{{data.doc.formato}}.png">
+    </nb-list-item>
+    <nb-list-item>
+      Formato: {{ data.doc.formato }}
+    </nb-list-item>
+    <nb-list-item>
+      Peso maximo (mb): {{ data.doc.peso_max }}
+    </nb-list-item>
+    <nb-list-item>
+      {{ (data.doc.requerido === 'a')? 'Obligatorio' : 'Opcional' }}
+    </nb-list-item>
+  </nb-list>
+</ng-template>
 
-    <nb-card-body class="col-md-12">
-      <nb-list>
-        <nb-list-item>
-          <img class="m-auto" alt="foto" height="200"
-            [src]="(data.doc.foto_ejemplo === '') ? 'assets/ext/' + data.doc.formato + '.png'  : data.doc.foto_ejemplo">
-        </nb-list-item>
-        <nb-list-item>
-          Formato: {{ data.doc.formato }}
-        </nb-list-item>
-        <nb-list-item>
-          Peso maximo (mb): {{ data.doc.peso_max }}
-        </nb-list-item>
-        <nb-list-item>
-          {{ (data.doc.requerido === 'a')? 'Obligatorio' : 'Opcional' }}
-        </nb-list-item>
-      </nb-list>
-    </nb-card-body>
-  </nb-card>
+<!-- Templeate del popover -->
+<ng-template #tempRefInfoEntrega let-data>
+  <nb-list>
+    <nb-list-item>
+      <img class="" alt="foto" height="150"
+        src="assets/ext/{{data.doc.documento.formato}}.png">
+    </nb-list-item>
+    <nb-list-item>
+      {{ data.doc.documento.nombre }}
+    </nb-list-item>
+    <nb-list-item>
+      Formato: {{ data.doc.documento.formato }}
+    </nb-list-item>
+    <nb-list-item>
+      {{ (data.doc.documento.requerido === 'a')? 'Obligatorio' : 'Opcional' }}
+    </nb-list-item>
+    <nb-list-item>
+      Fecha de Entrega: {{ data.doc.entrega?.fecha_entrega | date:'short'}}
+    </nb-list-item>
+    <nb-list-item>
+      <button nbButton shape="semi-round" status="info" nbPopoverTrigger="hint"
+        nbPopover="Detalles de entrega" (click)="f.click()">
+        Cargar archivo
+        <nb-icon icon="cloud-upload" pack="eva"></nb-icon>
+      </button>
+    </nb-list-item>
+  </nb-list>
 </ng-template>

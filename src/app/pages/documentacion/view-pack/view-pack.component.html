@@ -1,20 +1,20 @@
-<nb-card class="col-md-8 m-auto" [nbSpinner]="loadingData"
+<nb-card class="col-md-7 m-auto" [nbSpinner]="loadingData"
   [nbSpinnerSize]="'giant'" [nbSpinnerMessage]="'Cargando información'"
   [nbSpinnerStatus]="'primary'">
-
+  <!-- Titulo y boton de cerrar -->
   <nb-card-header>
     <div class="row justify-content-between m-auto">
       <h5 class="text-white">Datos del paquete de documentos</h5>
 
       <button class="button-refresh ml-2" nbButton shape="round" size="medium"
-        status="danger" (click)="close();" nbPopover="Cerrar ventana"
-        nbPopoverTrigger="hover">
+        status="danger" nbPopover="Cerrar ventana" nbPopoverTrigger="hover"
+        (click)="close();">
         <nb-icon nbSuffix icon="close-circle"
           [options]="{ animation: { type: 'pulse' } }" pack="eva"></nb-icon>
       </button>
     </div>
   </nb-card-header>
-
+  <!-- Data del usuario -->
   <nb-card-body>
     <div class="row">
       <div class="col-md-3 m-auto">
@@ -54,30 +54,34 @@
       </div>
     </div>
   </nb-card-body>
-
+  <!-- Detalle -->
   <nb-card-footer>
+    <!-- TITULO DEL PAQUETE -->
+    <div class="row justify-content-start alings-items-center">
+      <div class="col-md-10">
+        <h5 class="text-white">Documentos del paquete </h5>
+      </div>
+    </div>
+    <!-- AREA DE VISUALIZACION DE DOCUMENTOS -->
     <div class="row"
       *counter="let elements From docs AsCountElem 4; let ctrl = controller">
       <!-- BUTTON PREV -->
-      <div class="col-md-1 m-auto">
-        <button nbButton shape="semi-round" size="giant" status="success"
-          (click)="ctrl.prev();">
+      <div class="col-md-1 d-flex flex-column">
+        <button class="m-auto" nbButton shape="semi-round" size="giant"
+          status="success" (click)="ctrl.prev();">
           <nb-icon nbSuffix icon="arrow-ios-back" pack="eva"></nb-icon>
         </button>
       </div>
-      <!-- ITEMS -->
-      <div class="row justify-content-start container-docs col-md-10">
-        <!-- DETALLE DOCUMENTOS -->
+      <!-- DETALLE DOCUMENTOS -->
+      <div class="row justify-content-start container-docs col-md-10 m-auto">
         <div class="col-md-3 pt-2" *ngFor=" let d of elements">
-          <app-item-doc [documento]="d" [btnUpload]="false"
-            [editPopover]="true">
-          </app-item-doc>
+          <app-item-doc [documento]="d" [buttons]="['VIEW']"></app-item-doc>
         </div>
       </div>
       <!-- BUTTON NEXT -->
-      <div class="col-md-1 m-auto">
-        <button nbButton shape="semi-round" size="giant" status="success"
-          (click)="ctrl.next();">
+      <div class="col-md-1 d-flex flex-column">
+        <button class="m-auto" nbButton shape="semi-round" size="giant"
+          status="success" (click)="ctrl.next();">
           <nb-icon nbSuffix icon="arrow-ios-forward" pack="eva"></nb-icon>
         </button>
       </div>

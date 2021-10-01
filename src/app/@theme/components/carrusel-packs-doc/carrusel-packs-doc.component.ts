@@ -1,3 +1,6 @@
+import { Observable, Subject } from 'rxjs';
+import { Ipackdocumentacion } from '../../../@core/data/paqueteDocumentoModel';
+import { takeUntil } from 'rxjs/operators';
 import { NbComponentStatus } from '@nebular/theme';
 import {
   Component,
@@ -8,13 +11,9 @@ import {
   Idocumento,
 } from '../../../@core/data/documentoModel';
 import {
-  AlumnoModel,
   Ialumno,
   IdocumentoEntregado
 } from '../../../@core/data/alumnoModel';
-import { Observable, Subject } from 'rxjs';
-import { Ipackdocumentacion } from '../../../@core/data/paqueteDocumentoModel';
-import { takeUntil } from 'rxjs/operators';
 
 /**
  * Recuadro que indica si el documento ya ha sido entregado o no.
@@ -32,33 +31,20 @@ interface Ibadge {
 export class CarruselPacksDocComponent {
   private destroy$: Subject<void> = new Subject<void>();
 
-  /**
-   * Data de los paquetes de documentos
-   */
+  // Data de los paquetes de documentos
   @Input('packs_documentos') packs: Ipackdocumentacion[] = [];
-  /**
-   * Data del alumno seleccionado
-   */
+  // Data del alumno seleccionado
   @Input('alumno') alumno: Ialumno;
-  /**
-   * Indica cuando un proceso asincrono esta cargando
-   */
+  // Indica cuando un proceso asincrono esta cargando
   public loadingData: boolean = false;
-  /**
-   * Bandera que indica cuando se ingresa a visualizar el detalle
-   */
+  // Bandera que indica cuando se ingresa a visualizar el detalle
   public view_datalle: boolean = false;
-  /**
-   * data del paquete seleccionado
-   */
-  public selected_pack: Ipackdocumentacion = null; // info pack_documentos + detalle
-  /**
-   * Array que obtiene los documentos que ya han sido entregados del paquete selecciondo por el alumno.
-   */
+  // data del paquete seleccionado
+  public selected_pack: Ipackdocumentacion = null; // info pack_documentos + detall
+  //
   public docs_entregados: IdocumentoEntregado[] = [];
 
   constructor(
-    private alumnoService: AlumnoModel,
     private documentoService: DocumentoModel,
   ) { }
 
@@ -105,14 +91,27 @@ export class CarruselPacksDocComponent {
    * @param {number} iddocumento 
    * @returns {Ibadge} indica si el doc se entrego
    */
-  public validarDocumento(iddocumento: number): Ibadge {
-    const validacion = this.docs_entregados
-      .find(d => d.iddocumento === iddocumento);
+  public findDocInDocsEntregados(iddocumento: number): { badge: Ibadge, entrega: IdocumentoEntregado } {
+    const entrega = this.docs_entregados
+      .filter(d => d.iddocumento === iddocumento)
+      .splice(0, 1);
 
-    return {
-      text: (validacion === undefined) ? 'Sin entrega' : 'Entregado',
-      status: (validacion === undefined) ? 'danger' : 'success'
-    };
+    if (entrega.length === 1)
+      return {
+        badge: {
+          text: 'Entregado',
+          status: 'success',
+        },
+        entrega: entrega[0],
+      };
+    else
+      return {
+        badge: {
+          text: 'Sin entrega',
+          status: 'danger',
+        },
+        entrega: null,
+      };
   }
 
   public downloadDocumentosZIP() {

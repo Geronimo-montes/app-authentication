@@ -40,17 +40,17 @@
     }
 
     nb-card-footer {
-      border: 0;
       border-bottom-left-radius: 1rem;
       border-bottom-right-radius: 1rem;
       background-color: nb-theme(color-primary-500);
-    }
-  }
 
-  .container-docs {
-    border-radius: 1rem;
-    background-color: nb-theme(color-basic-100);
-    box-shadow: 3px 4px 8px nb-theme(color-basic-600);
-    max-height: 15rem;
+      .container-docs {
+        padding: 1%;
+        border-radius: 1rem;
+        background-color: nb-theme(color-basic-100);
+        box-shadow: 3px 4px 8px nb-theme(color-basic-600);
+        max-height: 15rem;
+      }
+    }
   }
 }
