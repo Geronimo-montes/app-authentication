@@ -1,7 +1,10 @@
-import { Observable, Subject } from 'rxjs';
-import { Ipackdocumentacion } from '../../../@core/data/paqueteDocumentoModel';
+import { Ialumno, } from '../../../@core/data/alumnoModel';
 import { takeUntil } from 'rxjs/operators';
-import { NbComponentStatus } from '@nebular/theme';
+import { Ipackdocumentacion } from '../../../@core/data/paqueteDocumentoModel';
+import {
+  Observable,
+  Subject,
+} from 'rxjs';
 import {
   Component,
   Input,
@@ -10,10 +13,6 @@ import {
   DocumentoModel,
   Idocumento,
 } from '../../../@core/data/documentoModel';
-import {
-  Ialumno,
-  IdocumentoEntregado
-} from '../../../@core/data/alumnoModel';
 
 @Component({
   selector: 'app-carrusel-packs-doc',
