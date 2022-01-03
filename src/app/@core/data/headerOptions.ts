@@ -1,21 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-
-/**
- * @interface ResponseData: Objeto que representa la estructura de respuesta de la api control-documentacion. 
- * @var data: Objeto que varia en su tipo, representa la data que retorna la api-control-documentacion. Su valor puede ser null en algunos casos.
- * @var response: resultado de la consulta.
- * @var message: Mensaje de tipo string. Puede ser null.
- */
-export interface ResponseData {
-  data: any;
-  response: boolean;
-  message: string;
-}
 
 export abstract class HeaderOption {
-  protected http: HttpClient;
-  protected baseURL: string = environment.API_URL;
 
   constructor(httpClient: HttpClient) { }
 
@@ -24,10 +9,11 @@ export abstract class HeaderOption {
   }
 
   /**
-   * 
-   * @returns HeadersHTTP con el token de autenticación
+   * Header para piticiones con cuerpo en formato Json
+   * @returns {HttpHeaders} con el token de autenticación
    */
   protected getOptions() {
+    console.log(`FROM HEARDER --> ${this.token}`)
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -44,12 +30,18 @@ export abstract class HeaderOption {
     };
   }
 
-  protected getOptionsMultipart() {
+  /**
+   * Headers para la subida de archivos al servidor
+   * @returns {HttpHeaders} headers de tipo from-data
+   */
+  protected getOptionsFormData() {
     return {
       headers: new HttpHeaders({
-        // 'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${this.token}`,
       }),
     };
   }
+
+  protected http: HttpClient;
 }

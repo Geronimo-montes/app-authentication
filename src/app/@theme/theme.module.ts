@@ -1,22 +1,5 @@
-import {
-  NbThemeModule,
-  NbActionsModule,
-  NbCardModule,
-  NbIconModule,
-  NbLayoutModule,
-  NbSidebarModule,
-  NbButtonModule,
-  NbContextMenuModule,
-  NbMenuModule,
-  NbSearchModule,
-  NbUserModule,
-  NbSpinnerModule,
-  NbFormFieldModule,
-  NbPopoverModule,
-  NbInputModule,
-  NbBadgeModule,
-  NbListModule
-} from '@nebular/theme';
+import { NbThemeModule, NbActionsModule, NbCardModule, NbIconModule, NbLayoutModule, NbSidebarModule, NbButtonModule, NbContextMenuModule, NbMenuModule, NbSearchModule, NbUserModule, NbSpinnerModule, NbFormFieldModule, NbPopoverModule, NbInputModule, NbBadgeModule, NbListModule, } from '@nebular/theme';
+
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
@@ -31,12 +14,6 @@ import { FooterComponent } from './components/footer/footer.component';
 import { CardItemMenuComponent } from './components/card-item-menu/card-item-menu.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ConfirmacionComponent, FileUploadComponent } from './components';
-import { CarruselPacksDocComponent } from './components/carrusel-packs-doc/carrusel-packs-doc.component';
-
-import { CarruselDirective } from './directives/carrusel.directive';
-import { ItemDocComponent } from './components/carrusel-packs-doc/item-doc/item-doc.component';
-import { PopoverDocumentoComponent } from './components/popover/popover-documento/popover-documento.component';
-import { PopoverTemprefDirective } from './directives/popover-tempref.directive';
 
 const NB_MODULES = [
   ReactiveFormsModule,
@@ -70,22 +47,18 @@ const COMPONENTS = [
   TablaComponent,
   FileUploadComponent,
   ConfirmacionComponent,
-  CarruselPacksDocComponent,
   OneColumnLayoutComponent,
-  ItemDocComponent,
 ];
 
 const PIPES = [];
 
-const DIRECTIVES = [
-  CarruselDirective
-];
+const DIRECTIVES = [];
 
 
 @NgModule({
   imports: [CommonModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS, ...DIRECTIVES],
-  declarations: [...COMPONENTS, ...PIPES, ...DIRECTIVES, PopoverDocumentoComponent, PopoverTemprefDirective],
+  declarations: [...COMPONENTS, ...PIPES, ...DIRECTIVES],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders<ThemeModule> {
@@ -93,7 +66,7 @@ export class ThemeModule {
       ngModule: ThemeModule,
       providers: [
         ...NbThemeModule.forRoot(
-          { name: 'corporate' },
+          { name: 'dark' },
         ).providers
       ]
     }

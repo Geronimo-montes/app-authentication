@@ -1,53 +1,47 @@
-import { throwIfAlreadyLoaded } from './module-import-guard';
-import { environment } from '../../environments/environment';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NbRoleProvider, NbSecurityModule } from '@nebular/security';
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
-import { NbAuthJWTToken, NbAuthModule, NbPasswordAuthStrategy } from '@nebular/auth';
+import { NgModule } from '@angular/core';
+import { Optional } from '@angular/core';
+import { SkipSelf } from '@angular/core';
+import { ModuleWithProviders } from '@angular/core';
 
-import { AuthGuard, RolGuard, AuthenticatedGuard } from './guards';
-import { BaseURLInterceptor, HttpErrorInterceptor } from './http-interceptores';
+import { environment } from '../../environments/environment';
+import { throwIfAlreadyLoaded } from './module-import-guard';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { NbAuthModule } from '@nebular/auth';
+import { NbAuthJWTToken } from '@nebular/auth';
+import { NbRoleProvider } from '@nebular/security';
+import { NbSecurityModule } from '@nebular/security';
+import { NbPasswordAuthStrategy } from '@nebular/auth';
+
+import { RolGuard } from './guards';
+import { AuthGuard } from './guards';
+
+import { BaseURLInterceptor } from './interceptors';
+import { HttpErrorInterceptor } from './interceptors';
+
 import { LayoutService } from './utils';
 
 import { MockDataModule } from './mock/mock-data.module';
 
 import { RoleProviderService } from './mock/rolProvider.service';
 
-import { UserModel } from './data/userModel';
-import { UserProvierService } from './mock/UserProvider.service';
-
-import { UnidadAcademicaModel } from './data/unidadAcademicaModel';
-import { UnidadProvierService } from './mock/UnidadProvider.service';
-
-import { DocumentoModel } from './data/documentoModel';
-import { DocumentoProvierService } from './mock/DocumentoProvider.service';
-
-import { AlumnoModel } from './data/alumnoModel';
-import { AlumnoProvierService } from './mock/AlumnoProvider.service';
-
-import { EmpleadoModel } from './data/empleadoModel';
-import { EmpleadoProvierService } from './mock/EmpleadoProvider.service';
-
-import { FileModel } from './data/fileModel';
-import { FileProvierService } from './mock/FileProvider.service';
-import { PaqueteDocModel } from './data/paqueteDocumentoModel';
-import { PaqueteDocProvierService } from './mock/PaqueteDocProvider.service';
+import { AuthModel } from './data/auth.model';
+import { AuthService } from './mock/AuthProvider.service';
+import { UserModel } from './data/user.model';
+import { UserService } from './mock/UserProvider.service';
+import { FaceIdModel } from './data/faceId.model';
+import { FaceIdService } from './mock/FaceIdProvider.service';
+import { UserCredentialsModel } from './data/userCredentials.model';
+import { UserCredentialsService } from './mock/UserCredentialsProvider.service';
 
 
-const GUARDS = [
-  AuthGuard,
-  RolGuard,
-  AuthenticatedGuard,
-];
+const GUARDS = [RolGuard, AuthGuard];
 
 const DATA_SERVICES = [
-  { provide: UserModel, useClass: UserProvierService },
-  { provide: UnidadAcademicaModel, useClass: UnidadProvierService },
-  { provide: DocumentoModel, useClass: DocumentoProvierService },
-  { provide: PaqueteDocModel, useClass: PaqueteDocProvierService },
-  { provide: AlumnoModel, useClass: AlumnoProvierService },
-  { provide: EmpleadoModel, useClass: EmpleadoProvierService },
-  { provide: FileModel, useClass: FileProvierService },
+  { provide: AuthModel, useClass: AuthService },
+  { provide: UserModel, useClass: UserService },
+  { provide: FaceIdModel, useClass: FaceIdService },
+  { provide: UserCredentialsModel, useClass: UserCredentialsService },
 ];
 
 const INTERCEPTORES_HTTP = [
@@ -71,78 +65,48 @@ export const NB_CORE_PROVIDERS = [
   ...DATA_SERVICES,
   ...INTERCEPTORES_HTTP,
   ...MockDataModule.forRoot().providers,
-  ...NbAuthModule.forRoot({
-    strategies: [
-      NbPasswordAuthStrategy.setup({
-        name: 'email',
-        baseEndpoint: environment.API_URL,
-        refreshToken: {
-          endpoint: 'auth/refreshToken',
-          method: 'post',
-          alwaysFail: false,
-          defaultErrors: ['No se pudo revalidar sesion. Intente mas tarde.'],
-          defaultMessages: ['Sesion extendida con exito.'],
-        },
-        login: {
-          endpoint: 'auth/sign-in',
-          alwaysFail: false,
-          method: 'post',
-          requireValidToken: true,
-          redirect: {
-            success: '/pages/dashboard',
-            failure: null,
+
+  ...NbAuthModule
+    .forRoot({
+      strategies: [
+        NbPasswordAuthStrategy.setup({
+          name: 'email',
+          baseEndpoint: environment.API_URL,
+          login: {
+            endpoint: 'sign-in/user-credentials',
+            alwaysFail: false,
+            method: 'post',
+            requireValidToken: true,
+            redirect: {
+              success: '/pages/users',
+              failure: null,
+            },
+            defaultErrors: ['Correo o contraseña incorrectos, intente nuevamente.'],
+            defaultMessages: ['Has validado tus credenciasles exitosamente.'],
           },
-          defaultErrors: ['Correo o contraseña incorrectos, intente nuevamente.'],
-          defaultMessages: ['Has validado tus credenciasles exitosamente.'],
-        },
-        logout: false,
-        token: {
-          class: NbAuthJWTToken,
-          key: 'data.token',
-        },
-      }),
-    ],
-    forms: {
-      login: formSetting,
-      logout: { redirecDelay: 0 },
-    }
-  }).providers,
+          logout: false,
+          token: {
+            class: NbAuthJWTToken,
+            key: 'token',
+          },
+        }),
+      ],
+      forms: {
+        login: formSetting,
+        logout: { redirecDelay: 0 },
+      }
+    }).providers,
+
   ...NbSecurityModule.forRoot({
-    /** c         deribados
-     * perfil
-     * unidad   unidad-asignada
-     * documento  detalle_documento
-     * empleado
-     * reporte
-     * 
-     */
     accessControl: {
-      director: {
-        control: ['perfil', 'unidad', 'documento', 'empleado', 'reporte'],
+      admin: {
+        control: ['*'],
         view: ['*'],
         create: ['*'],
         edit: ['*'],
         add: ['*'],
         delete: ['*'],
         update_data_list: ['*'],
-      },
-      jefatura: {
-        control: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
-        view: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
-        create: [],
-        edit: [],
-        add: ['detalle_documento'],
-        delete: ['detalle_documento'],
-        update_data_list: ['alumno', 'documento'],
-      },
-      auxiliar: {
-        control: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
-        view: ['perfil', 'alumno', 'documento', 'unidad-asignada', 'reporte'],
-        create: [],
-        edit: [],
-        add: ['detalle_documento'],
-        delete: ['detalle_documento'],
-        update_data_list: ['alumno', 'documento'],
       }
     }
   }).providers,

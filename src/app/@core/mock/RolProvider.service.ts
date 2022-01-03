@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NbAuthJWTToken, NbAuthService } from '@nebular/auth';
 import { NbRoleProvider } from '@nebular/security';
-import { Erol } from '../data/userModel';
+import { ERol } from '../data/user.model';
 
 @Injectable()
 export class RoleProviderService implements NbRoleProvider {
@@ -15,23 +15,23 @@ export class RoleProviderService implements NbRoleProvider {
    * @description Implementacion NbRoleProvide, complemento para gestion de permisos
    * @returns Observable<string> Rol del usuario actual, por defecto invitado
    */
-  getRole(): Observable<Erol> {
+  getRole(): Observable<ERol> {
     return this.authService.onTokenChange()
       .pipe(
         map((token: NbAuthJWTToken) => {
           if (token.isValid()) {
-            return <Erol>token.getPayload().usuario.rol;
+            return <ERol>token.getPayload().role;
           }
         }),
       );
   }
 
-  isDirector(): Observable<boolean> {
+  isAdmin(): Observable<boolean> {
     return this.authService.onTokenChange()
       .pipe(
         map((token: NbAuthJWTToken) => {
           if (token.isValid()) {
-            return <Erol>token.getPayload().usuario.rol === Erol.DIRECTOR;
+            return <ERol>token.getPayload().role === ERol.ADMIN;
           }
         }),
       );

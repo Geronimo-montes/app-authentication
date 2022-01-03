@@ -9,34 +9,16 @@ const routes: Routes = [
     component: PagesComponent,
     children: [
       {
-        path: 'alumno',
-        loadChildren: () => import('./alumno/alumno.module')
-          .then(m => m.AlumnoModule),
-      }, {
-        path: 'unidad-academica',
-        loadChildren: () => import('./unidad-academica/unidad-academica.module')
-          .then(m => m.UnidadAcademicaModule),
-        canActivate: [RolGuard],
-      }, {
-        path: 'empleado',
-        loadChildren: () => import('./empleado/empleado.module')
-          .then(m => m.EmpleadoModule),
-        canActivate: [RolGuard],
-      }, {
-        path: 'documentacion',
-        loadChildren: () => import('./documentacion/documentacion.module')
-          .then(m => m.DocumentacionModule),
-      }, {
-        path: 'dashboard',
-        loadChildren: () => import('./dashboard/dashboard.module')
-          .then(m => m.DashboardModule),
+        path: 'users',
+        loadChildren: () => import('./user/user.module')
+          .then(m => m.UserModule),
       }, {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'users',
         pathMatch: 'full',
       }, {
         path: '**',
-        redirectTo: 'dashboard',
+        redirectTo: 'users',
       },
     ],
   }

@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbMenuService, NbSidebarService } from '@nebular/theme';
-import { title } from 'process';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { Iusuario, UserModel } from '../../../@core/data/userModel';
+import { AuthModel } from '../../../@core/data/auth.model';
+import { IUser } from '../../../@core/data/user.model';
 import { LayoutService } from '../../../@core/utils';
 import { MENU } from './menu_user';
 
@@ -15,20 +15,20 @@ import { MENU } from './menu_user';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
-  public usuario: Iusuario;
+  public user: IUser;
   public menu = MENU;
 
   constructor(
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private layoutService: LayoutService,
-    private userService: UserModel,
+    private authService: AuthModel,
   ) { }
 
   ngOnInit(): void {
-    this.userService.getUser$()
+    this.authService.getUser$()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((usuario: Iusuario) => this.usuario = usuario)
+      .subscribe((user: IUser) => this.user = user)
 
     this.menuService.onItemClick()
       .pipe(
@@ -58,7 +58,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logOut() {
-    this.userService.logOut$();
+    this.authService.logOut$();
   }
 
 }

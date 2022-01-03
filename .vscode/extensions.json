@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+    "johnpapa.angular2",
+    "angular.ng-template",
+    "nrwl.angular-console",
+    "dbaeumer.vscode-eslint",
+    "johnpapa.angular-essentials",
+    "ms-vscode.vscode-typescript-next",
+    "johnpapa.vscode-peacock",
+    "gerane.theme-dark-dracula",
+    "pkief.material-icon-theme",
+    "wayou.vscode-todo-highlight",
+    "jprestidge.theme-material-theme",
+    "thomascsd.vscode-readme-pattern",
+    "elanandkumar.el-vsc-product-icon-theme",
+    "visualstudioexptteam.vscodeintellicode",
+    "donjayamanne.githistory",
+    "knisterpeter.vscode-github",
+    "adpyke.codesnap",
+    "eg2.vscode-npm-script",
+    "sibiraj-s.vscode-scss-formatter"
+  ]
+}

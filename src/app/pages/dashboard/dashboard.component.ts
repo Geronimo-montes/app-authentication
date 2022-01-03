@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
-import { Erol, UserModel } from '../../@core/data/userModel';
+import { AuthModel } from '../../@core/data/auth.model';
+import { ERol } from '../../@core/data/user.model';
 import { RoleProviderService } from '../../@core/mock/rolProvider.service';
 import { CONTROLLS, CONTROL_REGISTROS } from './dashboard-controlls';
 
@@ -53,24 +54,22 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private rolService: RoleProviderService,
-    private userService: UserModel,
+    private userService: AuthModel,
   ) { }
 
   ngOnInit(): void {
-    this.rolService.getRole()
-      .pipe(take(1))
-      .subscribe(rol => {
-        if (rol === Erol.AUXILIAR || rol === Erol.JEFATURA) {
-          this.userService.getUser$()
-            .pipe(take(1))
-            .subscribe(usuario => {
-              this.controlls.map(o => {
-                if (o.objeto === 'alumno') o.link += `/${usuario.clave}`;
-              });
-            });
-        };
-      });
+    //   this.rolService.getRole()
+    //     .pipe(take(1))
+    //     .subscribe(rol => {
+    //       if (rol === ERol.ADMIN || rol === ERol.USER) {
+    //         this.userService.getUser$()
+    //           .pipe(take(1))
+    //           .subscribe(usuario => {
+    //             this.controlls.map(o => {
+    //               if (o.objeto === 'alumno') o.link += `/${usuario.clave}`;
+    //             });
+    //           });
+    //       };
+    //     });
   }
-
-
 }

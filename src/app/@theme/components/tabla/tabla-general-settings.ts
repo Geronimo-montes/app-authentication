@@ -1,6 +1,4 @@
-import { Egenero } from "../../../@core/data/alumnoModel";
-import { Eestatus } from "../../../@core/data/comonModel";
-import { Erol } from "../../../@core/data/userModel";
+import { ERol } from "../../../@core/data/user.model";
 
 export const GENERAL_CONFIG = {
   // mode: 'external',
@@ -70,14 +68,14 @@ export const ESTATUS_SETTINGS = {
   },
   valuePrepareFunction: ($valor: string): string => {
     let icon = '', estatus = '';
-    if ($valor === Eestatus.ALTA) {
-      icon = 'assets/alta.png';
-      estatus = 'ALTA';
-    } else {
-      icon = 'assets/baja.png';
-      estatus = 'BAJA';
-    }
-    return `<span class="aling-items-center"><img class="mr-1" src="${icon}" height="25" alt="">${estatus}</span>`;
+    // if ($valor === Eestatus.ALTA) {
+    icon = 'assets/table-alta.ico';
+    estatus = 'ALTA';
+    // } else {
+    //   icon = 'assets/table-baja.ico';
+    //   estatus = 'BAJA';
+    // }
+    return `<span class="row aling-items-center"><img class="mr-2" src="${icon}" height="25" alt="">${estatus}</span>`;
   }
 };
 
@@ -90,16 +88,15 @@ export const ESTATUS_SETTINGS = {
  * editor
  */
 export const ROL_SETTINGS = {
-  title: 'Rol',
+  title: 'Role',
   type: 'text',
   filter: {
     type: 'list',
     config: {
       selectText: 'Todos',
       list: [
-        { value: 'auxiliar', title: 'Auxiliar' },
-        { value: 'jefatura', title: 'Jefatura' },
-        { value: 'director', title: 'Director' },
+        { value: ERol.ADMIN, title: 'Admin' },
+        { value: ERol.USER, title: 'User' },
       ],
     },
   },
@@ -107,75 +104,33 @@ export const ROL_SETTINGS = {
     type: 'list',
     config: {
       list: [
-        { value: 'auxiliar', title: 'Auxiliar' },
-        { value: 'jefatura', title: 'Jefatura' },
-        { value: 'director', title: 'Director' },
+        { value: ERol.ADMIN, title: 'Admin' },
+        { value: ERol.USER, title: 'User' },
       ],
     },
   },
   valuePrepareFunction: ($valor: string): string => {
-    return ($valor === Erol.AUXILIAR) ? 'AUXILIAR' : ($valor === Erol.JEFATURA) ? 'JEFATURA' : 'DIRECTOR';
-  }
-};
-
-/**
- * @description Configuraciones para la columno genero del componente ng2-smart-table. Se indican las sighientes configuraciones:
- * class
- * title
- * type
- * filter
- * editor
- */
-export const GENERO_SETTINGS = {
-  title: 'Genero',
-  type: 'html',
-  filter: {
-    type: 'list',
-    config: {
-      selectText: 'Ambos',
-      list: [
-        { value: 'm', title: 'Hombre' },
-        { value: 'f', title: 'Mujer' },
-      ],
-    },
-  },
-  editor: {
-    type: 'list',
-    config: {
-      list: [
-        { value: 'm', title: 'Hombre' },
-        { value: 'f', title: 'Mujer' },
-      ],
-    },
-  },
-  valuePrepareFunction: ($valor: string): string => {
-    let icon = '', genero = '';
-    if ($valor === Egenero.FEMENINO) {
-      icon = 'assets/femenino.png';
-      genero = 'Mujer';
-    } else {
-      icon = 'assets/masculino.png';
-      genero = 'Hombre';
-    }
-    return `<span class="m-auto"><img class="mr-1" src="${icon}" height="30" alt="">${genero}</span>`;
+    return ($valor === ERol.ADMIN)
+      ? 'Admin'
+      : 'User';
   }
 };
 
 export const EDIT_CONTROL = {
-  editButtonContent: `<img src="assets/edit.png" height="35">`,
-  saveButtonContent: '<img src="assets/save.png" height="35">',
-  cancelButtonContent: '<img src="assets/cancel.png" height="35">',
+  editButtonContent: `<img src="assets/table-edit.ico" height="28">`,
+  saveButtonContent: '<img src="assets/table-save.ico" height="28">',
+  cancelButtonContent: '<img src="assets/table-cancel.ico" height="28">',
   confirmSave: true,
 };
 
 export const DELETE_CONTROL = {
-  deleteButtonContent: `<img src="assets/add-remove.png" height="35">`,
-  saveButtonContent: '<img src="assets/save.png" height="35">',
-  cancelButtonContent: '<img src="assets/cancel.png" height="35">',
+  deleteButtonContent: `<img src="assets/table-add-remove.ico" height="28">`,
+  saveButtonContent: '<img src="assets/table-save.ico" height="28">',
+  cancelButtonContent: '<img src="assets/table-cancel.ico" height="28">',
   confirmDelete: true,
 };
 
 export const VIEW_CONTROL = [{
   name: 'Visualizar',
-  title: `<img src="assets/view.png" height="35">`,
+  title: `<img src="assets/table-view.ico" height="28">`,
 }];

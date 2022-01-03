@@ -1,27 +1,21 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ModuleWithProviders } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { UserProvierService } from './UserProvider.service';
-import { AlumnoProvierService } from './AlumnoProvider.service';
-import { UnidadProvierService } from './UnidadProvider.service';
-import { DocumentoProvierService } from './DocumentoProvider.service';
-import { EmpleadoProvierService } from './EmpleadoProvider.service';
+
+import { AuthService } from './AuthProvider.service';
 import { RoleProviderService } from './rolProvider.service';
-import { FileProvierService } from './FileProvider.service';
-import { ToastService } from './root-provider';
-import { PaqueteDocProvierService } from './PaqueteDocProvider.service';
+import { UserService } from './UserProvider.service';
+import { FaceIdService } from './FaceIdProvider.service';
+import { UserCredentialsService } from './UserCredentialsProvider.service';
 
 const SERVICES = [
-  UserProvierService,
-  AlumnoProvierService,
-  UnidadProvierService,
-  DocumentoProvierService,
-  PaqueteDocProvierService,
-  EmpleadoProvierService,
   RoleProviderService,
-  FileProvierService,
-
-  ToastService,
+  // 
+  AuthService,
+  UserService,
+  FaceIdService,
+  UserCredentialsService,
 ];
 
 @NgModule({

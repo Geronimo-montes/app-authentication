@@ -5,19 +5,16 @@
     </a>
 
     <a class="logo" href="#" (click)="navigateHome()">
-      <img class="mr-2" src="./assets/favicon.png" alt="" height="40">
-      <strong class="h1 text-white">CTRL</strong><span
-        class="text-white h6 mt-3 ">DOC</span>
+      <img class="mr-2" src="./assets/favicon.png" alt="" height="60">
+      <strong class="h1 text-white">AUTH</strong>
     </a>
   </div>
 </div>
 
 <div class="header-container">
   <nb-actions size="small">
-
     <nb-action class="user-action">
-      <nb-user [onlyPicture]="false" size="large" [name]="usuario?.email"
-        [title]="usuario?.rol" [picture]="usuario?.perfil"
+      <nb-user [onlyPicture]="false" size="large" [name]="user?.name" [title]="user?.role" picture="./assets/user.png"
         [nbContextMenu]="menu" nbContextMenuTag="userMenu">
       </nb-user>
     </nb-action>

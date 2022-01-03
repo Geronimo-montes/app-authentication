@@ -1,0 +1,76 @@
+<nb-card class="col-md-7 m-auto" [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
+  [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
+  <!-- Titulo y boton de cerrar -->
+  <nb-card-header>
+    <div class="row justify-content-between m-auto">
+      <h5 class="text-white">Información del Usuario|</h5>
+
+      <button class="button-refresh ml-2" nbButton shape="round" size="medium" status="danger"
+        nbPopover="Cerrar ventana" nbPopoverTrigger="hover" (click)="close();">
+        <nb-icon nbSuffix icon="close-circle" [options]="{ animation: { type: 'pulse' } }" pack="eva"></nb-icon>
+      </button>
+    </div>
+  </nb-card-header>
+  <!-- Data del usuario -->
+  <nb-card-body>
+    <div class="row">
+      <div class="col-md-3 m-auto">
+        <img class="picture_1" src="assets/user.png" alt="foto">
+      </div>
+      <div class="col-md-9">
+        <div class="row">
+          <div class="form-group col-md-12 mt-0">
+            <label class="label">ID de registro</label>
+            <input type="text" nbInput [value]="data._id" fullWidth shape="semi-round" [disabled]="true">
+          </div>
+          <div class="form-group col-md-12 mt-0">
+            <label class="label">Nombre Completo</label>
+            <input type="text" nbInput [value]="data.name" fullWidth shape="semi-round" [disabled]="true">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-6 mt-0">
+            <label class="label">Fecha de creación</label>
+            <input type="text" nbInput [value]="data.create" fullWidth shape="semi-round" [disabled]="true">
+          </div>
+          <div class="form-group col-md-6 mt-0">
+            <label class="label">Ultima modificación</label>
+            <input type="text" nbInput [value]="data.update" fullWidth shape="semi-round" [disabled]="true">
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+  <!-- Detalle -->
+  <nb-card-footer>
+    <!-- TITULO DEL PAQUETE
+    <div class="row justify-content-start alings-items-center">
+      <div class="col-md-10">
+        <h5 class="text-white">Documentos del paquete </h5>
+      </div>
+    </div>
+    AREA DE VISUALIZACION DE DOCUMENTOS
+    <div class="row" *counter="let elements From docs AsCountElem 4; let ctrl = controller">
+      BUTTON PREV
+      <div class="col-md-1 d-flex flex-column">
+        <button class="m-auto" nbButton shape="semi-round" size="giant" status="success" (click)="ctrl.prev();">
+          <nb-icon nbSuffix icon="arrow-ios-back" pack="eva"></nb-icon>
+        </button>
+      </div>
+      DETALLE DOCUMENTOS
+      <div class="row justify-content-start container-docs col-md-10 m-auto">
+        <div class="col-md-3 pt-2" *ngFor=" let d of elements">
+          <app-item-doc [buttons]="['VIEW']"
+            [data]="{nombre: d.nombre, imagen: d.foto_ejemplo, data:d}">
+          </app-item-doc>
+        </div>
+      </div>
+      BUTTON NEXT
+      <div class="col-md-1 d-flex flex-column">
+        <button class="m-auto" nbButton shape="semi-round" size="giant" status="success" (click)="ctrl.next();">
+          <nb-icon nbSuffix icon="arrow-ios-forward" pack="eva"></nb-icon>
+        </button>
+      </div>
+    </div> -->
+  </nb-card-footer>
+</nb-card>
