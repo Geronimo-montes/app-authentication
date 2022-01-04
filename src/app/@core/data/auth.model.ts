@@ -3,6 +3,7 @@ import { HeaderOption } from "./headerOptions";
 import { IUser } from "./user.model";
 
 export abstract class AuthModel extends HeaderOption {
+
   /**
    * Recupera la informacion de la cuenta del usuario logueado
    * @returns {IUser} user

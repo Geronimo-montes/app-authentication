@@ -12,17 +12,15 @@ export enum EtypeMessage {
   DANGER = 'danger'
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ToastService {
 
   private config: any = {
     status: 'success',
     destroyByClick: true,
-    duration: 5000,
+    duration: 10000,
     hasIcon: true,
-    position: NbGlobalPhysicalPosition.TOP_LEFT,
+    position: NbGlobalPhysicalPosition.BOTTOM_RIGHT,
     preventDuplicates: false,
   };
 

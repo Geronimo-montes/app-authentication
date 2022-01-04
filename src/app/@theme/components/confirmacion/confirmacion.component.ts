@@ -8,7 +8,27 @@ export enum typeicon {
 
 @Component({
   selector: 'ngx-confirmacion',
-  templateUrl: './confirmacion.component.html',
+  template: `
+  <nb-card status="primary">
+    <nb-card-header>{{titulo}}</nb-card-header>
+
+    <nb-card-body class="container text-center">
+      <img [src]="icon" height="100" alt="">
+      <p>
+        {{cuerpo}}
+      </p>
+      <strong>¿Desea continuar?</strong>
+    </nb-card-body>
+
+    <nb-card-footer class="row justify-content-between">
+      <button class="cancel ml-2" nbButton [size]="'medium'" status="danger"
+        (click)="cancel()">{{btnCancel}}</button>
+
+      <button nbButton [size]="'medium'" status="success" class="mr-2"
+        (click)="confirmar()">{{btnConfirmar}}</button>
+    </nb-card-footer>
+  </nb-card>
+  `,
   styleUrls: ['./confirmacion.component.scss']
 })
 export class ConfirmacionComponent implements OnInit {
@@ -27,19 +47,10 @@ export class ConfirmacionComponent implements OnInit {
   }
 
   get icon(): string {
-    let icon = '';
-    switch (this.type) {
-      case typeicon.QUESTION:
-        icon = 'assets/question.png';
-        break;
-      case typeicon.DELETE:
-        icon = 'assets/delete.png';
-        break;
-      default:
-        break;
-    }
-
-    return icon;
+    if (this.type === typeicon.QUESTION)
+      return 'assets/question.png';
+    if (this.type === typeicon.DELETE)
+      return 'assets/delete.png';
   }
 
   cancel() {

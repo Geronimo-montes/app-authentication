@@ -5,20 +5,19 @@ import { OnDestroy } from '@angular/core';
 
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 
 import { NbDialogService } from '@nebular/theme';
-import { NbAccessChecker } from '@nebular/security';
 
-import { ToastService } from '../../../@core/utils';
 import { Eaccion } from '../../../@theme/components';
 
 import { FILTER } from './settings';
 import { SETTINGS } from './settings';
 
 import { ViewComponent } from '../view/view.component';
-import { IUser, UserModel } from '../../../@core/data/user.model';
+import { Eestatus, IUser, UserModel } from '../../../@core/data/user.model';
+import { ToastService } from '../../../@core/utils';
+import { EtypeMessage } from '../../../@core/utils/toast.service';
 
 
 @Component({
@@ -44,6 +43,7 @@ export class TablaUserComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserModel,
     private dialogService: NbDialogService,
+    private toastService: ToastService,
   ) { }
 
   ngOnInit(): void {
@@ -85,11 +85,18 @@ export class TablaUserComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => { });
   }
 
-  private delete({ _id }: IUser) {
+  private delete(data: IUser) {
     this.userService
-      .deleteOne$(_id)
+      .altaBaja$(data._id, data.estatus)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((res: any) => { });
+      .subscribe((res: any) => {
+        const
+          title = 'Actualizacion de datos.',
+          body = `El usuario ${data.name} ha sido actualizado.`,
+          type = EtypeMessage.SUCCESS;
+        this.toastService.show(title, body, type);
+        this.loadData();
+      });
   }
 
   private view(user: IUser) {

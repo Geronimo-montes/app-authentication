@@ -1,18 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, ExtraOptions } from '@angular/router';
 import { NbAuthComponent, NbLoginComponent } from '@nebular/auth';
-import { AuthGuard } from './@core/guards';
+import { IsAuthenticateGuard } from './@core/guards';
 
 const routes: Routes = [
   {
     path: 'pages',
     loadChildren: () => import('./pages/pages.module')
       .then(m => m.PagesModule),
-    // canActivate: [AuthGuard],
+    canActivate: [IsAuthenticateGuard],
   }, {
     path: 'auth',
     component: NbAuthComponent,
-    // canActivate: [AuthGuard],
     children: [
       {
         path: '',

@@ -10,12 +10,11 @@ import { FaceIdService } from './FaceIdProvider.service';
 import { UserCredentialsService } from './UserCredentialsProvider.service';
 
 const SERVICES = [
-  RoleProviderService,
-  // 
   AuthService,
   UserService,
   FaceIdService,
   UserCredentialsService,
+  RoleProviderService,
 ];
 
 @NgModule({

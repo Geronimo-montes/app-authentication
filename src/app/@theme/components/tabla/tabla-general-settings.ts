@@ -1,8 +1,8 @@
-import { ERol } from "../../../@core/data/user.model";
+import { Eestatus, ERol } from "../../../@core/data/user.model";
 
 export const GENERAL_CONFIG = {
   // mode: 'external',
-  hideSubHeader: false,
+  hideSubHeader: true,
   noDataMessage: 'Tabla sin registros...',
   actions: {
     columnTitle: 'Acciones',
@@ -68,13 +68,13 @@ export const ESTATUS_SETTINGS = {
   },
   valuePrepareFunction: ($valor: string): string => {
     let icon = '', estatus = '';
-    // if ($valor === Eestatus.ALTA) {
-    icon = 'assets/table-alta.ico';
-    estatus = 'ALTA';
-    // } else {
-    //   icon = 'assets/table-baja.ico';
-    //   estatus = 'BAJA';
-    // }
+    if ($valor === Eestatus.ALTA) {
+      icon = 'assets/table-alta.ico';
+      estatus = 'ALTA';
+    } else {
+      icon = 'assets/table-baja.ico';
+      estatus = 'BAJA';
+    }
     return `<span class="row aling-items-center"><img class="mr-2" src="${icon}" height="25" alt="">${estatus}</span>`;
   }
 };

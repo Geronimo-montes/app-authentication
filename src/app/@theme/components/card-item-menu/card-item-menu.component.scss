@@ -1,6 +1,6 @@
-@import '../../../@theme/styles/themes';
-@import '~bootstrap/scss/mixins/breakpoints';
-@import '~@nebular/theme/styles/global/breakpoints';
+@import "../../../@theme/styles/themes";
+@import "~bootstrap/scss/mixins/breakpoints";
+@import "~@nebular/theme/styles/global/breakpoints";
 
 @include nb-install-component() {
   nb-card {
@@ -10,8 +10,8 @@
     border: 0;
     cursor: pointer;
     border-radius: 1rem;
-    height: 6rem;
-    width: 20rem;
+    height: 3.5rem;
+    // width: 20rem;
     padding: 0.5rem;
     box-shadow: 3px 4px 8px nb-theme(color-basic-600);
     transition: 0.3s ease;
@@ -19,9 +19,9 @@
     -webkit-transition: 0.3s ease; /* Chrome - Safari */
     -o-transition: 0.3s ease; /* Opera */
 
-    img{
-      width: 5rem;
-      height: 5rem;
+    img {
+      width: 3rem;
+      height: 3rem;
     }
 
     .details {
@@ -41,37 +41,37 @@
   }
 
   nb-card:hover {
-    transform : scale(1.06);
-    -moz-transform : scale(1.06); /* Firefox */
-    -webkit-transform : scale(1.06); /* Chrome - Safari */
-    -o-transform : scale(1.06); /* Opera */
-    -ms-transform : scale(1.06); /* IE9 */;
+    transform: scale(1.06);
+    -moz-transform: scale(1.06); /* Firefox */
+    -webkit-transform: scale(1.06); /* Chrome - Safari */
+    -o-transform: scale(1.06); /* Opera */
+    -ms-transform: scale(1.06); /* IE9 */
   }
 
   .primary {
-    background-color: nb-theme(	color-primary-400 );
+    background-color: nb-theme(color-primary-400);
   }
   .info {
-    background-color: nb-theme(	color-info-400 );
+    background-color: nb-theme(color-info-400);
   }
   .success {
-    background-color: nb-theme(	color-success-400 );
+    background-color: nb-theme(color-success-400);
   }
   .warning {
-    background-color: nb-theme(	color-warning-400 );
+    background-color: nb-theme(color-warning-400);
   }
   .danger {
-    background-color: nb-theme(	color-danger-400 );
+    background-color: nb-theme(color-danger-400);
   }
 
-  
   @include media-breakpoint-down(md) {
     nb-card {
       width: 6rem;
-      
-      .details, .title {
+
+      .details,
+      .title {
         display: none;
-      } 
+      }
     }
   }
 }

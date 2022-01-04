@@ -1,76 +1,78 @@
-<nb-card class="col-md-7 m-auto" [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
+<nb-card class="col-md-12 m-auto" [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
   [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
   <!-- Titulo y boton de cerrar -->
   <nb-card-header>
     <div class="row justify-content-between m-auto">
-      <h5 class="text-white">Información del Usuario|</h5>
+      <h5 class="text-white">Información del Usuario</h5>
 
-      <button class="button-refresh ml-2" nbButton shape="round" size="medium" status="danger"
-        nbPopover="Cerrar ventana" nbPopoverTrigger="hover" (click)="close();">
+      <button class="button-refresh ml-2" nbButton shape="round" size="small" status="danger" nbPopover="Cerrar ventana"
+        nbPopoverTrigger="hover" (click)="close();">
         <nb-icon nbSuffix icon="close-circle" [options]="{ animation: { type: 'pulse' } }" pack="eva"></nb-icon>
       </button>
     </div>
   </nb-card-header>
   <!-- Data del usuario -->
   <nb-card-body>
+    <!-- DATA GENERAL DEL USUARIO ID; NAME; -->
     <div class="row">
-      <div class="col-md-3 m-auto">
-        <img class="picture_1" src="assets/user.png" alt="foto">
-      </div>
+      <img class="col-md-3 m-auto picture_1" [src]="data.perfil" alt="foto">
       <div class="col-md-9">
+        <h6>{{ data._id }}</h6>
+        <h6>{{ data.name }}</h6>
+
+        <label class="label">
+          Creado en {{ data.create | date: 'MMMM d, y, hh:mm a' }}
+          <br>
+          Modificado en {{ data.update | date: 'MMMM d, y, hh:mm a' }}
+        </label>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <!-- FACE ID -->
+      <div class="col-md-6">
         <div class="row">
-          <div class="form-group col-md-12 mt-0">
-            <label class="label">ID de registro</label>
-            <input type="text" nbInput [value]="data._id" fullWidth shape="semi-round" [disabled]="true">
-          </div>
-          <div class="form-group col-md-12 mt-0">
-            <label class="label">Nombre Completo</label>
-            <input type="text" nbInput [value]="data.name" fullWidth shape="semi-round" [disabled]="true">
-          </div>
+          <h6 class="m-auto">Face ID</h6>
         </div>
+
         <div class="row">
-          <div class="form-group col-md-6 mt-0">
-            <label class="label">Fecha de creación</label>
-            <input type="text" nbInput [value]="data.create" fullWidth shape="semi-round" [disabled]="true">
-          </div>
-          <div class="form-group col-md-6 mt-0">
-            <label class="label">Ultima modificación</label>
-            <input type="text" nbInput [value]="data.update" fullWidth shape="semi-round" [disabled]="true">
-          </div>
+          <img class="face_id_1" src="assets/face_id.png" alt="foto">
+          <img class="face_id_2" src="assets/face_id.png" alt="foto">
+          <img class="face_id_3" src="assets/face_id.png" alt="foto">
+        </div>
+
+        <div class="row mb-2">
+          <label class="label m-auto">{{data.faceId}} archivo(s)</label>
+        </div>
+
+        <div class="row m-auto justify-content-center">
+          <button class="ml-2" nbButton shape="round" [size]="'medium'" [status]="'success'">Test</button>
+
+          <button class="ml-2" nbButton shape="round" [size]="'medium'" [status]="'warning'">Update</button>
         </div>
       </div>
+
+      <!-- CREDENCIALES -->
+      <div class="col-md-6">
+        <div class="row mb-2">
+          <h6 class="m-auto">Credenciales de usario</h6>
+        </div>
+
+        <div class="form-group col-md-12">
+          <input type="text" nbInput [value]="data.credentials" fullWidth shape="semi-round" placeholder="Email">
+        </div>
+
+        <div class="form-group col-md-12">
+          <input type="password" nbInput fullWidth shape="semi-round" placeholder="Password">
+        </div>
+
+        <div class="row m-auto justify-content-center">
+          <button class="ml-2" nbButton shape="round" [size]="'medium'" [status]="'success'">Test</button>
+
+          <button class="ml-2" nbButton shape="round" [size]="'medium'" [status]="'warning'">Update</button>
+        </div>
+      </div>
+
     </div>
   </nb-card-body>
-  <!-- Detalle -->
-  <nb-card-footer>
-    <!-- TITULO DEL PAQUETE
-    <div class="row justify-content-start alings-items-center">
-      <div class="col-md-10">
-        <h5 class="text-white">Documentos del paquete </h5>
-      </div>
-    </div>
-    AREA DE VISUALIZACION DE DOCUMENTOS
-    <div class="row" *counter="let elements From docs AsCountElem 4; let ctrl = controller">
-      BUTTON PREV
-      <div class="col-md-1 d-flex flex-column">
-        <button class="m-auto" nbButton shape="semi-round" size="giant" status="success" (click)="ctrl.prev();">
-          <nb-icon nbSuffix icon="arrow-ios-back" pack="eva"></nb-icon>
-        </button>
-      </div>
-      DETALLE DOCUMENTOS
-      <div class="row justify-content-start container-docs col-md-10 m-auto">
-        <div class="col-md-3 pt-2" *ngFor=" let d of elements">
-          <app-item-doc [buttons]="['VIEW']"
-            [data]="{nombre: d.nombre, imagen: d.foto_ejemplo, data:d}">
-          </app-item-doc>
-        </div>
-      </div>
-      BUTTON NEXT
-      <div class="col-md-1 d-flex flex-column">
-        <button class="m-auto" nbButton shape="semi-round" size="giant" status="success" (click)="ctrl.next();">
-          <nb-icon nbSuffix icon="arrow-ios-forward" pack="eva"></nb-icon>
-        </button>
-      </div>
-    </div> -->
-  </nb-card-footer>
 </nb-card>

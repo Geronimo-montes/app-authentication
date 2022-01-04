@@ -11,6 +11,8 @@ export interface IUserResponse {
   role: ERol;
   _id_face_id?: null | IFaceId;
   _id_credentials?: null | IUserCredentials;
+  create_date: string;
+  update_date: string;
 }
 
 export interface IUser {
@@ -23,11 +25,13 @@ export interface IUser {
   create: string;
   update: string;
   estatus: Eestatus;
+  create_date: string;
+  update_date: string;
 }
 
 export enum Eestatus {
-  ALTA = 'Alta',
-  BAJA = 'Baja'
+  ALTA = 'a',
+  BAJA = 'b',
 }
 
 export enum ERol {
@@ -42,7 +46,7 @@ export enum ERol {
 };
 
 
-export abstract class UserModel extends HeaderOption {
+export abstract class UserModel {
   /**
    * 
    * @param {string} _id_admin _id_
@@ -72,5 +76,5 @@ export abstract class UserModel extends HeaderOption {
    * 
    * @param {string} _id 
    */
-  abstract deleteOne$(_id: string): Observable<any>;
+  abstract altaBaja$(_id: string, estatus: Eestatus): Observable<any>;
 }

@@ -3,13 +3,12 @@
 
   <nb-card-header class="row col-md-12 m-auto justify-content-between">
     <div class="row col-md-auto">
-      <nb-icon [nbPopover]="templateRef" [nbPopoverTrigger]="'hover'" class="text-white h1 mt-auto mb-auto mr-2"
+      <!--ICON DE INFORMACION DE ACCIONES -->
+      <nb-icon [nbPopover]="templateRef" [nbPopoverTrigger]="'hover'" class="text-white h3 mt-auto mb-auto mr-2"
         icon="alert-circle-outline" pack="eva">
       </nb-icon>
-      <div>
-        <h4 class="text-white">{{ title }}</h4>
-        <h5 class="text-white">Listado de {{object}}s</h5>
-      </div>
+      <!-- TABLE NAME -->
+      <h4 class="text-white">{{ title }}</h4>
     </div>
 
     <div class="row col-md-auto justify-content-between">

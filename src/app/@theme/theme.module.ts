@@ -56,9 +56,21 @@ const DIRECTIVES = [];
 
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES],
-  exports: [CommonModule, ...PIPES, ...COMPONENTS, ...DIRECTIVES],
-  declarations: [...COMPONENTS, ...PIPES, ...DIRECTIVES],
+  imports: [
+    CommonModule,
+    ...NB_MODULES,
+  ],
+  exports: [
+    CommonModule,
+    ...PIPES,
+    ...COMPONENTS,
+    ...DIRECTIVES,
+  ],
+  declarations: [
+    ...COMPONENTS,
+    ...PIPES,
+    ...DIRECTIVES,
+  ],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders<ThemeModule> {

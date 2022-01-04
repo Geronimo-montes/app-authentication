@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CardItemMenuComponent } from './card-item-menu.component';
+import { CarruselComponent } from './carrusel.component';
 
-describe('CardItemMenuComponent', () => {
-  let component: CardItemMenuComponent;
-  let fixture: ComponentFixture<CardItemMenuComponent>;
+describe('CarruselComponent', () => {
+  let component: CarruselComponent;
+  let fixture: ComponentFixture<CarruselComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CardItemMenuComponent ]
+      declarations: [ CarruselComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CardItemMenuComponent);
+    fixture = TestBed.createComponent(CarruselComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

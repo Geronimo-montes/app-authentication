@@ -1,19 +1,11 @@
-import { Router } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { Observable } from "rxjs";
-import { throwError } from "rxjs";
-import { map, take } from "rxjs/operators";
-import { filter } from "rxjs/operators";
-import { concatMap } from "rxjs/operators";
-import { takeWhile } from "rxjs/operators";
+import { map } from "rxjs/operators";
 
-import { NbAuthResult } from "@nebular/auth";
-import { NbAuthService } from "@nebular/auth";
-import { NbAuthJWTToken } from "@nebular/auth";
-
-import { Eestatus, ERol, IUser, IUserResponse } from "../data/user.model";
+import { Eestatus, ERol } from "../data/user.model";
+import { IUser } from "../data/user.model";
 import { UserModel } from "../data/user.model";
 import { environment } from "../../../environments/environment";
 
@@ -21,53 +13,45 @@ import { environment } from "../../../environments/environment";
 export class UserService extends UserModel {
 
   constructor(
-    protected http: HttpClient,
-    private authService: NbAuthService,
-    private router: Router,
+    private http: HttpClient,
   ) {
-    super(http);
+    super();
   }
 
   findOne$(_id: string): Observable<any> {
-    return this.http.get<IUser[]>(
-      `${environment.API_URL}user/${_id}`,
-      this.getOptions()
-    ).pipe(
-      map((response: any) => {
-        return <IUser>{
-          _id: response._id,
-          perfil: (response.perfil) ? response.perfil : 'assets/user.png',
-          name: response.name,
-          role: response.role,
-          faceId: (response._id_face_id) ? response._id_face_id.number_files : 0,
-          credentials: (response._id_credentials) ? response._id_credentials.email : '',
-          create: new Date().toDateString(),
-          update: new Date().toDateString(),
-          estatus: Eestatus.ALTA,
-        }
-      }));
+    return this.http.get<IUser[]>(`user/${_id}`)
+      .pipe(
+        map((user: any) => ({
+          _id: user._id,
+          perfil: `${environment.API_URL}${user.perfil}`,
+          name: user.name,
+          role: user.role,
+          faceId: (user._id_face_id) ? user._id_face_id.number_files : 0,
+          credentials: (user._id_credentials) ? user._id_credentials.email : '',
+          create: user.create_date,
+          update: user.update_date,
+          estatus: user.estatus
+        }))
+      );
   }
 
   all$(): Observable<any> {
-    return this.http.get<IUser[]>(
-      `${environment.API_URL}user/all`,
-      this.getOptions()
-    ).pipe(
-      map((response: any) => {
-        return response.users.map((u: any) => {
-          return <IUser>{
-            _id: u._id,
-            perfil: (u.perfil) ? u.perfil : 'assets/user.png',
-            name: u.name,
-            role: u.role,
-            faceId: (u._id_face_id) ? u._id_face_id.number_files : 0,
-            credentials: (u._id_credentials) ? u._id_credentials.email : '',
-            create: new Date().toDateString(),
-            update: new Date().toDateString(),
-            estatus: Eestatus.ALTA,
-          }
-        });
-      }));
+    return this.http.get<IUser[]>(`user/all`)
+      .pipe(
+        map((response: any) => response.users.map(
+          (user: any) => ({
+            _id: user._id,
+            perfil: `${environment.API_URL}${user.perfil}`,
+            name: user.name,
+            role: user.role,
+            faceId: (user._id_face_id) ? user._id_face_id.number_files : 0,
+            credentials: (user._id_credentials) ? user._id_credentials.email : '',
+            create: user.create_date,
+            update: user.update_date,
+            estatus: user.estatus
+          })
+        ))
+      );
   }
 
   add$(name: string, role: ERol): Observable<any> {
@@ -78,8 +62,13 @@ export class UserService extends UserModel {
     throw new Error("Method not implemented.");
   }
 
-  deleteOne$(_id: string): Observable<any> {
-    throw new Error("Method not implemented.");
+  altaBaja$(_id: string, estatus: Eestatus): Observable<any> {
+    return this.http.put(`user/${_id}`, { estatus })
+      .pipe(
+        map((response: any) => {
+          console.log({ response })
+        })
+      );
   }
 
 }
