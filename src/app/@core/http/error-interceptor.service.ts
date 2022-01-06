@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
 import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 // 
 import { Injectable } from '@angular/core';
-import { HttpEvent } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpResponse } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
 import { HttpRequest } from '@angular/common/http';
 import { HttpInterceptor } from '@angular/common/http';
@@ -26,17 +26,21 @@ export class ErrorInterceptorService implements HttpInterceptor {
 	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 		return next.handle(req)
 			.pipe(
-				catchError(
-					(error: any) => {
-						const
-							TITLE = `${error.error.name}: ${error.error.code}`,
-							BODY = error.error.message,
-							TYPE = EtypeMessage.DANGER;
-
-						this.toastService.show(TITLE, BODY, TYPE);
-						return throwError(`PETICION HTTP: ${error.message}`)
+				map((event: HttpEvent<any>) => {
+					if (event instanceof HttpResponse) {
+						console.log(`${event.statusText} ${event.status} ${event.url}`);
 					}
-				)
+					return event;
+				}),
+				catchError((error: HttpErrorResponse) => {
+					this.toastService.show(
+						`${error.error.name}: ${error.error.code}`,
+						error.error.message,
+						EtypeMessage.DANGER
+					);
+
+					return throwError(`PETICION HTTP: ${error.message}`)
+				})
 			);
 	}
 }

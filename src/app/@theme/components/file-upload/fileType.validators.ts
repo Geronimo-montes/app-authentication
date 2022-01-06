@@ -8,12 +8,22 @@ import { FormControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 export const fileType: ValidatorFn = (
   control: FormControl
 ): ValidationErrors | null => {
-  const file = control.value;
-  const type: string[] = ['png', 'jpg', 'pdf'];
+  const
+    files = control.value,
+    type: string[] = ['png', 'jpg'];
 
-  if (file) {
-    const extension = file.name.split('.')[1].toLowerCase();
-    return (type.indexOf(extension.toLowerCase()) === -1) ? { fileType: true } : null;
+  var valid: boolean = true;
+
+  if (Array.isArray(files)) {
+    for (let i = 0; i < files.length; i++) {
+      const extension = files[i].name.split('.')[1].toLowerCase();
+      if (!type.includes(extension)) {
+        console.log({ extension })
+        valid = false;
+        break;
+      }
+    }
+    return (valid) ? null : { fileType: true };
   } else {
     return null;
   }

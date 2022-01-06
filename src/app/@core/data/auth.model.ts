@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 import { HeaderOption } from "./headerOptions";
 import { IUser } from "./user.model";
 
-export abstract class AuthModel extends HeaderOption {
+export abstract class AuthModel {
 
   /**
    * Recupera la informacion de la cuenta del usuario logueado

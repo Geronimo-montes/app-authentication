@@ -19,11 +19,11 @@ import { AuthModel } from "../data/auth.model";
 export class AuthService extends AuthModel {
 
   constructor(
-    protected http: HttpClient,
+    private http: HttpClient,
     private nbAuthService: NbAuthService,
     private router: Router,
   ) {
-    super(http);
+    super();
   }
 
   public getUser$(): Observable<any> {
@@ -37,16 +37,16 @@ export class AuthService extends AuthModel {
 
   public logOut$() {
     let util = true;
-    this.http.delete<any>(`sign-out`, this.getOptions())
+    this.http.delete<any>(`sign-out`)
       .pipe(
         takeWhile(() => util),
-        filter(response => response.response),
+        filter(response => response),
         concatMap(() => this.nbAuthService.logout('email')),
         filter((nbAuthResult: NbAuthResult) => nbAuthResult.isSuccess())
-      ).subscribe(
-        () => this.router.navigateByUrl('auth/login'),
-        (err) => { throwError(err) },
-        () => { util = false; }
-      );
+      ).subscribe({
+        next: () => this.router.navigateByUrl('auth/login'),
+        error: (err) => { throwError(err) },
+        complete: () => { util = false; }
+      });
   }
 }

@@ -1,0 +1,81 @@
+<nb-card class="col-md-12 m-auto" [nbSpinner]="loadingData" [nbSpinnerSize]="'giant'"
+  [nbSpinnerMessage]="'Cargando información'" [nbSpinnerStatus]="'primary'">
+  <!-- Titulo y boton de cerrar -->
+  <nb-card-header>
+    <div class="row justify-content-between m-auto">
+      <h5 class="text-white">Formulario de Registro</h5>
+
+      <button class="button-refresh ml-2" nbButton shape="round" size="small" status="danger" nbPopover="Cerrar ventana"
+        nbPopoverTrigger="hover" (click)="close();">
+        <nb-icon nbSuffix icon="close-circle" [options]="{ animation: { type: 'pulse' } }" pack="eva"></nb-icon>
+      </button>
+    </div>
+  </nb-card-header>
+
+  <!-- Data del usuario -->
+  <nb-card-body>
+    <!-- DATA GENERAL DEL USUARIO ID; NAME; -->
+    <form [formGroup]="form" (submit)="formSubmit();">
+      <div class="row">
+        <!-- Perfil -->
+        <div class="col-md-4">
+          <div class="col-md-12 m-auto">
+            <label class="label">Fotos para Face ID</label>
+            <app-file-upload formControlName="files" [text]="'Face ID'" [name]="'files'" [multiple]="true"
+              [status]="validatorInput('files', form)" [templateRef]="templateRef" [popoverError]="nbPopoverError"
+              (change)="nbPopoverError = getError('files', form);">
+            </app-file-upload>
+          </div>
+        </div>
+
+        <!--NOMBRE  EMAIL PASSWORD-->
+        <div class="col-md-8">
+          <div class="form-group col-md-12 m-auto">
+            <label class="label">Nombre del usuario</label>
+
+            <input formControlName="name" placeholder="Username" type="text" nbInput fullWidth shape="rectangle"
+              [nbPopover]="templateRef" [nbPopoverTrigger]="nbPopoverTrigger" [shape]="nbComponentShape"
+              [nbPopoverContext]="{ text: nbPopoverError }" (keyup)="nbPopoverError = getError('name', form);"
+              (focus)="nbPopoverError = getError('name', form);" [status]="validatorInput('name', form)">
+          </div>
+          <div class="form-group col-md-12 m-auto">
+            <label class="label">Correo Electronico</label>
+
+            <input placeholder="Correo del alumno" type="text" nbInput fullWidth formControlName="email"
+              [nbPopover]="templateRef" [nbPopoverTrigger]="nbPopoverTrigger" [shape]="nbComponentShape"
+              [nbPopoverContext]="{ text: nbPopoverError }" (keyup)="nbPopoverError = getError('email', form);"
+              (focus)="nbPopoverError = getError('email', form);" [status]="validatorInput('email', form)">
+          </div>
+          <div class="form-group col-md-12 m-auto">
+            <label class="label">Contraseña</label>
+            <input placeholder="Contraseña de usuario" type="password" nbInput fullWidth formControlName="password"
+              shape="rectangle" [nbPopover]="templateRef" [nbPopoverTrigger]="nbPopoverTrigger"
+              [shape]="nbComponentShape" [nbPopoverContext]="{ text: nbPopoverError }"
+              (keyup)="nbPopoverError = getError('password', form);"
+              (focus)="nbPopoverError = getError('password', form);" [status]="validatorInput('password', form)">
+          </div>
+        </div>
+      </div>
+      <!-- BUTTONS -->
+      <div class="row mt-4 justify-content-end">
+        <div class="col-md-2 ml-2">
+          <button type="reset" nbButton shape="round" [size]="'medium'" [status]="'success'">Reset</button>
+        </div>
+
+        <div class="col-md-2 mr-4">
+          <button type="submit" nbButton shape="round" [disabled]="form.invalid" [size]="'medium'"
+            [status]="'warning'">Send</button>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>
+
+<!-- Template para los popovers -->
+<ng-template #templateRef let-data>
+  <div *ngIf="nbPopoverError !== ''" class="bg-danger rounded p-2" style="max-width: 18rem; min-width: 10rem;">
+    <strong class="text-white text-justify">
+      {{ data.text }}
+    </strong>
+  </div>
+</ng-template>

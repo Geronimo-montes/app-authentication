@@ -15,7 +15,10 @@ import { FILTER } from './settings';
 import { SETTINGS } from './settings';
 
 import { ViewComponent } from '../view/view.component';
-import { Eestatus, IUser, UserModel } from '../../../@core/data/user.model';
+
+import { IUser } from '../../../@core/data/user.model';
+import { UserModel } from '../../../@core/data/user.model';
+
 import { ToastService } from '../../../@core/utils';
 import { EtypeMessage } from '../../../@core/utils/toast.service';
 
@@ -65,8 +68,16 @@ export class TablaUserComponent implements OnInit, OnDestroy {
 
   private async loadData() {
     this.loadingData = true;
-    this.dataSource = await this.userService.all$().toPromise();
-    this.loadingData = false;
+    // this.dataSource = await this.userService.all$().toPromise();
+    this.userService.all$()
+      .subscribe({
+        next: (response) => { this.dataSource = response; },
+        complete: () => { this.loadingData = false; },
+        error: (err) => {
+          console.log({ err, mg: 'Error dedes Form' })
+          this.loadingData = false;
+        }
+      });
   }
 
   $rowSeleccionado($event) {

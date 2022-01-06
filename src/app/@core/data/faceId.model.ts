@@ -9,11 +9,17 @@ export interface IFaceId {
   update_date: string;
 }
 
-export abstract class FaceIdModel extends HeaderOption {
+export abstract class FaceIdModel {
   /**
    * 
    * @param {string} name 
    * @param {ERol} role 
    */
   abstract add$(_id: string, files): Observable<any>;
+
+  /**
+   * 
+   * @param files 
+   */
+  abstract signIn$(files): Observable<any>;
 }

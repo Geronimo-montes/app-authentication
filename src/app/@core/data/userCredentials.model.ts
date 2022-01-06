@@ -9,11 +9,18 @@ export interface IUserCredentials {
   update_date: string;
 }
 
-export abstract class UserCredentialsModel extends HeaderOption {
+export abstract class UserCredentialsModel {
   /**
    * 
    * @param {string} name 
    * @param {ERol} role 
    */
   abstract add$(_id: string, email: string, password: string): Observable<any>;
+
+  /**
+   * 
+   * @param email 
+   * @param password 
+   */
+  abstract signIn$(email: string, password: string): Observable<any>;
 }

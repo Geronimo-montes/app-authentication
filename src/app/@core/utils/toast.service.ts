@@ -32,4 +32,24 @@ export class ToastService {
     this.config.status = type;
     this.toastService.show(body, title, this.config);
   }
+  public success(title: string, body: string) {
+    this.config.status = EtypeMessage.SUCCESS;
+    this.toastService.show(body, title, this.config);
+  }
+  public danger(title: string, body: string) {
+    this.config.status = EtypeMessage.DANGER;
+    this.toastService.show(body, title, this.config);
+  }
+  public warning(title: string, body: string) {
+    this.config.status = EtypeMessage.WARNING;
+    this.toastService.show(body, title, this.config);
+  }
+  public info(title: string, body: string) {
+    this.config.status = EtypeMessage.INFO;
+    this.toastService.show(body, title, this.config);
+  }
+  public primary(title: string, body: string) {
+    this.config.status = EtypeMessage.PRIMARY;
+    this.toastService.show(body, title, this.config);
+  }
 }

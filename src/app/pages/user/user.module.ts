@@ -19,6 +19,7 @@ import { UserComponent } from './user.component';
 import { ViewComponent } from './view/view.component';
 import { UserRoutingModule } from './user-routing.module';
 import { TablaUserComponent } from './table/table.component';
+import { FormComponent } from './form/form.component';
 
 
 
@@ -44,6 +45,7 @@ import { TablaUserComponent } from './table/table.component';
     UserComponent,
     TablaUserComponent,
     ViewComponent,
+    FormComponent,
   ],
 })
 export class UserModule { }

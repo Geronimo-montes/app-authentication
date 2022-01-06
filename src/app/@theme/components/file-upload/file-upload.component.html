@@ -1,15 +1,18 @@
 <div class="box">
-  <nb-card class="d-flex justify-content-center text-center"
-    (click)="fileInput.click();" [nbPopover]="templateRef"
-    [nbPopoverTrigger]="popoverTrigger"
-    [nbPopoverContext]="{ text: popoverError }" [ngClass]="status">
+  <nb-card class="d-flex justify-content-center text-center" (click)="fileInput.click();" [nbPopover]="templateRef"
+    [nbPopoverTrigger]="popoverTrigger" [nbPopoverContext]="{ text: popoverError }" [ngClass]="status">
 
     <span class="label" [hidden]="!hidden">
-      {{ file ? file.name : 'Arrastre la imagen o seleccione para buscar.'
-      }}</span>
+      {{ (file?.length > 0)
+      ? file.item(0).name
+      : 'Arrastre la imagen o seleccione para buscar.' }}
+    </span>
 
     <img [id]="name" [hidden]="hidden" src="" alt="">
 
-    <input id="file" #fileInput hidden type="file">
+    <input id="file" #fileInput hidden type="file" [multiple]="multiple">
+
   </nb-card>
+  <!-- Visible solo cuando es de seleccion multiple -->
+  <label class="label" [hidden]="!multiple">{{ file?.length }} file(s) selected</label>
 </div>

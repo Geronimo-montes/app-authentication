@@ -20,8 +20,8 @@ export interface IUser {
   perfil: string;
   name: string;
   role: ERol;
-  faceId?: number;
-  credentials?: string;
+  _id_face_id?: IFaceId;
+  _id_credentials?: IUserCredentials;
   create: string;
   update: string;
   estatus: Eestatus;
