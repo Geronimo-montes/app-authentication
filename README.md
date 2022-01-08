@@ -1,27 +1,46 @@
-# AppAngular
+<p align="center">
+  <a href="https://github.com/Geronimo-montes/app-authentication" rel="noopener">
+  <img src="./docs/banner.png" alt="Project logo"></a>
+</p>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
+# Web autentiticación y gestion de usuarios
+<div align="center">
 
-## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+</div>
 
-## Code scaffolding
+## Table of Contents
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- [About](#about)
+- [Getting Started](#getting_started)
+- [Usage](#usage)
 
-## Build
+## About <a name = "about"></a>
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Pagina web para gestion de usuarios, Incluido en el sistema autenticación: [Authenticate System](https://github.com/Geronimo-montes/authenticate-system). 
+En este proyecto se provee una pagina Web que cumple la finalidad de gestionar los datos de usuarios pertenecientes al sistema.
 
-## Running unit tests
+## Getting Started <a name = "getting_started"></a>
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Prerequisites
 
-## Running end-to-end tests
+- [Angular](https://angular.io/)
+- [MongoDB](https://www.mongodb.com/)
+- [API](https://github.com/Geronimo-montes/api-authentication)
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+### Installing
 
-## Further help
+```bash
+$ git clone https://github.com/Geronimo-montes/api-authentication
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+$ cd api-authentication
+
+$ npm install
+```
+
+## Correr aplicación <a name = "usage"></a>
+
+Correr el proyecto
+``` bash
+$ npm start
+```
